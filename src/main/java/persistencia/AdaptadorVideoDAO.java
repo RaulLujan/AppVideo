@@ -5,10 +5,10 @@ import modelo.Video;
 
 public interface AdaptadorVideoDAO {
 	
-	public void registrarVideo(Video video);
+	public void insertarVideo(Video video);
 	public void borrarVideo(Video video);
 	public void modificarVideo(Video video);
-	public Video recuperarVideo(int id);
-	public List<Video> recuperarTodosVideos();
+	public Video consultarVideo(int id);
+	public List<Video> listarTodosVideos();
 	
 }

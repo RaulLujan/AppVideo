@@ -18,6 +18,19 @@ public class Usuario {
 	private ListaVideos recentVideo;
 	private List<ListaVideos> misListas;
 	
+	public Usuario(int id, Filtro filtro, boolean premium, String login, String password, String nombre,
+			String apellidos, Date fechaNac, String email) {
+		super();
+		this.id = id;
+		this.filtro = filtro;
+		this.premium = premium;
+		this.login = login;
+		this.password = password;
+		this.nombre = nombre;
+		this.apellidos = apellidos;
+		this.fechaNac = fechaNac;
+		this.email = email;
+	}
 	
 	public int getId() {
 		return id;

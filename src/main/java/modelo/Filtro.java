@@ -12,6 +12,7 @@ public abstract class Filtro {
 		super();
 		this.descripcion = descripcion;
 	}
+	
 	public abstract boolean filtrarVideo(Video video, Usuario usuario);
 
 }

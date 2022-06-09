@@ -1,52 +1,73 @@
 package persistencia;
 
-import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
+import beans.Entidad;
+import beans.Propiedad;
 import modelo.Etiqueta;
-import modelo.Usuario;
 import tds.driver.ServicioPersistencia;
 
 public class AdaptadorEtiquetaTDS implements AdaptadorEtiquetaDAO {
 
-	private static AdaptadorListaVideosTDS instancia = null;
+	private static AdaptadorEtiquetaTDS instancia = null;
 	private ServicioPersistencia server;
-	private SimpleDateFormat dateFormat;
-	
-	
+
 	@Override
-	public void registrarEtiqueta(Etiqueta etiqueta) {
-		// TODO Auto-generated method stub
-		
+	public void insertarEtiqueta(Etiqueta etiqueta) {
+		Entidad entidadEtiqueta = null;
+		if (server.recuperarEntidad(etiqueta.getId()) != null)
+			return;
+
+		entidadEtiqueta = new Entidad();
+		entidadEtiqueta.setNombre("etiqueta");
+		entidadEtiqueta
+				.setPropiedades(new ArrayList<Propiedad>(Arrays.asList(new Propiedad("nombre", etiqueta.getNombre()))));
+
+		entidadEtiqueta = server.registrarEntidad(entidadEtiqueta);
+
+		etiqueta.setId(entidadEtiqueta.getId());
 	}
+
 	@Override
 	public void borrarEtiqueta(Etiqueta etiqueta) {
-		// TODO Auto-generated method stub
-		
+		Entidad entidadEtiqueta = server.recuperarEntidad(etiqueta.getId());
+		server.borrarEntidad(entidadEtiqueta);
 	}
+
 	@Override
 	public void modificarEtiqueta(Etiqueta etiqueta) {
-		// TODO Auto-generated method stub
-		
+		Entidad entidadEtiqueta = server.recuperarEntidad(etiqueta.getId());
+		server.eliminarPropiedadEntidad(entidadEtiqueta, "nombre");
+		server.anadirPropiedadEntidad(entidadEtiqueta, "nombre", etiqueta.getNombre());
 	}
+
 	@Override
-	public Etiqueta recuperarEtiqueta(int codigo) {
-		// TODO Auto-generated method stub
-		return null;
+	public Etiqueta consultarEtiqueta(int id) {
+		Entidad entidadEtiqueta = server.recuperarEntidad(id);
+		String nombre = server.recuperarPropiedadEntidad(entidadEtiqueta, "nombre");
+		Etiqueta etiqueta = new Etiqueta(nombre);
+		etiqueta.setId(id);
+		return etiqueta;
 	}
+
 	@Override
-	public List<Etiqueta> recuperarTodasEtiquetas() {
-		// TODO Auto-generated method stub
-		return null;
+	public List<Etiqueta> listarTodasEtiquetas() {
+		List<Etiqueta> entidadEtiqueta = new LinkedList<Etiqueta>();
+		List<Entidad> eEtiquetas = server.recuperarEntidades("etiqueta");
+		for (Entidad eEtiqueta : eEtiquetas)
+			entidadEtiqueta.add(consultarEtiqueta(eEtiqueta.getId()));
+		return entidadEtiqueta;
 	}
-	public static AdaptadorListaVideosTDS getInstancia() {
+
+	public static AdaptadorEtiquetaTDS getInstancia() {
 		return instancia;
 	}
-	public static void setInstancia(AdaptadorListaVideosTDS instancia) {
+
+	public static void setInstancia(AdaptadorEtiquetaTDS instancia) {
 		AdaptadorEtiquetaTDS.instancia = instancia;
 	}
-	
-	
-	
 
 }
