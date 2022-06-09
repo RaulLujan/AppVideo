@@ -121,7 +121,6 @@ public class LaminaSuperior extends JPanel {
 		explorar.addActionListener(e -> {
 			laminaCentral.setLamina(explorar.getText());
 		});
-
 	}
 
 	private void addNuevaListaButton(JPanel lamina) {
@@ -129,12 +128,13 @@ public class LaminaSuperior extends JPanel {
 		nuevaLista.addActionListener(e -> {
 			laminaCentral.setLamina(nuevaLista.getText());
 		});
-
 	}
 
 	private void addMisListasButton(JPanel lamina) {
 		JToggleButton misListas = createToggleButtonJPanel("Mis Listas", lamina);
-
+		misListas.addActionListener(e -> {
+			laminaCentral.setLamina(misListas.getText());
+		});
 	}
 
 	private void addRecienteButton(JPanel lamina) {

@@ -20,7 +20,6 @@ public class Ventana extends JFrame{
 		int alturaPantalla = dPantalla.height;
 		int anchoPantalla = dPantalla.width;
 		
-		// ancho/altoPantalla / 1.5 
 		setSize(anchoPantalla/2 + anchoPantalla/6, alturaPantalla/2 + alturaPantalla/6);
 		setLocation(anchoPantalla/6, alturaPantalla/6);
 		
@@ -30,7 +29,7 @@ public class Ventana extends JFrame{
 		setResizable(true);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
-		Image icono = pantalla.getImage("src/recursos/icono.png");
+		Image icono = pantalla.getImage("src/main/java/recursos/icono.png");
 		setIconImage(icono);
 	}
 	

@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.util.Locale;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -13,6 +14,8 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
+
+import com.toedter.calendar.JDateChooser;
 
 public class Registro extends JPanel{
 	public Registro() {
@@ -53,13 +56,13 @@ public class Registro extends JPanel{
 		
 		JLabel lNombre = new JLabel("* Nombre: ");
 		JTextField tfNombre = new JTextField();
-		JTextField tfNombre2 = new JTextField();
 		
 		JLabel lApellidos = new JLabel("Apellidos: ");
 		JTextField tfApellidos = new JTextField();
 		
 		JLabel lFechaNacimiento = new JLabel("Fecha de Nacimiento: ");
-		//JDateChooser
+		JDateChooser cFechaNacimiento = new JDateChooser();
+		cFechaNacimiento.setLocale(Locale.ENGLISH);
 		
 		JLabel lEmail = new JLabel("Email: ");
 		JTextField tfEmail = new JTextField();
@@ -75,7 +78,7 @@ public class Registro extends JPanel{
 		
 		pFormParte1.add(lNombre); pFormParte1.add(tfNombre);
 		pFormParte1.add(lApellidos); pFormParte1.add(tfApellidos);
-		pFormParte1.add(lFechaNacimiento); pFormParte1.add(tfNombre2);
+		pFormParte1.add(lFechaNacimiento); pFormParte1.add(cFechaNacimiento);
 		pFormParte1.add(lEmail); pFormParte1.add(tfEmail);
 
 		pFormParte2.add(lUsuario); pFormParte2.add(tfUsuario);
