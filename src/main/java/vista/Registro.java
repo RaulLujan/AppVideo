@@ -12,7 +12,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
-import javax.swing.SwingConstants;
+import javax.swing.border.EmptyBorder;
 
 public class Registro extends JPanel{
 	public Registro() {
@@ -22,6 +22,7 @@ public class Registro extends JPanel{
 	private void confLamina() {
 		setBackground(new Color(96, 96, 96));
 		setLayout(new BorderLayout());
+		
 		addTitulo();
 		addFormulario();
 		addBotonesForm();
@@ -45,16 +46,20 @@ public class Registro extends JPanel{
 		JPanel pFormParte2 = new JPanel();
 		
 		pForm.setLayout(new BoxLayout(pForm, BoxLayout.Y_AXIS));
+		pForm.setBorder(new EmptyBorder(10, 5, 10, 5));
+		
 		pFormParte1.setLayout(new GridLayout(4, 2));
 		pFormParte2.setLayout(new GridLayout(3, 2));
 		
 		JLabel lNombre = new JLabel("* Nombre: ");
 		JTextField tfNombre = new JTextField();
+		JTextField tfNombre2 = new JTextField();
 		
 		JLabel lApellidos = new JLabel("Apellidos: ");
 		JTextField tfApellidos = new JTextField();
 		
 		JLabel lFechaNacimiento = new JLabel("Fecha de Nacimiento: ");
+		//JDateChooser
 		
 		JLabel lEmail = new JLabel("Email: ");
 		JTextField tfEmail = new JTextField();
@@ -62,7 +67,7 @@ public class Registro extends JPanel{
 		JLabel lUsuario = new JLabel("* Usuari@: ");
 		JTextField tfUsuario = new JTextField();
 		
-		JLabel lPass = new JLabel("* Contraseña: ", SwingConstants.RIGHT);
+		JLabel lPass = new JLabel("* Contraseña: ");
 		JPasswordField pfPass = new JPasswordField();
 		
 		JLabel lPassRepetir = new JLabel("* Repetir contraseña: ");
@@ -70,7 +75,7 @@ public class Registro extends JPanel{
 		
 		pFormParte1.add(lNombre); pFormParte1.add(tfNombre);
 		pFormParte1.add(lApellidos); pFormParte1.add(tfApellidos);
-		pFormParte1.add(lFechaNacimiento); pFormParte1.add(tfNombre);
+		pFormParte1.add(lFechaNacimiento); pFormParte1.add(tfNombre2);
 		pFormParte1.add(lEmail); pFormParte1.add(tfEmail);
 
 		pFormParte2.add(lUsuario); pFormParte2.add(tfUsuario);
@@ -78,8 +83,9 @@ public class Registro extends JPanel{
 		pFormParte2.add(lPassRepetir); pFormParte2.add(pfPassRepetir);
 		
 		pForm.add(pFormParte1);
-		//pForm.add(Box.createVerticalStrut(lNombre.getHeight()));
+		pForm.add(Box.createHorizontalGlue());
 		pForm.add(pFormParte2);
+		
 		add(pForm, BorderLayout.CENTER);
 		
 	}
@@ -90,6 +96,8 @@ public class Registro extends JPanel{
 		JPanel pCamposO = new JPanel();
 		
 		pGeneral.setLayout(new BoxLayout(pGeneral, BoxLayout.Y_AXIS));
+		pGeneral.setBorder(new EmptyBorder(10, 5, 10, 5));
+		
 		pBotones.setLayout(new BoxLayout(pBotones, BoxLayout.X_AXIS));
 		
 		JButton bRegistrar = new JButton("Registrar");

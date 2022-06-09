@@ -20,8 +20,12 @@ public class Ventana extends JFrame{
 		int alturaPantalla = dPantalla.height;
 		int anchoPantalla = dPantalla.width;
 		
-		setSize(anchoPantalla/2, alturaPantalla/2);
-		setLocation(anchoPantalla/4, alturaPantalla/4);
+		// ancho/altoPantalla / 1.5 
+		setSize(anchoPantalla/2 + anchoPantalla/6, alturaPantalla/2 + alturaPantalla/6);
+		setLocation(anchoPantalla/6, alturaPantalla/6);
+		
+		//setSize(anchoPantalla/2, alturaPantalla/2);
+		//setLocation(anchoPantalla/4, alturaPantalla/4);
 		
 		setResizable(true);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

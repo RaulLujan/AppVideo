@@ -1,6 +1,7 @@
 package vista;
 
 import java.awt.Color;
+import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.lang.reflect.Constructor;
@@ -16,7 +17,7 @@ public class LaminaCentral extends JPanel {
 
 	private void confLamina() {
 		setBorder(BorderFactory.createLineBorder(Color.BLACK));
-		setLayout(new GridLayout(1, 1));
+		setLayout(new FlowLayout(FlowLayout.CENTER));
 		setBackground(new Color(96, 96, 96));
 	}
 	
