@@ -17,7 +17,7 @@ import tds.driver.ServicioPersistencia;
 
 public class AdaptadorUsuarioTDS implements AdaptadorUsuarioDAO {
 
-	private static AdaptadorListaVideosTDS instancia = null;
+	private static AdaptadorUsuarioTDS instancia = null;
 	private ServicioPersistencia server;
 	private SimpleDateFormat dateFormat;
 
@@ -144,11 +144,11 @@ public class AdaptadorUsuarioTDS implements AdaptadorUsuarioDAO {
 		return usuarios;
 	}
 
-	public static AdaptadorListaVideosTDS getInstancia() {
+	public static AdaptadorUsuarioTDS getInstancia() {
 		return instancia;
 	}
 
-	public static void setInstancia(AdaptadorListaVideosTDS instancia) {
+	public static void setInstancia(AdaptadorUsuarioTDS instancia) {
 		AdaptadorUsuarioTDS.instancia = instancia;
 	}
 
