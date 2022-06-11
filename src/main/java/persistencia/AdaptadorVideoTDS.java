@@ -68,6 +68,26 @@ public class AdaptadorVideoTDS implements AdaptadorVideoDAO {
 		server.anadirPropiedadEntidad(entidadVideo, "numReproducciones", String.valueOf(video.getNumReproducciones()));
 		server.eliminarPropiedadEntidad(entidadVideo, "etiquetas");
 		server.anadirPropiedadEntidad(entidadVideo, "etiquetas", concatenarIDListaEtiquetas(video.getEtiquetas()));
+		
+		// Escalable por si tiene más propiedades
+				for (Propiedad prop : entidadVideo.getPropiedades()) {
+					switch (prop.getNombre()) {
+					case "url":
+						prop.setValor(video.getUrl());
+						break;
+					case "titulo":
+						prop.setValor(video.getTitulo());
+						break;
+					case "numReproducciones":
+						prop.setValor(String.valueOf(video.getNumReproducciones()));
+						break;
+					case "etiquetas":
+						prop.setValor(concatenarIDListaEtiquetas(video.getEtiquetas()));
+						break;
+					default:
+						break;
+					}
+				}
 	}
 
 	@Override

@@ -42,6 +42,18 @@ public class AdaptadorEtiquetaTDS implements AdaptadorEtiquetaDAO {
 		Entidad entidadEtiqueta = server.recuperarEntidad(etiqueta.getId());
 		server.eliminarPropiedadEntidad(entidadEtiqueta, "nombre");
 		server.anadirPropiedadEntidad(entidadEtiqueta, "nombre", etiqueta.getNombre());
+		
+		// Escalable por si tiene más propiedades, de momento solo tiene una 
+		for (Propiedad prop : entidadEtiqueta.getPropiedades()) {
+			switch (prop.getNombre()) {
+			case "nombre":
+				prop.setValor(etiqueta.getNombre());
+				break;
+
+			default:
+				break;
+			}
+		}
 	}
 
 	@Override

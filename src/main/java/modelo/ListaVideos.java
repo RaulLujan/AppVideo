@@ -8,6 +8,7 @@ public class ListaVideos {
 	private int id;
 	private String nombre;
 	private List<Video> videos;
+	private Usuario usuario;
 	
 	public ListaVideos(String nombre) {
 		this.nombre = nombre;
@@ -21,16 +22,27 @@ public class ListaVideos {
 	public int getId() {
 		return id;
 	}
+	
 	public void setId(int id) {
 		this.id = id;
+	}
+	
+	public int getUsuarioId() {
+		return usuario.getId();
+	}
+	
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
 	}
 	
 	public String getNombre() {
 		return nombre;
 	}
+	
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
 	}
+	
 	public boolean checkNombre(String nombre) {
 		return this.nombre.equals(nombre);
 	}
@@ -42,12 +54,14 @@ public class ListaVideos {
 	public List<Video> getVideos() {
 		return videos;
 	}
+	
 	public List<Integer> getIdVideos() {
 		List<Integer> codigos = new LinkedList<>();
 		for (Video video : videos)
 			codigos.add(video.getId());
 		return codigos;
 	}
+	
 	public boolean containsVideo(Video video) {
 		return videos.contains(video);
 	}

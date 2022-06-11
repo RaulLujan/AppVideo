@@ -101,10 +101,52 @@ public class AdaptadorUsuarioTDS implements AdaptadorUsuarioDAO {
 		server.anadirPropiedadEntidad(entidadUsu, "recentVideo", String.valueOf(usuario.getRecentVideo().getId()));
 		server.eliminarPropiedadEntidad(entidadUsu, "misListas");
 		server.anadirPropiedadEntidad(entidadUsu, "misListas", concatenarIDListaVideos(usuario.getMisListas()));
+
+		// Escalable por si tiene más propiedades
+		for (Propiedad prop : entidadUsu.getPropiedades()) {
+			switch (prop.getNombre()) {
+			case "filtro":
+				prop.setValor(usuario.getFiltro().getClass().getSimpleName());
+				break;
+			case "premium":
+				prop.setValor(String.valueOf(usuario.isPremium()));
+				break;
+			case "login":
+				prop.setValor(usuario.getLogin());
+				break;
+			case "password":
+				prop.setValor(usuario.getPassword());
+				break;
+			case "nombre":
+				prop.setValor(usuario.getNombre());
+				break;
+			case "apellidos":
+				prop.setValor(usuario.getApellidos());
+				break;
+			case "email":
+				prop.setValor(usuario.getEmail());
+				break;
+			case "recentVideo":
+				prop.setValor(String.valueOf(usuario.getRecentVideo().getId()));
+				break;
+			case "misListas":
+				prop.setValor(concatenarIDListaVideos(usuario.getMisListas()));
+				break;
+			case "fechaNac":
+				prop.setValor(dateFormat.format(usuario.getFechaNac()));
+				break;
+			default:
+				break;
+			}
+		}
 	}
 
 	@Override
 	public Usuario consultarUsuario(int id) {
+		
+		if (PoolDAO.getUnicaInstancia().contains(id))
+			return (Usuario) PoolDAO.getUnicaInstancia().getObject(id);
+		
 		// Falta tratamiento del POOL
 		Entidad entidadUsu = server.recuperarEntidad(id);
 		// Obtener filtro a partir de id XXXX FALTA XXXXX
@@ -130,8 +172,12 @@ public class AdaptadorUsuarioTDS implements AdaptadorUsuarioDAO {
 		List<ListaVideos> misListas = obtenerListasVideosDesdeID(
 				server.recuperarPropiedadEntidad(entidadUsu, "misListas"));
 		usuario.setRecentVideo(recentVideo);
+		
+		PoolDAO.getUnicaInstancia().addObject(id, usuario);
+		
 		for (ListaVideos listaViedos : misListas)
 			usuario.addMiLista(listaViedos);
+		
 		return usuario;
 	}
 
