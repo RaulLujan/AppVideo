@@ -122,4 +122,10 @@ public class AdaptadorVideoTDS implements AdaptadorVideoDAO {
 		AdaptadorVideoTDS.instancia = instancia;
 	}
 
+	@Override
+	public List<Video> consultarVideosPorPalabra(String busqueda) {
+		
+		return null;
+	}
+
 }

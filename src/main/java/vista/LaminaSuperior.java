@@ -16,6 +16,8 @@ import javax.swing.JPanel;
 import javax.swing.JToggleButton;
 import javax.swing.border.EmptyBorder;
 
+import controlador.Controlador;
+
 public class LaminaSuperior extends JPanel {
 	private JPanel laminaInicio;
 	private JPanel laminaFuncionalidad;
@@ -49,7 +51,15 @@ public class LaminaSuperior extends JPanel {
 		appVideoLabel.setFont(new Font("Arial", Font.BOLD, 30));
 		appVideoLabel.setForeground(Color.RED);
 
-		JLabel nombreUsuarioLabel = new JLabel("Hola usuario sin nombre");
+		JLabel nombreUsuarioLabel;
+		
+		if(isUsuario()) {
+			String nombreUsuario = Controlador.getInstaciaUnica().getUsuarioActual().getLogin();
+			nombreUsuarioLabel = new JLabel("Hola "+ nombreUsuario);
+		} else {
+			nombreUsuarioLabel = new JLabel("Hola Usuari@");
+		}
+		
 		nombreUsuarioLabel.setFont(new Font("Arial", Font.BOLD, 14));
 
 		laminaInicio.add(appVideoLabel);
@@ -73,36 +83,51 @@ public class LaminaSuperior extends JPanel {
 		addRecienteButton(laminaFuncionalidad);
 		addMasVistosrButton(laminaFuncionalidad);
 		laminaFuncionalidad.add(Box.createHorizontalGlue());
+		
+//		if (isUsuario())
+//			laminaFuncionalidad.setVisible(true);
+//		else
+//			laminaFuncionalidad.setVisible(false);
 	}
 
 	private void addLoginButton(JPanel lamina) {
 		JButton login = createButtonJPanel("Login", laminaInicio);
+
 		login.addActionListener(e -> {
 			laminaCentral.setLamina(login.getText());
 		});
-		
-		// si ha ido bien el login se muestra la vetana de "Recientes"
-		// si falla, se puestra una ventana de error
+
+		if (isUsuario())
+			login.setVisible(false);
+		else
+			login.setVisible(true);
 	}
 
 	private void addRegistroButton(JPanel lamina) {
 		JButton registro = createButtonJPanel("Registro", laminaInicio);
+
 		registro.addActionListener(e -> {
 			laminaCentral.setLamina(registro.getText());
 		});
 		
-		// mostrar ventana de error si no se ha introducito campos obligatorios (lo son todos, menos apellidos y email)
+//		if (isUsuario())
+//			registro.setVisible(false);
+//		else
+//			registro.setVisible(true);
 	}
 
 	private void addLogoutButton(JPanel lamina) {
 		JButton logout = createButtonJPanel("Logout", laminaInicio);
+
 		logout.addActionListener(e -> {
 			int salida = JOptionPane.showConfirmDialog(null, "¿Seguro de que quiere salir?", "Logout",
 					JOptionPane.YES_NO_CANCEL_OPTION);
+
 			switch (salida) {
 			case JOptionPane.YES_OPTION:
-
+				System.exit(0);
 				break;
+
 			case JOptionPane.NO_OPTION:
 			case JOptionPane.CANCEL_OPTION:
 
@@ -110,17 +135,28 @@ public class LaminaSuperior extends JPanel {
 
 			}
 		});
+		
+//		if (isUsuario())
+//			logout.setVisible(true);
+//		else
+//			logout.setVisible(false);
 	}
 
 	private void addPremiumButton(JPanel lamina) {
 		JButton premium = createButtonJPanel("Premium", laminaInicio);
 		premium.setForeground(Color.RED);
+
+//		if (isUsuario())
+//			premium.setVisible(true);
+//		else
+//			premium.setVisible(false);
 		
-		// se deben mostrar las funciones/botones que son premium
+		//TODO se deben mostrar las funciones/botones que son premium --> Generar PDF y top_ten
 	}
 
 	private void addExplorarButton(JPanel lamina) {
 		JToggleButton explorar = createToggleButtonJPanel("Explorar", lamina);
+
 		explorar.addActionListener(e -> {
 			laminaCentral.setLamina(explorar.getText());
 		});
@@ -128,6 +164,7 @@ public class LaminaSuperior extends JPanel {
 
 	private void addNuevaListaButton(JPanel lamina) {
 		JToggleButton nuevaLista = createToggleButtonJPanel("Nueva Lista", lamina);
+
 		nuevaLista.addActionListener(e -> {
 			laminaCentral.setLamina(nuevaLista.getText());
 		});
@@ -135,6 +172,7 @@ public class LaminaSuperior extends JPanel {
 
 	private void addMisListasButton(JPanel lamina) {
 		JToggleButton misListas = createToggleButtonJPanel("Mis Listas", lamina);
+
 		misListas.addActionListener(e -> {
 			laminaCentral.setLamina(misListas.getText());
 		});
@@ -142,6 +180,7 @@ public class LaminaSuperior extends JPanel {
 
 	private void addRecienteButton(JPanel lamina) {
 		JToggleButton reciente = createToggleButtonJPanel("Recientes", lamina);
+
 		reciente.addActionListener(e -> {
 			laminaCentral.setLamina(reciente.getText());
 		});
@@ -170,5 +209,9 @@ public class LaminaSuperior extends JPanel {
 	private void addButtonJPanel(String texto, JPanel lamina) {
 		JButton boton = new JButton(texto);
 		lamina.add(boton);
+	}
+
+	private boolean isUsuario() {
+		return Controlador.getInstaciaUnica().isUsuarioLogin();
 	}
 }

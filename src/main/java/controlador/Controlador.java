@@ -54,4 +54,8 @@ public class Controlador {
 	public boolean registrarUsuario(String nombre, Date fechaNacimiento, String login, String pass) {
 		return registrarUsuario(nombre, "", fechaNacimiento, "", login, pass);
 	}
+	
+	public boolean isUsuarioLogin() {
+		return usuarioActual != null;
+	}
 }
