@@ -27,7 +27,7 @@ public class Controlador {
 		return usuarioActual;
 	}
 	
-	public boolean isUsuarioREgistrador(String login) {
+	public boolean isUsuarioRegistrado(String login) {
 		return CatalogoUsuarios.getUnicaInstancia().getUsuario(login) != null;
 	}
 
@@ -42,7 +42,7 @@ public class Controlador {
 	}
 	
 	public boolean registrarUsuario(String nombre, String apellidos, Date fechaNacimiento, String email, String login, String pass) {
-		if (isUsuarioREgistrador(login)) return false;
+		if (isUsuarioRegistrado(login)) return false;
 		
 		Usuario usuario = new Usuario(login, pass, nombre, apellidos, fechaNacimiento, email);
 		factoria.getUsuarioDAO().insertarUsuario(usuario);
