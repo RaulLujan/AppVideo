@@ -8,6 +8,7 @@ import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.util.List;
 
 import javax.swing.AbstractListModel;
 import javax.swing.BorderFactory;
@@ -17,6 +18,7 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
@@ -24,7 +26,20 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.table.AbstractTableModel;
 
+import controlador.Controlador;
+import modelo.CatalogoVideos;
+import modelo.Video;
+
 public class Explorar extends JPanel {
+	private static final int NUM_COLUMNAS = 4;
+	
+	private JTextField tfBuscar;
+	private JList<String> listaDisponibles;
+	private JList<String> listaSeleccionadas;
+	private List<Video> listaVideos;
+	private Video[][] tablaVideos;
+	
+	private boolean buscado = false;
 	private boolean isOpaque = false;
 
 	public Explorar() {
@@ -46,7 +61,7 @@ public class Explorar extends JPanel {
 		JPanel pInsertarBusq = new JPanel();
 
 		JLabel lBuscar = new JLabel("Buscar título: ", SwingConstants.RIGHT);
-		JTextField tfBuscar = new JTextField(20);
+		tfBuscar = new JTextField(20);
 		JButton bBuscar = new JButton("Buscar");
 		JButton bNuevaBusq = new JButton("Nueva búsqueda");
 
@@ -70,22 +85,25 @@ public class Explorar extends JPanel {
 		pBusqueda.add(bNuevaBusq);
 
 		add(pBusqueda, BorderLayout.NORTH);
+
+		addListenerBotonNuevaBusqueda(bNuevaBusq);
+		addListenerBotonBuscar(bBuscar);
 	}
 
 	private void confEtiquetas() {
 		JPanel pEtiquetas = new JPanel();
 
 		JLabel lEtiqDisponibles = new JLabel("Etiquetas disponibles");
-		JList<String> listaDisponibles = new JList<>();
+		listaDisponibles = new JList<>();
 		JLabel lEtiqSeleccionadas = new JLabel("Etiquetas seleccionadas búsqueda");
-		JList<String> listaSeleccionadas = new JList<>();
+		listaSeleccionadas = new JList<>();
 
 		pEtiquetas.setLayout(new BoxLayout(pEtiquetas, BoxLayout.Y_AXIS));
 		pEtiquetas.setOpaque(isOpaque);
 		pEtiquetas.setAlignmentX(CENTER_ALIGNMENT);
 		pEtiquetas.setAlignmentY(CENTER_ALIGNMENT);
 		pEtiquetas.setBorder(BorderFactory.createEtchedBorder(Color.DARK_GRAY, Color.GRAY));
-		
+
 		lEtiqDisponibles.setForeground(Color.WHITE);
 		lEtiqDisponibles.setBorder(new EmptyBorder(5, 5, 5, 5));
 		lEtiqSeleccionadas.setForeground(Color.WHITE);
@@ -103,10 +121,9 @@ public class Explorar extends JPanel {
 				return values[index];
 			}
 		});
-		
 
 		pEtiquetas.add(lEtiqDisponibles);
-		pEtiquetas.add(listaDisponibles); //, BorderLayout.CENTER);
+		pEtiquetas.add(listaDisponibles); // , BorderLayout.CENTER);
 		pEtiquetas.add(Box.createVerticalGlue());
 		pEtiquetas.add(lEtiqSeleccionadas);
 		pEtiquetas.add(Box.createVerticalGlue());
@@ -117,37 +134,63 @@ public class Explorar extends JPanel {
 	private void confVideos() {
 		LaminaVideos pVideos = new LaminaVideos();
 		
-//		JTable tablaVideos = new JTable(new TablaVideoModel());
+		if(buscado) {
+			listaATablaVideos();
+			JTable jTablaVideos = new JTable(new TablaVideoModel());
+			JScrollPane pScroll = new JScrollPane(jTablaVideos);
+			add(pScroll);
+		}
+		
 		pVideos.setOpaque(isOpaque);
-		pVideos.setLayout(new FlowLayout(FlowLayout.LEFT));
+		pVideos.setLayout(new GridLayout(0, 1));  // TODO deberia ocupar el resto de la pantalla y no lo hace
 		pVideos.setBorder(BorderFactory.createEtchedBorder(Color.DARK_GRAY, Color.GRAY));
 		
+
 		add(pVideos, BorderLayout.CENTER);
 	}
+
+	private void listaATablaVideos() {
+		int numVideos = listaVideos.size();
+		int mod = numVideos % NUM_COLUMNAS;
+		double div = numVideos / NUM_COLUMNAS;
+		int numFilas = (int) ((mod == 0) ? div : div + 1);
+
+		for (int i = 0; i < numFilas; i++)
+			for (int j = 0; j < NUM_COLUMNAS; j++)
+				tablaVideos[i][j] = listaVideos.get((j * 10) + i);
+	}
+
+	private void addListenerBotonNuevaBusqueda(JButton bNuevaBusq) {
+		bNuevaBusq.addActionListener(e -> {
+			tfBuscar.setText("");
+			listaDisponibles.add(listaSeleccionadas);
+			listaSeleccionadas.removeAll();
+		});
+	}
+
+	private void addListenerBotonBuscar(JButton bBuscar) {
+		bBuscar.addActionListener(e -> {
+			listaVideos = CatalogoVideos.getUnicaInstancia().consultarVideosPorPalabra(tfBuscar.getText());
+			buscado = true;
+			confVideos();
+		});
+	}
 	
-	
-//	
-//	class TablaVideoModel extends AbstractTableModel{
-//		
-//		private String videos = 
-//
-//		@Override
-//		public int getRowCount() {
-//			// TODO Auto-generated method stub
-//			return 0;
-//		}
-//
-//		@Override
-//		public int getColumnCount() {
-//			// TODO Auto-generated method stub
-//			return 0;
-//		}
-//
-//		@Override
-//		public Object getValueAt(int rowIndex, int columnIndex) {
-//			// TODO Auto-generated method stub
-//			return null;
-//		}
-		
-//	}
+	class TablaVideoModel extends AbstractTableModel{
+
+		@Override
+		public int getRowCount() {
+			return tablaVideos.length;
+		}
+
+		@Override
+		public int getColumnCount() {
+			return NUM_COLUMNAS;
+		}
+
+		@Override
+		public Video getValueAt(int rowIndex, int columnIndex) {
+			return tablaVideos[rowIndex][columnIndex];
+		}
+  }
 }

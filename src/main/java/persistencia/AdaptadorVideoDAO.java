@@ -9,7 +9,6 @@ public interface AdaptadorVideoDAO {
 	public void borrarVideo(Video video);
 	public void modificarVideo(Video video);
 	public Video consultarVideo(int id);
-	public List<Video> consultarVideosPorPalabra(String busqueda);
 	public List<Video> listarTodosVideos();
 	
 }

@@ -19,6 +19,7 @@ import javax.swing.border.EmptyBorder;
 
 import tds.video.VideoWeb;
 
+// Esta clase es un ejemplo de como se usa VideoApp
 public class VideoApp extends JFrame {
 	private JPanel contentPane;
 	private static VideoWeb videoWeb;

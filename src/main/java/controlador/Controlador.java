@@ -1,9 +1,11 @@
 package controlador;
 
 import java.util.Date;
+import java.util.List;
 
 import modelo.CatalogoUsuarios;
 import modelo.Usuario;
+import modelo.Video;
 import persistencia.FactoriaDAO;
 
 public class Controlador {
@@ -58,4 +60,5 @@ public class Controlador {
 	public boolean isUsuarioLogin() {
 		return usuarioActual != null;
 	}
+
 }

@@ -3,38 +3,43 @@ package modelo;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import persistencia.AdaptadorUsuarioDAO;
 import persistencia.FactoriaDAO;
 
 public class CatalogoUsuarios {
 	private static CatalogoUsuarios instancia;
+
+	private AdaptadorUsuarioDAO adaptadorUsuario;
 	private FactoriaDAO factoria;
 
-	private HashMap<Integer, Usuario> usuariosPorID;
-	private HashMap<String, Usuario> usuariosPorNombre;
-
-	public static CatalogoUsuarios getUnicaInstancia() {
-		if (instancia == null)
-			instancia = new CatalogoUsuarios();
-		return instancia;
-	}
+	private Map<Integer, Usuario> usuariosPorID;
+	private Map<String, Usuario> usuariosPorNombre;
 
 	private CatalogoUsuarios() {
-		usuariosPorID = new HashMap<Integer, Usuario>();
-		usuariosPorNombre = new HashMap<String, Usuario>();
+		try {
+			factoria = FactoriaDAO.getInstancia(FactoriaDAO.TDS_DAO);
+			adaptadorUsuario = factoria.getUsuarioDAO();
+			usuariosPorID = new HashMap<Integer, Usuario>();
+			usuariosPorNombre = new HashMap<String, Usuario>();
+			this.cargarCatalogo();
 
-		factoria = FactoriaDAO.getInstancia();
-
-		List<Usuario> listaAsistentes = factoria.getUsuarioDAO().listarTodosUsuarios();
-		for (Usuario usuario : listaAsistentes) {
-			usuariosPorID.put(usuario.getId(), usuario);
-			usuariosPorNombre.put(usuario.getLogin(), usuario);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 
 	}
 
+	public static CatalogoUsuarios getUnicaInstancia() {
+		return instancia;
+	}
+
 	public List<Usuario> getUsuarios() {
-		return new ArrayList<Usuario>(usuariosPorNombre.values());
+		List<Usuario> lista = new ArrayList<Usuario>();
+		for (Usuario u : usuariosPorID.values())
+			lista.add(u);
+		return lista;
 	}
 
 	public Usuario getUsuario(String login) {
@@ -53,6 +58,14 @@ public class CatalogoUsuarios {
 	public void removeUsuario(Usuario usuario) {
 		usuariosPorID.remove(usuario.getId());
 		usuariosPorNombre.remove(usuario.getLogin());
+	}
+
+	private void cargarCatalogo() {
+		List<Usuario> usuariosBD = adaptadorUsuario.listarTodosUsuarios();
+		for (Usuario u : usuariosBD) {
+			usuariosPorID.put(u.getId(), u);
+			usuariosPorNombre.put(u.getLogin(), u);
+		}
 	}
 
 }
