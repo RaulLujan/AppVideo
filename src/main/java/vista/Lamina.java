@@ -20,7 +20,7 @@ public class Lamina extends JPanel implements ActionListener{
 	}
 	
 	private void confLamina() {
-		LaminaCentral laminaCentral = new LaminaCentral();
+		LaminaCentral laminaCentral = LaminaCentral.getInstancia();
 		LaminaSuperior laminaSuperior = new LaminaSuperior(laminaCentral);
 		
 		setLayout(new BorderLayout());

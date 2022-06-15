@@ -17,13 +17,16 @@ import javax.swing.JToggleButton;
 import javax.swing.border.EmptyBorder;
 
 public class LaminaSuperior extends JPanel {
-	private JPanel laminaInicio = new JPanel();
-	private JPanel laminaFuncionalidad = new JPanel();
-	private LaminaCentral laminaCentral = new LaminaCentral();
-	private ButtonGroup grupoFuncionalidad = new ButtonGroup();
+	private JPanel laminaInicio;
+	private JPanel laminaFuncionalidad;
+	private LaminaCentral laminaCentral;
+	private ButtonGroup grupoFuncionalidad;
 
 	public LaminaSuperior(LaminaCentral laminaCentral) {
+		laminaInicio = new JPanel();
+		laminaFuncionalidad = new JPanel();
 		this.laminaCentral = laminaCentral;
+		grupoFuncionalidad = new ButtonGroup();
 		confLamina();
 	}
 
@@ -138,8 +141,10 @@ public class LaminaSuperior extends JPanel {
 	}
 
 	private void addRecienteButton(JPanel lamina) {
-		JToggleButton reciente = createToggleButtonJPanel("Reciente", lamina);
-
+		JToggleButton reciente = createToggleButtonJPanel("Recientes", lamina);
+		reciente.addActionListener(e -> {
+			laminaCentral.setLamina(reciente.getText());
+		});
 	}
 
 	private void addMasVistosrButton(JPanel lamina) {

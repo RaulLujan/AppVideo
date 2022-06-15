@@ -10,6 +10,7 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
@@ -17,7 +18,24 @@ import javax.swing.border.EmptyBorder;
 
 import com.toedter.calendar.JDateChooser;
 
+import controlador.Controlador;
+
 public class Registro extends JPanel{
+	private JLabel lNombre;
+	private JTextField tfNombre;
+	private JLabel lApellidos;
+	private JTextField tfApellidos;
+	private JLabel lFechaNacimiento;
+	private JDateChooser cFechaNacimiento;
+	private JLabel lEmail;
+	private JTextField tfEmail;
+	private JLabel lUsuario;
+	private JTextField tfUsuario;
+	private JLabel lPass;
+	private JPasswordField pfPass;
+	private JLabel lPassRepetir;
+	private JPasswordField pfPassRepetir;
+	
 	public Registro() {
 		confLamina();
 	}
@@ -54,27 +72,27 @@ public class Registro extends JPanel{
 		pFormParte1.setLayout(new GridLayout(4, 2));
 		pFormParte2.setLayout(new GridLayout(3, 2));
 		
-		JLabel lNombre = new JLabel("* Nombre: ");
-		JTextField tfNombre = new JTextField();
+		lNombre = new JLabel("* Nombre: ");
+		tfNombre = new JTextField();
 		
-		JLabel lApellidos = new JLabel("Apellidos: ");
-		JTextField tfApellidos = new JTextField();
+		lApellidos = new JLabel("Apellidos: ");
+		tfApellidos = new JTextField();
 		
-		JLabel lFechaNacimiento = new JLabel("Fecha de Nacimiento: ");
-		JDateChooser cFechaNacimiento = new JDateChooser();
+		lFechaNacimiento = new JLabel("Fecha de Nacimiento: ");
+		cFechaNacimiento = new JDateChooser();
 		cFechaNacimiento.setLocale(Locale.ENGLISH);
 		
-		JLabel lEmail = new JLabel("Email: ");
-		JTextField tfEmail = new JTextField();
+		lEmail = new JLabel("Email: ");
+		tfEmail = new JTextField();
 		
-		JLabel lUsuario = new JLabel("* Usuari@: ");
-		JTextField tfUsuario = new JTextField();
+		lUsuario = new JLabel("* Usuari@: ");
+		tfUsuario = new JTextField();
 		
-		JLabel lPass = new JLabel("* Contraseña: ");
-		JPasswordField pfPass = new JPasswordField();
+		lPass = new JLabel("* Contraseña: ");
+		pfPass = new JPasswordField();
 		
-		JLabel lPassRepetir = new JLabel("* Repetir contraseña: ");
-		JPasswordField pfPassRepetir = new JPasswordField();
+		lPassRepetir = new JLabel("* Repetir contraseña: ");
+		pfPassRepetir = new JPasswordField();
 		
 		pFormParte1.add(lNombre); pFormParte1.add(tfNombre);
 		pFormParte1.add(lApellidos); pFormParte1.add(tfApellidos);
@@ -121,6 +139,44 @@ public class Registro extends JPanel{
 		pGeneral.add(pCamposO);
 		
 		add(pGeneral, BorderLayout.SOUTH);
+		
+		addListenerBotonCancelar(bCancelar);
+		addListenerBotonRegistro(bRegistrar);
+	}
+	
+	private boolean isRegistroCamposCompleted() {
+		boolean OK = true;
+		
+		//TODO
+		
+		return OK;
+	}
+	
+	private void addListenerBotonCancelar(JButton bCancelar) {
+		bCancelar.addActionListener(e -> {
+			tfNombre.setText("");
+			pfPass.setText("");
+			
+			tfNombre.setText("");
+			tfApellidos.setText("");
+			cFechaNacimiento.setCalendar(null);
+			tfEmail.setText("");
+			tfUsuario.setText("");
+			pfPass.setText("");
+			pfPassRepetir.setText("");
+		});
+	}
+
+	private void addListenerBotonRegistro(JButton bRegistrar) {
+		bRegistrar.addActionListener(e -> {
+			boolean isOKRegistroCampos = isRegistroCamposCompleted();
+			//TODO
+			if (isOKRegistroCampos) {
+				
+			} else {
+				
+			}
+		});
 	}
 
 }

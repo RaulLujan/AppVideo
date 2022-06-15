@@ -10,9 +10,16 @@ import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 
 public class LaminaCentral extends JPanel {
+	private static LaminaCentral instancia = null;
 
-	public LaminaCentral() {
+	private LaminaCentral() {
 		confLamina();
+	}
+	
+	public static LaminaCentral getInstancia() {
+		if (instancia == null)
+			return new LaminaCentral();
+		return instancia;
 	}
 
 	private void confLamina() {

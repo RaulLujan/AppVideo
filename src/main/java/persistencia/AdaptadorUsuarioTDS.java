@@ -13,6 +13,7 @@ import beans.Propiedad;
 import modelo.Filtro;
 import modelo.ListaVideos;
 import modelo.Usuario;
+import tds.driver.FactoriaServicioPersistencia;
 import tds.driver.ServicioPersistencia;
 
 public class AdaptadorUsuarioTDS implements AdaptadorUsuarioDAO {
@@ -20,6 +21,10 @@ public class AdaptadorUsuarioTDS implements AdaptadorUsuarioDAO {
 	private static AdaptadorUsuarioTDS instancia = null;
 	private ServicioPersistencia server;
 	private SimpleDateFormat dateFormat;
+	
+	private AdaptadorUsuarioTDS() {
+		server = FactoriaServicioPersistencia.getInstance().getServicioPersistencia();
+	}
 
 	private String concatenarIDListaVideos(List<ListaVideos> listaLV) {
 		String idsLV = "";
@@ -143,10 +148,10 @@ public class AdaptadorUsuarioTDS implements AdaptadorUsuarioDAO {
 
 	@Override
 	public Usuario consultarUsuario(int id) {
-		
+
 		if (PoolDAO.getUnicaInstancia().contains(id))
 			return (Usuario) PoolDAO.getUnicaInstancia().getObject(id);
-		
+
 		// Falta tratamiento del POOL
 		Entidad entidadUsu = server.recuperarEntidad(id);
 		// Obtener filtro a partir de id XXXX FALTA XXXXX
@@ -172,12 +177,12 @@ public class AdaptadorUsuarioTDS implements AdaptadorUsuarioDAO {
 		List<ListaVideos> misListas = obtenerListasVideosDesdeID(
 				server.recuperarPropiedadEntidad(entidadUsu, "misListas"));
 		usuario.setRecentVideo(recentVideo);
-		
+
 		PoolDAO.getUnicaInstancia().addObject(id, usuario);
-		
+
 		for (ListaVideos listaViedos : misListas)
 			usuario.addMiLista(listaViedos);
-		
+
 		return usuario;
 	}
 
@@ -191,7 +196,10 @@ public class AdaptadorUsuarioTDS implements AdaptadorUsuarioDAO {
 	}
 
 	public static AdaptadorUsuarioTDS getInstancia() {
-		return instancia;
+		if (instancia == null)
+			return new AdaptadorUsuarioTDS();
+		else
+			return instancia;
 	}
 
 	public static void setInstancia(AdaptadorUsuarioTDS instancia) {
