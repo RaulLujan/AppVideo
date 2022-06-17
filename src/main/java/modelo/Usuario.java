@@ -30,6 +30,8 @@ public class Usuario {
 		this.apellidos = apellidos;
 		this.fechaNac = fechaNac;
 		this.email = email;
+		recentVideo = new ListaVideos("Recientes");
+		misListas = new LinkedList<ListaVideos>();
 	}
 
 	public Usuario(String login, String password, String nombre, String apellidos, Date fechaNac, String email) {
@@ -40,6 +42,9 @@ public class Usuario {
 		this.apellidos = apellidos;
 		this.fechaNac = fechaNac;
 		this.email = email;
+		recentVideo = new ListaVideos("Recientes");
+		misListas = new LinkedList<ListaVideos>();
+		filtro = NoFiltro.getUnicaInstancia();
 	}
 
 	public int getId() {

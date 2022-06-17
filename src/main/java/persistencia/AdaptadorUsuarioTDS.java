@@ -24,6 +24,7 @@ public class AdaptadorUsuarioTDS implements AdaptadorUsuarioDAO {
 	
 	private AdaptadorUsuarioTDS() {
 		server = FactoriaServicioPersistencia.getInstance().getServicioPersistencia();
+		dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 	}
 
 	private String concatenarIDListaVideos(List<ListaVideos> listaLV) {

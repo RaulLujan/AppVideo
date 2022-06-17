@@ -4,19 +4,38 @@ import java.util.Date;
 import java.util.List;
 
 import modelo.CatalogoUsuarios;
+import modelo.CatalogoVideos;
 import modelo.Usuario;
 import modelo.Video;
+import persistencia.AdaptadorListaVideosDAO;
+import persistencia.AdaptadorVideoDAO;
 import persistencia.FactoriaDAO;
+import tds.video.VideoWeb;
 
 public class Controlador {
 
 	private Usuario usuarioActual;
 	private static Controlador instancia;
 	private FactoriaDAO factoria;
+	
+	private CatalogoVideos catalogoVideos;
+	
+	private AdaptadorListaVideosDAO adaptadorListaVideos;
+	private AdaptadorVideoDAO adaptadorVideo;
+	
+	
+	private VideoWeb videoWeb;
 
 	private Controlador() {
+		//videoWeb = new VideoWeb();
 		usuarioActual = null;
+		
+		catalogoVideos = CatalogoVideos.getUnicaInstancia();
+		
 		factoria = FactoriaDAO.getInstancia();
+		
+		adaptadorListaVideos = factoria.getListaVideosDAO();
+		adaptadorVideo = factoria.getVideoDAO();
 	}
 
 	public static Controlador getInstaciaUnica() {
@@ -59,6 +78,24 @@ public class Controlador {
 	
 	public boolean isUsuarioLogin() {
 		return usuarioActual != null;
+	}
+	
+	public VideoWeb getVideoWeb() {
+		return videoWeb;
+	}
+	
+	public void reproducirVideo(int id) {
+		if (usuarioActual != null && catalogoVideos.existeVideo(id)) {
+			Video video = catalogoVideos.getVideo(id);
+			
+			usuarioActual.addRecentVideo(video);
+			adaptadorListaVideos.modificarListaVideos(usuarioActual.getRecentVideo());
+			
+			video.incrementarNumReproducciones();
+			adaptadorVideo.modificarVideo(video);
+			
+			videoWeb.playVideo(video.getUrl());
+		}
 	}
 
 }

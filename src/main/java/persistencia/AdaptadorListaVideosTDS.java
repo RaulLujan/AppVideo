@@ -10,6 +10,7 @@ import beans.Entidad;
 import beans.Propiedad;
 import modelo.ListaVideos;
 import modelo.Video;
+import tds.driver.FactoriaServicioPersistencia;
 import tds.driver.ServicioPersistencia;
 
 public class AdaptadorListaVideosTDS implements AdaptadorListaVideosDAO {
@@ -17,6 +18,16 @@ public class AdaptadorListaVideosTDS implements AdaptadorListaVideosDAO {
 	private static AdaptadorListaVideosTDS instancia = null;
 	private ServicioPersistencia server;
 
+	public static AdaptadorListaVideosTDS getInstancia() {
+		if (instancia == null)
+			instancia = new AdaptadorListaVideosTDS();
+		return instancia;
+	}
+	
+	private AdaptadorListaVideosTDS() {
+		server = FactoriaServicioPersistencia.getInstance().getServicioPersistencia();
+	}
+	
 	private String concatenarIDVideos(List<Video> listaLV) {
 		String idsLV = "";
 		for (Video lv : listaLV)
@@ -33,14 +44,6 @@ public class AdaptadorListaVideosTDS implements AdaptadorListaVideosDAO {
 			listaVideos.add(adaptadorVideo.consultarVideo(idVideo));
 		}
 		return listaVideos;
-	}
-
-	public static AdaptadorListaVideosTDS getInstancia() {
-		return instancia;
-	}
-
-	public static void setInstancia(AdaptadorListaVideosTDS instancia) {
-		AdaptadorListaVideosTDS.instancia = instancia;
 	}
 
 	@Override

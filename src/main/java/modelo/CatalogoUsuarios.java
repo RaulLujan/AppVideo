@@ -9,7 +9,7 @@ import persistencia.AdaptadorUsuarioDAO;
 import persistencia.FactoriaDAO;
 
 public class CatalogoUsuarios {
-	private static CatalogoUsuarios instancia;
+	private static CatalogoUsuarios instancia = new CatalogoUsuarios();
 
 	private AdaptadorUsuarioDAO adaptadorUsuario;
 	private FactoriaDAO factoria;

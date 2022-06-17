@@ -13,7 +13,7 @@ import persistencia.FactoriaDAO;
 
 public class CatalogoVideos {
 	private Map<Integer, Video> videos;
-	private static CatalogoVideos instancia;
+	private static CatalogoVideos instancia = new CatalogoVideos();
 	
 	private FactoriaDAO factoria;
 	private AdaptadorVideoDAO adaptadorVideo;
@@ -63,5 +63,9 @@ public class CatalogoVideos {
 
 	public List<Video> consultarVideosPorPalabra(String busqueda) {
 		return videos.values().stream().filter(v -> v.getTitulo().contains(busqueda)).collect(Collectors.toList());
+	}
+	
+	public boolean existeVideo(int id) {
+		return videos.containsKey(id);
 	}
 }

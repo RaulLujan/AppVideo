@@ -29,7 +29,7 @@ public class Ventana extends JFrame{
 		setResizable(true);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
-		Image icono = pantalla.getImage("src/main/java/recursos/icono.png");
+		Image icono = pantalla.getImage("resources/icono.png");
 		setIconImage(icono);
 	}
 	

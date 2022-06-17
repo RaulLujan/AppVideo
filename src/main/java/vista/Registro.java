@@ -209,7 +209,7 @@ public class Registro extends JPanel {
 		bCancelar.addActionListener(e -> {
 			tfNombre.setText("");
 			tfApellidos.setText("");
-			cFechaNacimiento.setCalendar(null);
+			cFechaNacimiento.setDate(null);
 			tfEmail.setText("");
 			tfUsuario.setText("");
 			pfPass.setText("");
