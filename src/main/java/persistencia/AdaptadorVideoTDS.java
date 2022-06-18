@@ -16,7 +16,7 @@ import tds.driver.ServicioPersistencia;
 
 public class AdaptadorVideoTDS implements AdaptadorVideoDAO {
 
-	private static AdaptadorVideoTDS instancia = new AdaptadorVideoTDS();
+	private static AdaptadorVideoTDS instancia = null;
 	private ServicioPersistencia server;
 
 	private String concatenarIDListaEtiquetas(List<Etiqueta> listaEtiquetas) {
@@ -36,7 +36,7 @@ public class AdaptadorVideoTDS implements AdaptadorVideoDAO {
 		}
 		return listaEtiquetas;
 	}
-	
+
 	private AdaptadorVideoTDS() {
 		server = FactoriaServicioPersistencia.getInstance().getServicioPersistencia();
 	}
@@ -121,7 +121,10 @@ public class AdaptadorVideoTDS implements AdaptadorVideoDAO {
 	}
 
 	public static AdaptadorVideoTDS getInstancia() {
-		return instancia;
+		if (instancia == null)
+			return new AdaptadorVideoTDS();
+		else
+			return instancia;
 	}
 
 	public static void setInstancia(AdaptadorVideoTDS instancia) {

@@ -96,10 +96,10 @@ public class Login extends JPanel {
 			boolean isLogin = Controlador.getInstaciaUnica().getLogin(tfNombre.getText(), new String(pfPass.getPassword()));
 			
 			if (isLogin) {
-				LaminaSuperior.getInstancia().getExplorar().setSelected(true);
+				LaminaSuperior.getInstancia().getbRecientes().setSelected(true);
 				removeAll();
 				LaminaSuperior.getInstancia().mostrar();
-				LaminaSuperior.getInstancia().mostrarLamina("Explorar");
+				LaminaSuperior.getInstancia().mostrarLamina("Recientes");
 			
 				revalidate();
 				repaint();

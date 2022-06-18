@@ -1,6 +1,7 @@
 package modelo;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -11,6 +12,8 @@ import persistencia.AdaptadorVideoDAO;
 import persistencia.FactoriaDAO;
 
 public class CatalogoVideos {
+	private static final int TOP_VIDEOS = 10;
+	
 	private Map<Integer, Video> videos;
 	private static CatalogoVideos instancia = new CatalogoVideos();
 	
@@ -62,6 +65,23 @@ public class CatalogoVideos {
 
 	public List<Video> consultarVideosPorPalabra(String busqueda) {
 		return videos.values().stream().filter(v -> v.getTitulo().contains(busqueda)).collect(Collectors.toList());
+	}
+	
+	public List<Video> consultarVideosPorEtiqueta(String etiqueta) {
+		return videos.values().stream().filter(v -> v.containsEtiqueta(etiqueta)).collect(Collectors.toList());
+	}
+	
+	// TODO FILTRO no está relacionado con nada.... queda pendiente esta busqueda
+	public List<Video> consultarVideosPorFiltro(String filtro) {
+		return videos.values().stream().filter(v -> v.containsEtiqueta(filtro)).collect(Collectors.toList());
+	}
+	
+	public List<Video> getTopVideos(int numTop) {
+		return videos.values().stream().sorted(Comparator.comparing(Video::getNumReproducciones).reversed()).limit(numTop).collect(Collectors.toList());
+	}
+	
+	public List<Video> getTopVideos() {
+		return getTopVideos(TOP_VIDEOS);
 	}
 	
 	public boolean existeVideo(int id) {

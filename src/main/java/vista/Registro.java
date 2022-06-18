@@ -227,10 +227,10 @@ public class Registro extends JPanel {
 						new String(pfPass.getPassword()));
 				
 				if (usuarioRegistrado) {
-					LaminaSuperior.getInstancia().getExplorar().setSelected(true);
+					LaminaSuperior.getInstancia().getbRecientes().setSelected(true);
 					removeAll();
 					LaminaSuperior.getInstancia().mostrar();
-					LaminaSuperior.getInstancia().mostrarLamina("Explorar");
+					LaminaSuperior.getInstancia().mostrarLamina("Recientes");
 				
 					revalidate();
 					repaint();

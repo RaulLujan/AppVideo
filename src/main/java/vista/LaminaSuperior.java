@@ -22,7 +22,7 @@ public class LaminaSuperior extends JPanel {
 	private LaminaCentral laminaCentral;
 	private ButtonGroup grupoFuncionalidad;
 	
-	private JToggleButton explorar;
+	private JToggleButton bRecientes;
 	
 	private JLabel nombreUsuarioLabel;
 	private JButton premium;
@@ -148,10 +148,11 @@ public class LaminaSuperior extends JPanel {
 
 		// TODO se deben mostrar las funciones/botones que son premium --> Generar PDF y
 		// top_ten
+		
 	}
 
 	private void addExplorarButton(JPanel lamina) {
-		explorar = createToggleButtonJPanel("Explorar", lamina);
+		JToggleButton explorar = createToggleButtonJPanel("Explorar", lamina);
 
 		explorar.addActionListener(e -> {
 			laminaCentral.setLamina(explorar.getText());
@@ -175,16 +176,19 @@ public class LaminaSuperior extends JPanel {
 	}
 
 	private void addRecienteButton(JPanel lamina) {
-		JToggleButton reciente = createToggleButtonJPanel("Recientes", lamina);
+		bRecientes = createToggleButtonJPanel("Recientes", lamina);
 
-		reciente.addActionListener(e -> {
-			laminaCentral.setLamina(reciente.getText());
+		bRecientes.addActionListener(e -> {
+			laminaCentral.setLamina(bRecientes.getText());
 		});
 	}
 
 	private void addMasVistosrButton(JPanel lamina) {
-		JToggleButton masVistos = createToggleButtonJPanel("Más vistos", lamina);
+		JToggleButton masVistos = createToggleButtonJPanel("Más Vistos", lamina);
 
+		masVistos.addActionListener(e -> {
+			laminaCentral.setLamina(masVistos.getText().replace(" ", "").replace("á", "a"));
+		});
 	}
 
 	private JButton createButtonJPanel(String texto, JPanel lamina) {
@@ -226,8 +230,8 @@ public class LaminaSuperior extends JPanel {
 		laminaCentral.setLamina(tipo);
 	}
 
-	public JToggleButton getExplorar() {
-		return explorar;
+	public JToggleButton getbRecientes() {
+		return bRecientes;
 	}
 	
 }

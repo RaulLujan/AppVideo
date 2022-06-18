@@ -56,6 +56,10 @@ public class Video {
 		else
 			return titulo;
 	}
+	
+	public boolean containsEtiqueta(String nombreEtiqueta) {
+		return etiquetas.stream().anyMatch(et -> et.getNombre().equals(nombreEtiqueta));
+	}
 
 	public boolean containsSubtitulo(String subtitulo) {
 		return titulo.contains(subtitulo);
