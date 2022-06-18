@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridLayout;
-import java.lang.reflect.Constructor;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -14,7 +13,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
-import javax.swing.SwingConstants;
+
 
 import controlador.Controlador;
 
@@ -97,7 +96,7 @@ public class Login extends JPanel {
 			boolean isLogin = Controlador.getInstaciaUnica().getLogin(tfNombre.getText(), new String(pfPass.getPassword()));
 			
 			if (isLogin) {
-				LaminaCentral.getInstancia().setLamina("Recientes");
+				LaminaCentral.getInstancia().setLamina("Explorar");
 			} else {
 				JOptionPane.showMessageDialog(this, "Nombre de usuario o contraseña no valido", "Error", JOptionPane.ERROR_MESSAGE);
 			}
