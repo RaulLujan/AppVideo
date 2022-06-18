@@ -76,7 +76,7 @@ public class Controlador {
 	}
 	
 	public boolean isUsuarioLogin() {
-		return usuarioActual != null;
+		return this.usuarioActual != null;
 	}
 	
 	public VideoWeb getVideoWeb() {

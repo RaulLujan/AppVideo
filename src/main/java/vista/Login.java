@@ -96,7 +96,13 @@ public class Login extends JPanel {
 			boolean isLogin = Controlador.getInstaciaUnica().getLogin(tfNombre.getText(), new String(pfPass.getPassword()));
 			
 			if (isLogin) {
-				LaminaCentral.getInstancia().setLamina("Explorar");
+				LaminaSuperior.getInstancia().getExplorar().setSelected(true);
+				removeAll();
+				LaminaSuperior.getInstancia().mostrar();
+				LaminaSuperior.getInstancia().mostrarLamina("Explorar");
+			
+				revalidate();
+				repaint();
 			} else {
 				JOptionPane.showMessageDialog(this, "Nombre de usuario o contraseña no valido", "Error", JOptionPane.ERROR_MESSAGE);
 			}

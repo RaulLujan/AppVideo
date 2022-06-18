@@ -226,8 +226,14 @@ public class Registro extends JPanel {
 						tfApellidos.getName(), cFechaNacimiento.getDate(), tfEmail.getText(), tfUsuario.getText(),
 						new String(pfPass.getPassword()));
 				
-				if(usuarioRegistrado) {
-					LaminaCentral.getInstancia().setLamina("Recientes");
+				if (usuarioRegistrado) {
+					LaminaSuperior.getInstancia().getExplorar().setSelected(true);
+					removeAll();
+					LaminaSuperior.getInstancia().mostrar();
+					LaminaSuperior.getInstancia().mostrarLamina("Explorar");
+				
+					revalidate();
+					repaint();
 				} else {
 					JOptionPane.showMessageDialog(this, "Ha habido un error al registrar el usuario, parece que ya está registrado", "Error de registro", JOptionPane.ERROR_MESSAGE);
 				}

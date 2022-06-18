@@ -3,7 +3,6 @@ package vista;
 import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Graphics;
-import java.awt.GridLayout;
 import java.lang.reflect.Constructor;
 
 import javax.swing.BorderFactory;
