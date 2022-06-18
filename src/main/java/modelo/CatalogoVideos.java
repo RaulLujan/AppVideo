@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import beans.Entidad;
 import persistencia.AdaptadorVideoDAO;
 import persistencia.FactoriaDAO;
 

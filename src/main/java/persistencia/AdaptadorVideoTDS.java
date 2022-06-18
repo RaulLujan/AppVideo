@@ -1,5 +1,6 @@
 package persistencia;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -10,11 +11,12 @@ import beans.Entidad;
 import beans.Propiedad;
 import modelo.Etiqueta;
 import modelo.Video;
+import tds.driver.FactoriaServicioPersistencia;
 import tds.driver.ServicioPersistencia;
 
 public class AdaptadorVideoTDS implements AdaptadorVideoDAO {
 
-	private static AdaptadorVideoTDS instancia = null;
+	private static AdaptadorVideoTDS instancia = new AdaptadorVideoTDS();
 	private ServicioPersistencia server;
 
 	private String concatenarIDListaEtiquetas(List<Etiqueta> listaEtiquetas) {
@@ -33,6 +35,10 @@ public class AdaptadorVideoTDS implements AdaptadorVideoDAO {
 			listaEtiquetas.add(adaptadorEtiqueta.consultarEtiqueta(idEtiqueta));
 		}
 		return listaEtiquetas;
+	}
+	
+	private AdaptadorVideoTDS() {
+		server = FactoriaServicioPersistencia.getInstance().getServicioPersistencia();
 	}
 
 	@Override

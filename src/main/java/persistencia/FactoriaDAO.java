@@ -1,9 +1,5 @@
 package persistencia;
 
-import java.lang.reflect.Constructor;
-
-import javax.swing.JPanel;
-
 public abstract class FactoriaDAO {
 	public static final String TDS_DAO = "persistencia.FactoriaTDS";
 	private static FactoriaDAO instancia = null;
@@ -11,8 +7,10 @@ public abstract class FactoriaDAO {
 	public static FactoriaDAO getInstancia(String tipo) {
 		if (instancia == null) {
 			try {
-				Constructor<?> constructor = Class.forName(tipo).getConstructor();
-				instancia = (FactoriaDAO) constructor.newInstance();
+				//Constructor<?> constructor = Class.forName(tipo).getConstructor();
+				//instancia = (FactoriaDAO) constructor.newInstance();
+				
+				instancia = (FactoriaDAO) Class.forName(tipo).newInstance();
 			} catch (Exception e) {
 				e.getMessage();
 			}
