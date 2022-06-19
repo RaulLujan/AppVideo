@@ -36,7 +36,7 @@ public class LaminaCentral extends JPanel {
 		String t = titulo.replace(" ", "");
 		try {
 			Class<?> c = Class.forName("vista."+t);
-			
+			System.out.println(c.toString());
 			Constructor<?> constructor = c.getConstructor();
 
 			JPanel nuevaLamina = (JPanel) constructor.newInstance();
