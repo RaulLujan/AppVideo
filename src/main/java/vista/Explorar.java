@@ -2,12 +2,13 @@ package vista;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.Frame;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Insets;
 import java.util.List;
 
 import javax.swing.AbstractListModel;
@@ -23,10 +24,9 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.EtchedBorder;
+import javax.swing.border.TitledBorder;
 import javax.swing.table.AbstractTableModel;
 
-import controlador.Controlador;
 import modelo.CatalogoVideos;
 import modelo.Video;
 
@@ -47,10 +47,10 @@ public class Explorar extends JPanel {
 	}
 
 	private void confLamina() {
-		setLayout(new BorderLayout());
+		
+		setLayout(new GridBagLayout());
 		setBackground(new Color(96, 96, 96));
-		setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-
+		
 		confBusqueda();
 		confEtiquetas();
 		confVideos();
@@ -58,33 +58,57 @@ public class Explorar extends JPanel {
 
 	private void confBusqueda() {
 		JPanel pBusqueda = new JPanel();
-		JPanel pInsertarBusq = new JPanel();
-
-		JLabel lBuscar = new JLabel("Buscar título: ", SwingConstants.RIGHT);
-		tfBuscar = new JTextField(20);
-		JButton bBuscar = new JButton("Buscar");
-		JButton bNuevaBusq = new JButton("Nueva búsqueda");
-
-		pBusqueda.setLayout(new BoxLayout(pBusqueda, BoxLayout.Y_AXIS));
+		pBusqueda.setLayout(new GridBagLayout());
 		pBusqueda.setBorder(BorderFactory.createEtchedBorder(Color.DARK_GRAY, Color.GRAY));
 		pBusqueda.setOpaque(isOpaque);
 
-		pInsertarBusq.setLayout(new FlowLayout(FlowLayout.CENTER));
-		pInsertarBusq.setOpaque(isOpaque);
-
+		
+		JLabel lBuscar = new JLabel("Buscar título:", SwingConstants.RIGHT);
+		tfBuscar = new JTextField(20);
+		JButton bBuscar = new JButton("Buscar");
+		JButton bNuevaBusq = new JButton("Nueva búsqueda");
+	
 		lBuscar.setForeground(Color.WHITE);
 
-		pInsertarBusq.add(Box.createHorizontalGlue());
-		pInsertarBusq.add(lBuscar);
-		pInsertarBusq.add(tfBuscar);
-		pInsertarBusq.add(Box.createHorizontalGlue());
-		pInsertarBusq.add(bBuscar);
-		pInsertarBusq.add(Box.createHorizontalGlue());
+		GridBagConstraints constraintsLBuscar = new GridBagConstraints();
+		constraintsLBuscar.insets = new Insets(20, 20, 10, 5);
+		constraintsLBuscar.anchor = GridBagConstraints.EAST;
+		constraintsLBuscar.gridx = 0;
+		constraintsLBuscar.gridy = 0;
+		
+		GridBagConstraints constraintsTBuscar = new GridBagConstraints();
+		constraintsTBuscar.insets = new Insets(20, 5, 10, 5);
+		constraintsTBuscar.anchor = GridBagConstraints.WEST;
+		constraintsTBuscar.gridx = 1;
+		constraintsTBuscar.gridy = 0;
+		
+		GridBagConstraints constraintsBBuscar = new GridBagConstraints();
+		constraintsBBuscar.insets = new Insets(20, 5, 10, 20);
+		constraintsBBuscar.anchor = GridBagConstraints.CENTER;
+		constraintsBBuscar.gridx = 2;
+		constraintsBBuscar.gridy = 0;
+		
+		
+		GridBagConstraints constraintsBNuevaBusq = new GridBagConstraints();
+		constraintsBNuevaBusq.insets = new Insets(5, 5, 20, 5);
+		constraintsBNuevaBusq.fill = GridBagConstraints.CENTER;
+		constraintsBNuevaBusq.gridx = 0;
+		constraintsBNuevaBusq.gridy = 1;
+		constraintsBNuevaBusq.gridwidth = 3;
+		
+	
+		pBusqueda.add(lBuscar, constraintsLBuscar);
+		pBusqueda.add(tfBuscar, constraintsTBuscar);
+		pBusqueda.add(bBuscar, constraintsBBuscar);
+		pBusqueda.add(bNuevaBusq, constraintsBNuevaBusq);
+		
+		GridBagConstraints constraintsPBusqueda = new GridBagConstraints();
+		constraintsPBusqueda.insets = new Insets(10, 10, 2, 2);
+		constraintsPBusqueda.fill = GridBagConstraints.HORIZONTAL;
+		constraintsPBusqueda.gridx = 0;
+		constraintsPBusqueda.gridy = 0;
 
-		pBusqueda.add(pInsertarBusq);
-		pBusqueda.add(bNuevaBusq);
-
-		add(pBusqueda, BorderLayout.NORTH);
+		add(pBusqueda,constraintsPBusqueda);
 
 		addListenerBotonNuevaBusqueda(bNuevaBusq);
 		addListenerBotonBuscar(bBuscar);
@@ -98,12 +122,10 @@ public class Explorar extends JPanel {
 		JLabel lEtiqSeleccionadas = new JLabel("Etiquetas seleccionadas búsqueda");
 		listaSeleccionadas = new JList<>();
 
-		pEtiquetas.setLayout(new BoxLayout(pEtiquetas, BoxLayout.Y_AXIS));
+		pEtiquetas.setLayout(new GridBagLayout());
 		pEtiquetas.setOpaque(isOpaque);
-		pEtiquetas.setAlignmentX(CENTER_ALIGNMENT);
-		pEtiquetas.setAlignmentY(CENTER_ALIGNMENT);
 		pEtiquetas.setBorder(BorderFactory.createEtchedBorder(Color.DARK_GRAY, Color.GRAY));
-
+		
 		lEtiqDisponibles.setForeground(Color.WHITE);
 		lEtiqDisponibles.setBorder(new EmptyBorder(5, 5, 5, 5));
 		lEtiqSeleccionadas.setForeground(Color.WHITE);
@@ -121,14 +143,59 @@ public class Explorar extends JPanel {
 				return values[index];
 			}
 		});
+		
+		listaSeleccionadas.setModel(new AbstractListModel<String>() {
+			String[] values = new String[] { "Etiqueta1", "Etiqueta2", "Etiqueta3", "Etiqueta4" };
 
-		pEtiquetas.add(lEtiqDisponibles);
-		pEtiquetas.add(listaDisponibles); // , BorderLayout.CENTER);
-		pEtiquetas.add(Box.createVerticalGlue());
-		pEtiquetas.add(lEtiqSeleccionadas);
-		pEtiquetas.add(Box.createVerticalGlue());
+			public int getSize() {
+				return values.length;
+			}
 
-		add(pEtiquetas, BorderLayout.EAST);
+			@Override
+			public String getElementAt(int index) {
+				return values[index];
+			}
+		});
+		
+		GridBagConstraints constraintsLEtiDispo = new GridBagConstraints();
+		constraintsLEtiDispo.insets = new Insets(20, 20, 10, 20);
+		constraintsLEtiDispo.fill = GridBagConstraints.CENTER;
+		constraintsLEtiDispo.gridx = 0;
+		constraintsLEtiDispo.gridy = 0;
+		
+		GridBagConstraints constraintsListaDisp = new GridBagConstraints();
+		constraintsListaDisp.insets = new Insets(20, 20, 10, 20);
+		constraintsListaDisp.fill = GridBagConstraints.CENTER;
+		constraintsListaDisp.gridx = 0;
+		constraintsListaDisp.gridy = 1;
+		
+		GridBagConstraints constraintsLEtiquetaSelect = new GridBagConstraints();
+		constraintsLEtiquetaSelect.insets = new Insets(20, 20, 10, 20);
+		constraintsLEtiquetaSelect.fill = GridBagConstraints.CENTER;
+		constraintsLEtiquetaSelect.gridx = 0;
+		constraintsLEtiquetaSelect.gridy = 2;
+		
+		GridBagConstraints constraintsListaSelecionadas = new GridBagConstraints();
+		constraintsListaSelecionadas.insets = new Insets(20, 20, 20, 20);
+		constraintsListaSelecionadas.fill = GridBagConstraints.CENTER;
+		constraintsListaSelecionadas.gridx = 0;
+		constraintsListaSelecionadas.gridy = 3;
+		
+	
+		pEtiquetas.add(lEtiqDisponibles, constraintsLEtiDispo);
+		pEtiquetas.add(listaDisponibles, constraintsListaDisp);
+		pEtiquetas.add(lEtiqSeleccionadas, constraintsLEtiquetaSelect);
+		pEtiquetas.add(listaSeleccionadas, constraintsListaSelecionadas);
+
+		
+		GridBagConstraints constraintsPEtiquetas = new GridBagConstraints();
+		constraintsPEtiquetas.insets = new Insets(10, 2, 10, 10);
+		constraintsPEtiquetas.anchor = GridBagConstraints.EAST;
+		constraintsPEtiquetas.gridx = 1;
+		constraintsPEtiquetas.gridy = 0;
+		constraintsPEtiquetas.gridheight = 3;
+		constraintsPEtiquetas.gridwidth = 1;
+		add(pEtiquetas, constraintsPEtiquetas);
 	}
 
 	private void confVideos() {
@@ -145,8 +212,25 @@ public class Explorar extends JPanel {
 		pVideos.setLayout(new GridLayout(0, 1));  // TODO deberia ocupar el resto de la pantalla y no lo hace
 		pVideos.setBorder(BorderFactory.createEtchedBorder(Color.DARK_GRAY, Color.GRAY));
 		
+		JButton bPrueba = new JButton("PRUEBA");
+		bPrueba.setPreferredSize(new Dimension(200, 200));
+		
+		GridBagConstraints constraintsbPrueba = new GridBagConstraints();
+		constraintsbPrueba.insets = new Insets(0, 0, 0, 0);
+		constraintsbPrueba.fill = GridBagConstraints.CENTER;
+		constraintsbPrueba.gridx = 0;
+		constraintsbPrueba.gridy = 0;
+		pVideos.add(bPrueba, constraintsbPrueba);
+		
+		GridBagConstraints constraintsPVideos = new GridBagConstraints();
+		constraintsPVideos.insets = new Insets(2, 10, 10, 2);
+		constraintsPVideos.fill = GridBagConstraints.HORIZONTAL;
+		constraintsPVideos.gridx = 0;
+		constraintsPVideos.gridy = 1;
 
-		add(pVideos, BorderLayout.CENTER);
+
+
+		add(pVideos, constraintsPVideos);
 	}
 
 	private void listaATablaVideos() {
@@ -192,5 +276,6 @@ public class Explorar extends JPanel {
 		public Video getValueAt(int rowIndex, int columnIndex) {
 			return tablaVideos[rowIndex][columnIndex];
 		}
+		
   }
 }
