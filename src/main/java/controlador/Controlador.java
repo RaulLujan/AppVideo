@@ -26,7 +26,7 @@ public class Controlador {
 
 	private Controlador() {
 		try {
-			//videoWeb = new VideoWeb();
+			videoWeb = new VideoWeb();
 			usuarioActual = null;
 
 			catalogoVideos = CatalogoVideos.getUnicaInstancia();
