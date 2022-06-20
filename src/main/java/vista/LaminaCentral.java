@@ -1,8 +1,12 @@
 package vista;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Graphics;
+import java.awt.GridBagConstraints;
+import java.awt.GridLayout;
+import java.awt.Insets;
 import java.lang.reflect.Constructor;
 
 import javax.swing.BorderFactory;
@@ -23,8 +27,11 @@ public class LaminaCentral extends JPanel {
 
 	private void confLamina() {
 		setBorder(BorderFactory.createLineBorder(Color.BLACK));
-		setLayout(new FlowLayout(FlowLayout.CENTER));
 		setBackground(new Color(96, 96, 96));
+		
+		//GridBagConstraints constraints = new GridBagConstraints();
+		//constraints.anchor = GridBagConstraints.CENTER;
+		//constraints.insets = new Insets(3, 3, 3, 3);
 	}
 	
 	@Override
@@ -42,6 +49,12 @@ public class LaminaCentral extends JPanel {
 			JPanel nuevaLamina = (JPanel) constructor.newInstance();
 			nuevaLamina.setSize(getPreferredSize());
 			removeAll();
+			
+			if (titulo.equals("Login") || titulo.equals("Registro"))
+				setLayout(new FlowLayout());
+			else
+				setLayout(new GridLayout(1, 1));
+			
 			add(nuevaLamina);
 			
 			revalidate();

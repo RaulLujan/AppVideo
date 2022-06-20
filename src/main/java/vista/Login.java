@@ -6,6 +6,9 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -18,7 +21,7 @@ import javax.swing.border.TitledBorder;
 
 import controlador.Controlador;
 
-public class Login extends JPanel {
+public class Login extends JPanel  {//implements KeyListener{
 	private JTextField tfNombre;
 	private JPasswordField pfPass;
 
@@ -35,6 +38,10 @@ public class Login extends JPanel {
 		setBorder(titulo);
 		addFormulario();
 		addBotonesForm();
+		//addListenerTeclado();
+//		addKeyListener(this);
+//		requestFocus();
+//		setFocusable(true);
 	}
 
 	private void addFormulario() {
@@ -107,27 +114,89 @@ public class Login extends JPanel {
 
 	private void addListenerBotonCancelar(JButton bCancelar) {
 		bCancelar.addActionListener(e -> {
-			tfNombre.setText("");
-			pfPass.setText("");
+			cancelar();
 		});
 	}
 
 	private void addListenerBotonLogin(JButton bAceptar) {
 		bAceptar.addActionListener(e -> {
-			boolean isLogin = Controlador.getInstaciaUnica().getLogin(tfNombre.getText(), new String(pfPass.getPassword()));
-			
-			if (isLogin) {
-				LaminaSuperior.getInstancia().getbRecientes().setSelected(true);
-				removeAll();
-				LaminaSuperior.getInstancia().mostrar();
-				LaminaSuperior.getInstancia().mostrarLamina("Recientes");
-			
-				revalidate();
-				repaint();
-			} else {
-				JOptionPane.showMessageDialog(this, "Nombre de usuario o contraseña no valido", "Error", JOptionPane.ERROR_MESSAGE);
-			}
+			aceptar();
 		});
+//		bAceptar.addKeyListener(new KeyAdapter() {
+//			@Override
+//			public void keyPressed(KeyEvent e) {
+//				aceptar();
+//			}
+//		});
 	}
+	
+//	private void addListenerTeclado() {
+//		addKeyListener(new KeyAdapter() {
+//			
+//			@Override
+//			public void keyPressed(KeyEvent e) {
+//				System.out.println("HOLAA");
+//				switch (e.getKeyCode()) {
+//				case KeyEvent.VK_ENTER:
+//					aceptar();
+//					break;
+//				case KeyEvent.VK_ESCAPE:
+//					cancelar();
+//					break;
+//				default:
+//					break;
+//				}
+//			}
+//		});
+//	}
+	
+	private void aceptar() {
+		boolean isLogin = Controlador.getInstaciaUnica().getLogin(tfNombre.getText(), new String(pfPass.getPassword()));
+		
+		if (isLogin) {
+			LaminaSuperior.getInstancia().getbRecientes().setSelected(true);
+			removeAll();
+			LaminaSuperior.getInstancia().mostrar();
+			LaminaSuperior.getInstancia().mostrarLamina("Recientes");
+		
+			revalidate();
+			repaint();
+		} else {
+			JOptionPane.showMessageDialog(this, "Nombre de usuario o contraseña no valido", "Error", JOptionPane.ERROR_MESSAGE);
+		}
+	}
+	
+	private void cancelar() {
+		tfNombre.setText("");
+		pfPass.setText("");
+	}
+
+//	@Override
+//	public void keyTyped(KeyEvent e) {
+//		// TODO Auto-generated method stub
+//		
+//	}
+//
+//	@Override
+//	public void keyPressed(KeyEvent e) {
+//		System.out.println("HOLAA");
+//		switch (e.getKeyCode()) {
+//		case KeyEvent.VK_ENTER:
+//			aceptar();
+//			break;
+//		case KeyEvent.VK_ESCAPE:
+//			cancelar();
+//			break;
+//		default:
+//			break;
+//		}
+//		
+//	}
+//
+//	@Override
+//	public void keyReleased(KeyEvent e) {
+//		// TODO Auto-generated method stub
+//		
+//	}
 }
 
