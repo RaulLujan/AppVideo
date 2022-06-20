@@ -13,13 +13,13 @@ import persistencia.FactoriaDAO;
 
 public class CatalogoVideos {
 	private static final int TOP_VIDEOS = 10;
-	
+
 	private Map<Integer, Video> videos;
 	private static CatalogoVideos instancia = new CatalogoVideos();
-	
+
 	private FactoriaDAO factoria;
 	private AdaptadorVideoDAO adaptadorVideo;
-	
+
 	private CatalogoVideos() {
 		try {
 			factoria = FactoriaDAO.getInstancia(FactoriaDAO.TDS_DAO);
@@ -66,25 +66,33 @@ public class CatalogoVideos {
 	public List<Video> consultarVideosPorPalabra(String busqueda) {
 		return videos.values().stream().filter(v -> v.getTitulo().contains(busqueda)).collect(Collectors.toList());
 	}
-	
+
 	public List<Video> consultarVideosPorEtiqueta(String etiqueta) {
 		return videos.values().stream().filter(v -> v.containsEtiqueta(etiqueta)).collect(Collectors.toList());
 	}
-	
+
 	// TODO FILTRO no está relacionado con nada.... queda pendiente esta busqueda
 	public List<Video> consultarVideosPorFiltro(String filtro) {
 		return videos.values().stream().filter(v -> v.containsEtiqueta(filtro)).collect(Collectors.toList());
 	}
-	
+
 	public List<Video> getTopVideos(int numTop) {
-		return videos.values().stream().sorted(Comparator.comparing(Video::getNumReproducciones).reversed()).limit(numTop).collect(Collectors.toList());
+		return videos.values().stream().sorted(Comparator.comparing(Video::getNumReproducciones).reversed())
+				.limit(numTop).collect(Collectors.toList());
 	}
-	
+
 	public List<Video> getTopVideos() {
 		return getTopVideos(TOP_VIDEOS);
 	}
-	
+
 	public boolean existeVideo(int id) {
 		return videos.containsKey(id);
+	}
+
+	public boolean existeVideo(String url) {
+		for (Video video : videos.values())
+			if (video.getUrl().equals(url))
+				return true;
+		return false;
 	}
 }

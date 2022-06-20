@@ -8,6 +8,7 @@ import java.util.List;
 import beans.Entidad;
 import beans.Propiedad;
 import modelo.Etiqueta;
+import tds.driver.FactoriaServicioPersistencia;
 import tds.driver.ServicioPersistencia;
 
 public class AdaptadorEtiquetaTDS implements AdaptadorEtiquetaDAO {
@@ -15,6 +16,17 @@ public class AdaptadorEtiquetaTDS implements AdaptadorEtiquetaDAO {
 	private static AdaptadorEtiquetaTDS instancia = null;
 	private ServicioPersistencia server;
 
+	public static AdaptadorEtiquetaTDS getInstancia() {
+		if (instancia == null)
+			return new AdaptadorEtiquetaTDS();
+		else
+			return instancia;
+	}
+	
+	private AdaptadorEtiquetaTDS() {
+		server = FactoriaServicioPersistencia.getInstance().getServicioPersistencia();
+	}
+	
 	@Override
 	public void insertarEtiqueta(Etiqueta etiqueta) {
 		Entidad entidadEtiqueta = null;
@@ -74,12 +86,6 @@ public class AdaptadorEtiquetaTDS implements AdaptadorEtiquetaDAO {
 		return entidadEtiqueta;
 	}
 
-	public static AdaptadorEtiquetaTDS getInstancia() {
-		if (instancia == null)
-			return new AdaptadorEtiquetaTDS();
-		else
-			return instancia;
-	}
 
 	public static void setInstancia(AdaptadorEtiquetaTDS instancia) {
 		AdaptadorEtiquetaTDS.instancia = instancia;

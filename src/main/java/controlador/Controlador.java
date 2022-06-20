@@ -1,9 +1,14 @@
 package controlador;
 
 import java.util.Date;
+import java.util.EventObject;
 
+import cargadorVideos.VideosEvent;
+import cargadorVideos.VideosListener;
+import modelo.CatalogoEtiquetas;
 import modelo.CatalogoUsuarios;
 import modelo.CatalogoVideos;
+import modelo.Etiqueta;
 import modelo.Usuario;
 import modelo.Video;
 import persistencia.AdaptadorListaVideosDAO;
@@ -11,13 +16,14 @@ import persistencia.AdaptadorVideoDAO;
 import persistencia.FactoriaDAO;
 import tds.video.VideoWeb;
 
-public class Controlador {
+public class Controlador implements VideosListener {
 
 	private Usuario usuarioActual;
 	private static Controlador instancia;
 	private FactoriaDAO factoria;
 
 	private CatalogoVideos catalogoVideos;
+	private CatalogoEtiquetas catalogoEtiquetas;
 
 	private AdaptadorListaVideosDAO adaptadorListaVideos;
 	private AdaptadorVideoDAO adaptadorVideo;
@@ -30,6 +36,7 @@ public class Controlador {
 			usuarioActual = null;
 
 			catalogoVideos = CatalogoVideos.getUnicaInstancia();
+			catalogoEtiquetas = CatalogoEtiquetas.getUnicaInstancia();
 
 			factoria = FactoriaDAO.getInstancia();
 
@@ -106,4 +113,24 @@ public class Controlador {
 		videoWeb.playVideo("https://www.youtube.com/watch?v=hnRphfqIvsM");
 	}
 
+	@Override
+	public void nuevosVideos(EventObject e) {
+		VideosEvent videos = (VideosEvent) e;
+		for (cargadorVideos.Video videoCargadorV : videos.getListaVideos().getVideo()) {
+			Video video = new Video(videoCargadorV.getURL(), videoCargadorV.getTitulo());
+			if (!catalogoVideos.existeVideo(video.getUrl())) {
+				for (String etiquetaCargadorV : videoCargadorV.getEtiqueta()) {
+					Etiqueta etiqueta = null;
+					if (catalogoEtiquetas.existeEtiqueta(etiquetaCargadorV)) {
+						etiqueta = catalogoEtiquetas.getEtiqueta(etiquetaCargadorV);
+					} else {
+						etiqueta = new Etiqueta(etiquetaCargadorV);
+						catalogoEtiquetas.addEtiqueta(etiqueta);
+					}
+					video.addEtiqueta(etiqueta);
+				}
+				catalogoVideos.addVideo(video);
+			}
+		}		
+	}
 }
