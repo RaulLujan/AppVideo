@@ -2,13 +2,19 @@ package controlador;
 
 import java.util.Date;
 import java.util.EventObject;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
+import cargadorVideos.Videos;
 import cargadorVideos.VideosEvent;
 import cargadorVideos.VideosListener;
 import modelo.CatalogoEtiquetas;
 import modelo.CatalogoUsuarios;
 import modelo.CatalogoVideos;
 import modelo.Etiqueta;
+import modelo.ListaVideos;
 import modelo.Usuario;
 import modelo.Video;
 import persistencia.AdaptadorListaVideosDAO;
@@ -42,7 +48,7 @@ public class Controlador implements VideosListener {
 
 			adaptadorListaVideos = factoria.getListaVideosDAO();
 			adaptadorVideo = factoria.getVideoDAO();
-		} catch (Exception e ) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
@@ -131,6 +137,23 @@ public class Controlador implements VideosListener {
 				}
 				catalogoVideos.addVideo(video);
 			}
-		}		
+		}
+	}
+
+	public Map<String, Map<String, Integer>> getListaVideosNumRepro() {
+		Map<String, Map<String, Integer>> resultado = new HashMap<String, Map<String,Integer>>();
+		List<ListaVideos> listaVideos = usuarioActual.getMisListas();
+		
+		for (ListaVideos lv : listaVideos) {
+			Map<String, Integer> videos = new HashMap<>();
+			
+			for (Video v : lv.getVideos()) {
+				videos.put(v.getTitulo(), v.getNumReproducciones());
+			}
+			
+			resultado.put(lv.getNombre(), videos);
+		}
+		
+		return resultado;
 	}
 }

@@ -98,6 +98,7 @@ public class LaminaSuperior extends JPanel {
 		addMisListasButton(laminaFuncionalidad);
 		addRecienteButton(laminaFuncionalidad);
 		addMasVistosrButton(laminaFuncionalidad);
+		addGenerarPDF(laminaFuncionalidad);
 		laminaFuncionalidad.add(Box.createHorizontalGlue());
 	}
 
@@ -190,6 +191,14 @@ public class LaminaSuperior extends JPanel {
 			laminaCentral.setLamina(masVistos.getText().replace(" ", "").replace("á", "a"));
 		});
 	}
+	
+	private void addGenerarPDF(JPanel lamina) {
+		JToggleButton generarPDF = createToggleButtonJPanel("Generar PDF", lamina);
+
+		generarPDF.addActionListener(e -> {
+			laminaCentral.setLamina(generarPDF.getText().replace(" ", ""));
+		});
+	}	
 
 	private JButton createButtonJPanel(String texto, JPanel lamina) {
 		JButton boton = new JButton(texto);
