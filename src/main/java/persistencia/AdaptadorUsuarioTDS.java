@@ -19,6 +19,13 @@ import tds.driver.ServicioPersistencia;
 public class AdaptadorUsuarioTDS implements AdaptadorUsuarioDAO {
 
 	private static AdaptadorUsuarioTDS instancia = null;
+	public static AdaptadorUsuarioTDS getInstancia() {
+		if (instancia == null)
+			return new AdaptadorUsuarioTDS();
+		else
+			return instancia;
+	}
+
 	private ServicioPersistencia server;
 	private SimpleDateFormat dateFormat;
 	
@@ -194,17 +201,6 @@ public class AdaptadorUsuarioTDS implements AdaptadorUsuarioDAO {
 		for (Entidad entidadUsu : eUsuarios)
 			usuarios.add(consultarUsuario(entidadUsu.getId()));
 		return usuarios;
-	}
-
-	public static AdaptadorUsuarioTDS getInstancia() {
-		if (instancia == null)
-			return new AdaptadorUsuarioTDS();
-		else
-			return instancia;
-	}
-
-	public static void setInstancia(AdaptadorUsuarioTDS instancia) {
-		AdaptadorUsuarioTDS.instancia = instancia;
 	}
 
 }

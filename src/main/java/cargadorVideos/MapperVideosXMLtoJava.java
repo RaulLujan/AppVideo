@@ -11,15 +11,15 @@ public class MapperVideosXMLtoJava {
 	public static Videos cargarVideos(String fichero) {
 
 		JAXBContext jc;
-		Videos canciones = null;
+		Videos videos = null;
 		try {
 			jc = JAXBContext.newInstance("cargadorVideos");
 			Unmarshaller u = jc.createUnmarshaller();
 			File file = new File(fichero);
-			canciones = (Videos) u.unmarshal(file);
+			videos = (Videos) u.unmarshal(file);
 		} catch (JAXBException e) {
 			e.printStackTrace();
 		}	
-		return canciones;
+		return videos;
 	}
 }

@@ -13,18 +13,18 @@ import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 
 public class LaminaCentral extends JPanel {
-	private static LaminaCentral instancia = null;
-
-	private LaminaCentral() {
-		confLamina();
-	}
 	
+	private static LaminaCentral instancia = null;
 	public static LaminaCentral getInstancia() {
 		if (instancia == null)
 			return new LaminaCentral();
 		return instancia;
 	}
 
+	private LaminaCentral() {
+		confLamina();
+	}
+	
 	private void confLamina() {
 		setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		setBackground(new Color(96, 96, 96));

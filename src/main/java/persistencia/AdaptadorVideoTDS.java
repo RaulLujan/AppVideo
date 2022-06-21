@@ -17,7 +17,18 @@ import tds.driver.ServicioPersistencia;
 public class AdaptadorVideoTDS implements AdaptadorVideoDAO {
 
 	private static AdaptadorVideoTDS instancia = null;
+	public static AdaptadorVideoTDS getInstancia() {
+		if (instancia == null)
+			return new AdaptadorVideoTDS();
+		else
+			return instancia;
+	}
+
 	private ServicioPersistencia server;
+
+	private AdaptadorVideoTDS() {
+		server = FactoriaServicioPersistencia.getInstance().getServicioPersistencia();
+	}
 
 	private String concatenarIDListaEtiquetas(List<Etiqueta> listaEtiquetas) {
 		String idEtiquetas = "";
@@ -35,10 +46,6 @@ public class AdaptadorVideoTDS implements AdaptadorVideoDAO {
 			listaEtiquetas.add(adaptadorEtiqueta.consultarEtiqueta(idEtiqueta));
 		}
 		return listaEtiquetas;
-	}
-
-	private AdaptadorVideoTDS() {
-		server = FactoriaServicioPersistencia.getInstance().getServicioPersistencia();
 	}
 
 	@Override
@@ -118,17 +125,6 @@ public class AdaptadorVideoTDS implements AdaptadorVideoDAO {
 		for (Entidad eVideo : entidadVideo)
 			videos.add(consultarVideo(eVideo.getId()));
 		return videos;
-	}
-
-	public static AdaptadorVideoTDS getInstancia() {
-		if (instancia == null)
-			return new AdaptadorVideoTDS();
-		else
-			return instancia;
-	}
-
-	public static void setInstancia(AdaptadorVideoTDS instancia) {
-		AdaptadorVideoTDS.instancia = instancia;
 	}
 
 }

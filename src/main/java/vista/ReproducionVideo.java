@@ -76,7 +76,7 @@ public class ReproducionVideo extends JPanel {
 		lReprod.setForeground(Color.WHITE);
 
 		JPanel panelReprodurtor = new JPanel();
-		panelReprodurtor.add(Controlador.getInstaciaUnica().getVideoWeb());
+		panelReprodurtor.add(Controlador.getInstancia().getVideoWeb());
 
 		GridBagConstraints constraintsLTitulo = new GridBagConstraints();
 		constraintsLTitulo.insets = new Insets(10, 10, 10, 10);
@@ -115,11 +115,11 @@ public class ReproducionVideo extends JPanel {
 	}
 
 	private void addReproductor() {
-		Controlador.getInstaciaUnica().ponerVideo();
+		Controlador.getInstancia().ponerVideo();
 	}
 
 	private void addCopyRigth() {
-		VideoWeb videoWeb = Controlador.getInstaciaUnica().getVideoWeb();
+		VideoWeb videoWeb = Controlador.getInstancia().getVideoWeb();
 		JLabel copyright = new JLabel(videoWeb.getVersion());
 		copyright.setFont(new Font("Arial", Font.BOLD, 10));
 		copyright.setForeground(Color.WHITE);

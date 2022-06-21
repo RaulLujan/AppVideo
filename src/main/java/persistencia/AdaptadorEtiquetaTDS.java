@@ -14,8 +14,6 @@ import tds.driver.ServicioPersistencia;
 public class AdaptadorEtiquetaTDS implements AdaptadorEtiquetaDAO {
 
 	private static AdaptadorEtiquetaTDS instancia = null;
-	private ServicioPersistencia server;
-
 	public static AdaptadorEtiquetaTDS getInstancia() {
 		if (instancia == null)
 			return new AdaptadorEtiquetaTDS();
@@ -23,6 +21,8 @@ public class AdaptadorEtiquetaTDS implements AdaptadorEtiquetaDAO {
 			return instancia;
 	}
 	
+	private ServicioPersistencia server;
+
 	private AdaptadorEtiquetaTDS() {
 		server = FactoriaServicioPersistencia.getInstance().getServicioPersistencia();
 	}
@@ -84,11 +84,6 @@ public class AdaptadorEtiquetaTDS implements AdaptadorEtiquetaDAO {
 		for (Entidad eEtiqueta : eEtiquetas)
 			entidadEtiqueta.add(consultarEtiqueta(eEtiqueta.getId()));
 		return entidadEtiqueta;
-	}
-
-
-	public static void setInstancia(AdaptadorEtiquetaTDS instancia) {
-		AdaptadorEtiquetaTDS.instancia = instancia;
 	}
 
 }

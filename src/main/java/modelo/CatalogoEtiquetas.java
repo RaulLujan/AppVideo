@@ -10,8 +10,13 @@ import persistencia.AdaptadorListaVideosDAO;
 import persistencia.FactoriaDAO;
 
 public class CatalogoEtiquetas {
-	private Map<String, Etiqueta> listasEtiquetas;
+	
 	private static CatalogoEtiquetas instancia = new CatalogoEtiquetas();
+	public static CatalogoEtiquetas getInstancia() {
+		return instancia;
+	}
+
+	private Map<String, Etiqueta> listasEtiquetas;
 
 	private FactoriaDAO factoria;
 	private AdaptadorEtiquetaDAO adaptadorEtiquetas;
@@ -27,10 +32,6 @@ public class CatalogoEtiquetas {
 			e.printStackTrace();
 		}
 
-	}
-
-	public static CatalogoEtiquetas getUnicaInstancia() {
-		return instancia;
 	}
 
 	public List<Etiqueta> getListaEtiquetas() {

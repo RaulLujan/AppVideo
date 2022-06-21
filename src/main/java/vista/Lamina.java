@@ -28,7 +28,5 @@ public class Lamina extends JPanel implements ActionListener{
 		
 		add(laminaSuperior, BorderLayout.NORTH);
 		add(laminaCentral, BorderLayout.CENTER);		
-		
-		
 	}
 }

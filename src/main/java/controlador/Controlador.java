@@ -24,8 +24,14 @@ import tds.video.VideoWeb;
 
 public class Controlador implements VideosListener {
 
-	private Usuario usuarioActual;
 	private static Controlador instancia;
+	public static Controlador getInstancia() {
+		if (instancia == null)
+			instancia = new Controlador();
+		return instancia;
+	}
+
+	private Usuario usuarioActual;
 	private FactoriaDAO factoria;
 
 	private CatalogoVideos catalogoVideos;
@@ -41,8 +47,8 @@ public class Controlador implements VideosListener {
 			videoWeb = new VideoWeb();
 			usuarioActual = null;
 
-			catalogoVideos = CatalogoVideos.getUnicaInstancia();
-			catalogoEtiquetas = CatalogoEtiquetas.getUnicaInstancia();
+			catalogoVideos = CatalogoVideos.getInstancia();
+			catalogoEtiquetas = CatalogoEtiquetas.getInstancia();
 
 			factoria = FactoriaDAO.getInstancia();
 
@@ -53,22 +59,16 @@ public class Controlador implements VideosListener {
 		}
 	}
 
-	public static Controlador getInstaciaUnica() {
-		if (instancia == null)
-			instancia = new Controlador();
-		return instancia;
-	}
-
 	public Usuario getUsuarioActual() {
 		return usuarioActual;
 	}
 
 	public boolean isUsuarioRegistrado(String login) {
-		return CatalogoUsuarios.getUnicaInstancia().getUsuario(login) != null;
+		return CatalogoUsuarios.getInstancia().getUsuario(login) != null;
 	}
 
 	public boolean getLogin(String nombre, String pass) {
-		Usuario usuario = CatalogoUsuarios.getUnicaInstancia().getUsuario(nombre);
+		Usuario usuario = CatalogoUsuarios.getInstancia().getUsuario(nombre);
 		if (usuario != null && usuario.getPassword().equals(pass)) {
 			this.usuarioActual = usuario;
 			return true;
@@ -84,7 +84,7 @@ public class Controlador implements VideosListener {
 
 		Usuario usuario = new Usuario(login, pass, nombre, apellidos, fechaNacimiento, email);
 		factoria.getUsuarioDAO().insertarUsuario(usuario);
-		CatalogoUsuarios.getUnicaInstancia().addUsuario(usuario);
+		CatalogoUsuarios.getInstancia().addUsuario(usuario);
 
 		return true;
 	}

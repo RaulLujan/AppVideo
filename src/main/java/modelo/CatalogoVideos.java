@@ -12,10 +12,14 @@ import persistencia.AdaptadorVideoDAO;
 import persistencia.FactoriaDAO;
 
 public class CatalogoVideos {
+	
 	private static final int TOP_VIDEOS = 10;
+	private static CatalogoVideos instancia = new CatalogoVideos();
+	public static CatalogoVideos getInstancia() {
+		return instancia;
+	}
 
 	private Map<Integer, Video> videos;
-	private static CatalogoVideos instancia = new CatalogoVideos();
 
 	private FactoriaDAO factoria;
 	private AdaptadorVideoDAO adaptadorVideo;
@@ -31,10 +35,6 @@ public class CatalogoVideos {
 			e.printStackTrace();
 		}
 
-	}
-
-	public static CatalogoVideos getUnicaInstancia() {
-		return instancia;
 	}
 
 	public List<Video> getVideos() {

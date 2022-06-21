@@ -17,6 +17,17 @@ import javax.swing.border.EmptyBorder;
 import controlador.Controlador;
 
 public class LaminaSuperior extends JPanel {
+
+	private static LaminaSuperior instancia = null;
+	public static LaminaSuperior getInstancia(LaminaCentral laminaCentral) {
+		if (instancia == null)
+			return instancia = new LaminaSuperior(laminaCentral);
+		return instancia;
+	}
+	public static LaminaSuperior getInstancia() {
+		return instancia;
+	}
+
 	private JPanel laminaInicio;
 	private JPanel laminaFuncionalidad;
 	private LaminaCentral laminaCentral;
@@ -30,24 +41,12 @@ public class LaminaSuperior extends JPanel {
 	private JButton registro;
 	private JButton logout;
 
-	private static LaminaSuperior instancia = null;
-
 	private LaminaSuperior(LaminaCentral laminaCentral) {
 		laminaInicio = new JPanel();
 		laminaFuncionalidad = new JPanel();
 		this.laminaCentral = laminaCentral;
 		grupoFuncionalidad = new ButtonGroup();
 		confLamina();
-	}
-
-	public static LaminaSuperior getInstancia(LaminaCentral laminaCentral) {
-		if (instancia == null)
-			return instancia = new LaminaSuperior(laminaCentral);
-		return instancia;
-	}
-
-	public static LaminaSuperior getInstancia() {
-		return instancia;
 	}
 
 	@Override
@@ -215,20 +214,17 @@ public class LaminaSuperior extends JPanel {
 		return boton;
 	}
 
-	private boolean isUsuario() {
-		return Controlador.getInstaciaUnica().isUsuarioLogin();
-	}
-	
 	public void mostrar() {
-		laminaFuncionalidad.setVisible(isUsuario());
-		premium.setVisible(isUsuario());
-		logout.setVisible(isUsuario());
+		boolean usuarioLogin = Controlador.getInstancia().isUsuarioLogin();
+		laminaFuncionalidad.setVisible(usuarioLogin);
+		premium.setVisible(usuarioLogin);
+		logout.setVisible(usuarioLogin);
 		
-		login.setVisible(!isUsuario());
-		registro.setVisible(!isUsuario());
+		login.setVisible(!usuarioLogin);
+		registro.setVisible(!usuarioLogin);
 		
-		if (isUsuario()) {
-			String nombreUsuario = Controlador.getInstaciaUnica().getUsuarioActual().getLogin();
+		if (usuarioLogin) {
+			String nombreUsuario = Controlador.getInstancia().getUsuarioActual().getLogin();
 			nombreUsuarioLabel.setText("Hola " + nombreUsuario);
 		} else {
 			nombreUsuarioLabel.setText("Hola Usuari@");

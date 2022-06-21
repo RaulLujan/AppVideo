@@ -250,7 +250,7 @@ public class Explorar extends JPanel {
 
 	private void addListenerBotonBuscar(JButton bBuscar) {
 		bBuscar.addActionListener(e -> {
-			listaVideos = CatalogoVideos.getUnicaInstancia().consultarVideosPorPalabra(tfBuscar.getText());
+			listaVideos = CatalogoVideos.getInstancia().consultarVideosPorPalabra(tfBuscar.getText());
 			buscado = true;
 			confVideos();
 		});

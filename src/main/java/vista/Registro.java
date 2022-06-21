@@ -213,7 +213,7 @@ public class Registro extends JPanel {
 			completed = false;
 			errorCampo.setText("Las contraseñas deben coincidir");
 		} else if (!tfUsuario.getText().isEmpty()
-				&& Controlador.getInstaciaUnica().isUsuarioRegistrado(tfUsuario.getText())) {
+				&& Controlador.getInstancia().isUsuarioRegistrado(tfUsuario.getText())) {
 			completed = false;
 			errorCampo.setText("Este nombre de usuario ya se está usando");
 		}
@@ -245,7 +245,7 @@ public class Registro extends JPanel {
 			boolean isOKRegistroCampos = isRegistroCamposCompleted();
 
 			if (isOKRegistroCampos) {
-				boolean usuarioRegistrado = Controlador.getInstaciaUnica().registrarUsuario(tfNombre.getText(),
+				boolean usuarioRegistrado = Controlador.getInstancia().registrarUsuario(tfNombre.getText(),
 						tfApellidos.getName(), cFechaNacimiento.getDate(), tfEmail.getText(), tfUsuario.getText(),
 						new String(pfPass.getPassword()));
 

@@ -9,8 +9,13 @@ import persistencia.AdaptadorListaVideosDAO;
 import persistencia.FactoriaDAO;
 
 public class CatalogoListasVideos {
-	private Map<Integer, ListaVideos> listasVideos;
+	
 	private static CatalogoListasVideos instancia = new CatalogoListasVideos();
+	public static CatalogoListasVideos getInstancia() {
+		return instancia;
+	}
+
+	private Map<Integer, ListaVideos> listasVideos;
 
 	private FactoriaDAO factoria;
 	private AdaptadorListaVideosDAO adaptadorLsitaVideos;
@@ -26,10 +31,6 @@ public class CatalogoListasVideos {
 			e.printStackTrace();
 		}
 
-	}
-
-	public static CatalogoListasVideos getUnicaInstancia() {
-		return instancia;
 	}
 
 	public List<ListaVideos> getListasVideos() {

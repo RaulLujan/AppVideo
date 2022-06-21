@@ -15,7 +15,7 @@ public class BuscadorVideos implements IBuscadorVideos {
 
 	@Override
 	public void setArchivoVideos(File fichero) {
-		Videos videos = CargadorVideos.cargarVideos(fichero.getAbsolutePath());
+		Videos videos = MapperVideosXMLtoJava.cargarVideos(fichero.getAbsolutePath());
 		setNuevosVideos(videos);
 	}
 

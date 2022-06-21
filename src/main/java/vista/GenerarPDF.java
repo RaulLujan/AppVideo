@@ -55,7 +55,7 @@ public class GenerarPDF extends JPanel {
 		
 		doc.addTitle("Listas de videos");
 		
-		Map<String, Map<String, Integer>> listasVideos = Controlador.getInstaciaUnica().getListaVideosNumRepro();
+		Map<String, Map<String, Integer>> listasVideos = Controlador.getInstancia().getListaVideosNumRepro();
 		listasVideos.forEach((k,v) -> {
 			//Paragraph p = new Paragraph(k, FUENTE_PARRAFO);
 			try {

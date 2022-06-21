@@ -16,14 +16,14 @@ import tds.driver.ServicioPersistencia;
 public class AdaptadorListaVideosTDS implements AdaptadorListaVideosDAO {
 
 	private static AdaptadorListaVideosTDS instancia = null;
-	private ServicioPersistencia server;
-
 	public static AdaptadorListaVideosTDS getInstancia() {
 		if (instancia == null)
 			instancia = new AdaptadorListaVideosTDS();
 		return instancia;
 	}
 	
+	private ServicioPersistencia server;
+
 	private AdaptadorListaVideosTDS() {
 		server = FactoriaServicioPersistencia.getInstance().getServicioPersistencia();
 	}

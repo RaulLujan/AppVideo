@@ -9,7 +9,11 @@ import persistencia.AdaptadorUsuarioDAO;
 import persistencia.FactoriaDAO;
 
 public class CatalogoUsuarios {
+	
 	private static CatalogoUsuarios instancia = new CatalogoUsuarios();
+	public static CatalogoUsuarios getInstancia() {
+		return instancia;
+	}
 
 	private AdaptadorUsuarioDAO adaptadorUsuario;
 	private FactoriaDAO factoria;
@@ -29,10 +33,6 @@ public class CatalogoUsuarios {
 			e.printStackTrace();
 		}
 
-	}
-
-	public static CatalogoUsuarios getUnicaInstancia() {
-		return instancia;
 	}
 
 	public List<Usuario> getUsuarios() {
