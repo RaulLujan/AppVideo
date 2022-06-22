@@ -2,12 +2,11 @@ package modelo;
 
 public class NoFiltro extends Filtro {
 	
-	private static Filtro unicaInstancia = null;
-	
-	public static Filtro getUnicaInstancia() {
-		if (unicaInstancia == null)
-			unicaInstancia = new NoFiltro();
-		return unicaInstancia;
+	private static Filtro instancia = null;
+	public static Filtro getInstancia() {
+		if (instancia == null)
+			instancia = new NoFiltro();
+		return instancia;
 	}
 	
 	private NoFiltro() {
@@ -15,8 +14,8 @@ public class NoFiltro extends Filtro {
 	}
 
 	@Override
-	public boolean filtrarVideo(Video video, Usuario usuario) {
-		return false;
+	public boolean esVideoOK(Video video) {
+		return true;
 	}
 
 }

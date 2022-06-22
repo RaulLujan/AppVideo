@@ -77,7 +77,7 @@ public class AdaptadorUsuarioTDS implements AdaptadorUsuarioDAO {
 
 		entidadUsu = server.registrarEntidad(entidadUsu);
 
-		usuario.setCodigo(entidadUsu.getId());
+		usuario.setId(entidadUsu.getId());
 	}
 
 	@Override

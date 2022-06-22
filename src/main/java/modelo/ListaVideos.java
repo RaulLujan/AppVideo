@@ -12,9 +12,8 @@ public class ListaVideos {
 	
 	public ListaVideos(String nombre) {
 		this.nombre = nombre;
-		this.videos = new LinkedList<Video>();
+		videos = new LinkedList<Video>();
 	}
-	
 	public ListaVideos() {
 		this("");
 	}
@@ -22,7 +21,6 @@ public class ListaVideos {
 	public int getId() {
 		return id;
 	}
-	
 	public void setId(int id) {
 		this.id = id;
 	}
@@ -30,7 +28,6 @@ public class ListaVideos {
 	public int getUsuarioId() {
 		return usuario.getId();
 	}
-	
 	public void setUsuario(Usuario usuario) {
 		this.usuario = usuario;
 	}
@@ -38,11 +35,9 @@ public class ListaVideos {
 	public String getNombre() {
 		return nombre;
 	}
-	
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
 	}
-	
 	public boolean checkNombre(String nombre) {
 		return this.nombre.equals(nombre);
 	}
@@ -50,39 +45,30 @@ public class ListaVideos {
 	public int getNumVideos() {
 		return videos.size();
 	}
-	
 	public List<Video> getVideos() {
 		return videos;
 	}
-	
 	public List<Integer> getIdVideos() {
 		List<Integer> codigos = new LinkedList<>();
 		for (Video video : videos)
 			codigos.add(video.getId());
 		return codigos;
 	}
-	
 	public boolean containsVideo(Video video) {
 		return videos.contains(video);
 	}
-
 	public void addFirstVideo(Video video) {
 		videos.add(0,video);
 	}
-	
 	public void addLastVideo(Video video) {
 		videos.add(videos.size(),video);
 	}
-	
 	public boolean removeVideo(Video video) {
 		return videos.remove(video);
 	}
-	
-	
 	public Video removeLastVideo() {
 		return videos.remove(videos.size()-1);
 	}
-	
 	public void removeAll() {
 		videos.clear();
 	}
@@ -105,8 +91,8 @@ public class ListaVideos {
 	public int hashCode() {
 		int primo = 31;
 		int resultado = 1;
-		resultado = primo*resultado + nombre.hashCode();
-		resultado = primo*resultado + videos.hashCode();
+		resultado = primo * resultado + nombre.hashCode();
+		resultado = primo * resultado + videos.hashCode();
 		return resultado;
 	}
 	

@@ -38,6 +38,7 @@ public class Explorar extends JPanel {
 	private JTextField tfBuscar;
 	private JList<String> listaDisponibles;
 	private JList<String> listaSeleccionadas;
+	//Revisar
 	private List<Video> listaVideos;
 	private Video[][] tablaDatosVideos;
 
@@ -268,7 +269,7 @@ public class Explorar extends JPanel {
 
 	private void addListenerBotonBuscar(JButton bBuscar) {
 		bBuscar.addActionListener(e -> {
-			listaVideos = CatalogoVideos.getInstancia().consultarVideosPorPalabra(tfBuscar.getText());
+			listaVideos = (List<Video>) CatalogoVideos.getInstancia().getVideosOK(null,tfBuscar.getText(),null);
 			buscado = true;
 			confVideos();
 		});

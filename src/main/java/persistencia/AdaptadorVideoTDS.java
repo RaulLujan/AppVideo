@@ -57,7 +57,7 @@ public class AdaptadorVideoTDS implements AdaptadorVideoDAO {
 		entidadVideo.setNombre("video");
 		entidadVideo.setPropiedades(new ArrayList<Propiedad>(
 				Arrays.asList(new Propiedad("url", video.getUrl()), new Propiedad("titulo", video.getTitulo()),
-						new Propiedad("numReproducciones", String.valueOf(video.getNumReproducciones())),
+						new Propiedad("numReproducciones", String.valueOf(video.getNumRepro())),
 						new Propiedad("etiquetas", concatenarIDListaEtiquetas(video.getEtiquetas())))));
 
 		entidadVideo = server.registrarEntidad(entidadVideo);
@@ -78,7 +78,7 @@ public class AdaptadorVideoTDS implements AdaptadorVideoDAO {
 		server.eliminarPropiedadEntidad(entidadVideo, "titulo");
 		server.anadirPropiedadEntidad(entidadVideo, "titulo", video.getTitulo());
 		server.eliminarPropiedadEntidad(entidadVideo, "numReproducciones");
-		server.anadirPropiedadEntidad(entidadVideo, "numReproducciones", String.valueOf(video.getNumReproducciones()));
+		server.anadirPropiedadEntidad(entidadVideo, "numReproducciones", String.valueOf(video.getNumRepro()));
 		server.eliminarPropiedadEntidad(entidadVideo, "etiquetas");
 		server.anadirPropiedadEntidad(entidadVideo, "etiquetas", concatenarIDListaEtiquetas(video.getEtiquetas()));
 
@@ -92,7 +92,7 @@ public class AdaptadorVideoTDS implements AdaptadorVideoDAO {
 				prop.setValor(video.getTitulo());
 				break;
 			case "numReproducciones":
-				prop.setValor(String.valueOf(video.getNumReproducciones()));
+				prop.setValor(String.valueOf(video.getNumRepro()));
 				break;
 			case "etiquetas":
 				prop.setValor(concatenarIDListaEtiquetas(video.getEtiquetas()));
@@ -111,7 +111,7 @@ public class AdaptadorVideoTDS implements AdaptadorVideoDAO {
 		int numReproducciones = Integer.parseInt(server.recuperarPropiedadEntidad(eVideo, "numReproducciones"));
 		Video video = new Video(url, titulo);
 		video.setId(id);
-		video.setNumReproducciones(numReproducciones);
+		video.setNumRepro(numReproducciones);
 		List<Etiqueta> etiquetas = obtenerEtiquetasDesdeID(server.recuperarPropiedadEntidad(eVideo, "etiquetas"));
 		for (Etiqueta etiqueta : etiquetas)
 			video.addEtiqueta(etiqueta);

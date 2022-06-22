@@ -120,13 +120,13 @@ public class Controlador implements VideosListener {
 	}
 
 	public void reproducirVideo(int id) {
-		if (usuarioActual != null && catalogoVideos.existeVideo(id)) {
+		if (usuarioActual != null && catalogoVideos.existsVideo(id)) {
 			Video video = catalogoVideos.getVideo(id);
 
 			usuarioActual.addRecentVideo(video);
 			adaptadorListaVideos.modificarListaVideos(usuarioActual.getRecentVideo());
 
-			video.incrementarNumReproducciones();
+			video.incrementarNumRepro();
 			adaptadorVideo.modificarVideo(video);
 
 			videoWeb.playVideo(video.getUrl());
@@ -142,10 +142,10 @@ public class Controlador implements VideosListener {
 		VideosEvent videos = (VideosEvent) e;
 		for (cargadorVideos.Video videoCargadorV : videos.getListaVideos().getVideo()) {
 			Video video = new Video(videoCargadorV.getURL(), videoCargadorV.getTitulo());
-			if (!catalogoVideos.existeVideo(video.getUrl())) {
+			if (!catalogoVideos.existsVideo(video.getUrl())) {
 				for (String etiquetaCargadorV : videoCargadorV.getEtiqueta()) {
 					Etiqueta etiqueta = null;
-					if (catalogoEtiquetas.existeEtiqueta(etiquetaCargadorV)) {
+					if (catalogoEtiquetas.existsEtiqueta(etiquetaCargadorV)) {
 						etiqueta = catalogoEtiquetas.getEtiqueta(etiquetaCargadorV);
 					} else {
 						etiqueta = new Etiqueta(etiquetaCargadorV);
@@ -166,7 +166,7 @@ public class Controlador implements VideosListener {
 			Map<String, Integer> videos = new HashMap<>();
 
 			for (Video v : lv.getVideos()) {
-				videos.put(v.getTitulo(), v.getNumReproducciones());
+				videos.put(v.getTitulo(), v.getNumRepro());
 			}
 
 			resultado.put(lv.getNombre(), videos);

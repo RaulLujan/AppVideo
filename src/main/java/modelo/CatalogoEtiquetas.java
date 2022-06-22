@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import persistencia.AdaptadorEtiquetaDAO;
-import persistencia.AdaptadorListaVideosDAO;
 import persistencia.FactoriaDAO;
 
 public class CatalogoEtiquetas {
@@ -16,52 +15,48 @@ public class CatalogoEtiquetas {
 		return instancia;
 	}
 
-	private Map<String, Etiqueta> listasEtiquetas;
+	private Map<String, Etiqueta> mapa;
 
-	private FactoriaDAO factoria;
-	private AdaptadorEtiquetaDAO adaptadorEtiquetas;
+	private AdaptadorEtiquetaDAO adaptador;
 
 	private CatalogoEtiquetas() {
 		try {
-			factoria = FactoriaDAO.getInstancia(FactoriaDAO.TDS_DAO);
-			adaptadorEtiquetas = factoria.getEtiquetaDAO();
-			listasEtiquetas = new HashMap<String, Etiqueta>();
+			FactoriaDAO factoria = FactoriaDAO.getInstancia(FactoriaDAO.TDS_DAO);
+			adaptador = factoria.getEtiquetaDAO();
+			mapa = new HashMap<String, Etiqueta>();
 			this.cargarCatalogo();
-
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
 	}
-
-	public List<Etiqueta> getListaEtiquetas() {
-		List<Etiqueta> lista = new ArrayList<Etiqueta>();
-		for (Etiqueta lv : listasEtiquetas.values())
-			lista.add(lv);
-		return lista;
-	}
-
-	public Etiqueta getEtiqueta(String nombre) {
-		return listasEtiquetas.get(nombre);
-	}
-
-	public void addEtiqueta(Etiqueta e) {
-		listasEtiquetas.put(e.getNombre(), e);
-	}
-
-	public void removeEtiqueta(Etiqueta lv) {
-		listasEtiquetas.remove(lv.getId());
-	}
-
 	private void cargarCatalogo() {
-		List<Etiqueta> etiquetaBD = adaptadorEtiquetas.listarTodasEtiquetas();
-		for (Etiqueta le : etiquetaBD) {
-			listasEtiquetas.put(le.getNombre(), le);
-		}
+		List<Etiqueta> lista = adaptador.listarTodasEtiquetas();
+		for (Etiqueta etiqueta : lista)
+			mapa.put(etiqueta.getNombre(), etiqueta);
 	}
 	
-	public boolean existeEtiqueta(String nombre) {
-		return listasEtiquetas.containsKey(nombre);
+	public void addEtiqueta(Etiqueta etiqueta) {
+		adaptador.insertarEtiqueta(etiqueta);
+		mapa.put(etiqueta.getNombre(), etiqueta);
+	}
+	public void removeEtiqueta(Etiqueta etiqueta) {
+		mapa.remove(etiqueta.getNombre());
+		adaptador.borrarEtiqueta(etiqueta);
+	}
+	
+	public boolean existsEtiqueta(String nombre) {
+		return mapa.containsKey(nombre);
+	}
+	public Etiqueta getEtiqueta(String nombre) {
+		return mapa.get(nombre);
+	}
+
+	public List<Etiqueta> getEtiquetas() {
+		return new ArrayList<Etiqueta>(mapa.values());
+//		List<Etiqueta> lista = new ArrayList<Etiqueta>();
+//		for (Etiqueta etiqueta : mapa.values())
+//			lista.add(etiqueta);
+//		return lista;
 	}
 	
 }

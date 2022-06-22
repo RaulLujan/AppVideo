@@ -37,7 +37,7 @@ public class Etiqueta {
 	public int hashCode() {
 		int primo = 31;
 		int resultado = 1;
-		resultado = primo*resultado + nombre.hashCode();
+		resultado = primo * resultado + nombre.hashCode();
 		return resultado;
 	}
 	
