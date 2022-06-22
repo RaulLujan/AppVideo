@@ -15,10 +15,7 @@ public class Programa {
 				System.out.println(" Tag : " + etiqueta);
 			}
 			System.out.println("***** ***** *****");
-			
-			
 		}
-	
 	}
 
 }
