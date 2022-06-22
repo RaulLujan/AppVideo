@@ -7,7 +7,6 @@ import java.util.EventObject;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
@@ -17,7 +16,6 @@ import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Font.FontFamily;
 import com.itextpdf.text.pdf.PdfWriter;
 
-import cargadorVideos.Videos;
 import cargadorVideos.VideosEvent;
 import cargadorVideos.VideosListener;
 import modelo.CatalogoEtiquetas;
@@ -202,7 +200,7 @@ public class Controlador implements VideosListener {
 				doc.add(new Paragraph(k, FUENTE_SUBTITULO));
 				v.forEach((k2, v2) -> {
 					try {
-						doc.add(new Paragraph("Titulo: " + k2 + ", número de reproducciones:  " + v2, FUENTE_PARRAFO));
+						doc.add(new Paragraph("Titulo: " + k2 + ", nï¿½mero de reproducciones:  " + v2, FUENTE_PARRAFO));
 					} catch (DocumentException e) {
 						e.printStackTrace();
 					}
@@ -225,7 +223,7 @@ public class Controlador implements VideosListener {
 			documento.close();
 			writer.close();
 		} catch (FileNotFoundException | DocumentException fileNotFoundException) {
-			System.out.println("No se encontró el fichero para generar el pdf)" + fileNotFoundException);
+			System.out.println("No se encontrï¿½ el fichero para generar el pdf)" + fileNotFoundException);
 		}
 	}
 }
