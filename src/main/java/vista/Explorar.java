@@ -9,6 +9,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.awt.print.PrinterException;
 import java.util.List;
 
 import javax.swing.AbstractListModel;
@@ -38,7 +39,7 @@ public class Explorar extends JPanel {
 	private JList<String> listaDisponibles;
 	private JList<String> listaSeleccionadas;
 	private List<Video> listaVideos;
-	private Video[][] tablaVideos;
+	private Video[][] tablaDatosVideos;
 
 	private boolean buscado = false;
 	private boolean isOpaque = false;
@@ -195,38 +196,55 @@ public class Explorar extends JPanel {
 	}
 
 	private void confVideos() {
-		LaminaVideos pVideos = new LaminaVideos();
+//		LaminaVideos pVideos = new LaminaVideos();
+//
+//		if (buscado) {
+//			listaATablaVideos();
+//			JTable jTablaVideos = new JTable(new TablaVideoModel());
+//			JScrollPane pScroll = new JScrollPane(jTablaVideos);
+//			pVideos.add(pScroll);
+//		}
+//
+//		JButton bPrueba = new JButton("PRUEBA");
+//		bPrueba.setPreferredSize(new Dimension(200, 200));
+//
+//		GridBagConstraints constraintsbPrueba = new GridBagConstraints();
+//		constraintsbPrueba.insets = new Insets(0, 0, 0, 0);
+//		constraintsbPrueba.fill = GridBagConstraints.CENTER;
+//		constraintsbPrueba.gridx = 0;
+//		constraintsbPrueba.gridy = 0;
+//		//pVideos.add(bPrueba, constraintsbPrueba);
+//
+//		GridBagConstraints constraintsPVideos = new GridBagConstraints();
+//		constraintsPVideos.insets = new Insets(2, 10, 10, 2);
+//		constraintsPVideos.fill = GridBagConstraints.BOTH;
+//		constraintsPVideos.gridx = 0;
+//		constraintsPVideos.gridy = 1;
+//
+//		add(pVideos, constraintsPVideos);
+//
+//		addListenerBotonPrueba(bPrueba);
 
-		if (buscado) {
-			listaATablaVideos();
-			JTable jTablaVideos = new JTable(new TablaVideoModel());
-			JScrollPane pScroll = new JScrollPane(jTablaVideos);
-			add(pScroll);
-		}
-
-		pVideos.setOpaque(isOpaque);
-		pVideos.setLayout(new GridLayout(0, 1)); // TODO deberia ocupar el resto de la pantalla y no lo hace
-		pVideos.setBorder(BorderFactory.createEtchedBorder(Color.DARK_GRAY, Color.GRAY));
-
-		JButton bPrueba = new JButton("PRUEBA");
-		bPrueba.setPreferredSize(new Dimension(200, 200));
-
-		GridBagConstraints constraintsbPrueba = new GridBagConstraints();
-		constraintsbPrueba.insets = new Insets(0, 0, 0, 0);
-		constraintsbPrueba.fill = GridBagConstraints.CENTER;
-		constraintsbPrueba.gridx = 0;
-		constraintsbPrueba.gridy = 0;
-		pVideos.add(bPrueba, constraintsbPrueba);
-
+		JTable tablaVideos;
+		String[] nombresColumnas = {};
+		
+		listaATablaVideos();
+		
+		tablaVideos = new JTable(tablaDatosVideos, nombresColumnas);
+		
 		GridBagConstraints constraintsPVideos = new GridBagConstraints();
 		constraintsPVideos.insets = new Insets(2, 10, 10, 2);
-		constraintsPVideos.fill = GridBagConstraints.HORIZONTAL;
+		constraintsPVideos.fill = GridBagConstraints.BOTH;
 		constraintsPVideos.gridx = 0;
 		constraintsPVideos.gridy = 1;
 
-		add(pVideos, constraintsPVideos);
-
-		addListenerBotonPrueba(bPrueba);
+		add(new JScrollPane(tablaVideos), constraintsPVideos);
+		try {
+			tablaVideos.print();
+		} catch (PrinterException e) {
+			e.printStackTrace();
+		}
+		
 	}
 
 	private void listaATablaVideos() {
@@ -237,7 +255,7 @@ public class Explorar extends JPanel {
 
 		for (int i = 0; i < numFilas; i++)
 			for (int j = 0; j < NUM_COLUMNAS; j++)
-				tablaVideos[i][j] = listaVideos.get((j * 10) + i);
+				tablaDatosVideos[i][j] = listaVideos.get((j * 10) + i);
 	}
 
 	private void addListenerBotonNuevaBusqueda(JButton bNuevaBusq) {
@@ -267,22 +285,22 @@ public class Explorar extends JPanel {
 		});
 	}
 
-	class TablaVideoModel extends AbstractTableModel {
-
-		@Override
-		public int getRowCount() {
-			return tablaVideos.length;
-		}
-
-		@Override
-		public int getColumnCount() {
-			return NUM_COLUMNAS;
-		}
-
-		@Override
-		public Video getValueAt(int rowIndex, int columnIndex) {
-			return tablaVideos[rowIndex][columnIndex];
-		}
-
-	}
+//	class TablaVideoModel extends AbstractTableModel {
+//
+//		@Override
+//		public int getRowCount() {
+//			return tablaDatosVideos.length;
+//		}
+//
+//		@Override
+//		public int getColumnCount() {
+//			return NUM_COLUMNAS;
+//		}
+//
+//		@Override
+//		public Video getValueAt(int rowIndex, int columnIndex) {
+//			return tablaDatosVideos[rowIndex][columnIndex];
+//		}
+//
+//	}
 }

@@ -1,11 +1,21 @@
 package controlador;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.util.Date;
 import java.util.EventObject;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.PageSize;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.Font.FontFamily;
+import com.itextpdf.text.pdf.PdfWriter;
 
 import cargadorVideos.Videos;
 import cargadorVideos.VideosEvent;
@@ -23,8 +33,16 @@ import persistencia.FactoriaDAO;
 import tds.video.VideoWeb;
 
 public class Controlador implements VideosListener {
+	
+	private static final Font FUENTE_TITULO = new Font(FontFamily.TIMES_ROMAN, 22.0f, Font.BOLD);
+	private static final Font FUENTE_SUBTITULO = new Font(FontFamily.TIMES_ROMAN, 18.0f, Font.ITALIC);
+	private static final Font FUENTE_PARRAFO = new Font(FontFamily.TIMES_ROMAN, 12.0f, Font.NORMAL);
+
+	private static final String NOMBRE_PDF = "listasVideos.pdf";
+
 
 	private static Controlador instancia;
+
 	public static Controlador getInstancia() {
 		if (instancia == null)
 			instancia = new Controlador();
@@ -140,20 +158,59 @@ public class Controlador implements VideosListener {
 		}
 	}
 
-	public Map<String, Map<String, Integer>> getListaVideosNumRepro() {
-		Map<String, Map<String, Integer>> resultado = new HashMap<String, Map<String,Integer>>();
+	private Map<String, Map<String, Integer>> getListaVideosNumRepro() {
+		Map<String, Map<String, Integer>> resultado = new HashMap<String, Map<String, Integer>>();
 		List<ListaVideos> listaVideos = usuarioActual.getMisListas();
-		
+
 		for (ListaVideos lv : listaVideos) {
 			Map<String, Integer> videos = new HashMap<>();
-			
+
 			for (Video v : lv.getVideos()) {
 				videos.put(v.getTitulo(), v.getNumReproducciones());
 			}
-			
+
 			resultado.put(lv.getNombre(), videos);
 		}
-		
+
 		return resultado;
+	}
+
+	private void anyadirContenido(Document doc) throws DocumentException {
+		String tituloLista;
+		Map<String, Integer> videosDeLista;
+
+		doc.addTitle("Listas de videos");
+
+		Map<String, Map<String, Integer>> listasVideos = getListaVideosNumRepro();
+		listasVideos.forEach((k, v) -> {
+			try {
+				doc.add(new Paragraph(k, FUENTE_SUBTITULO));
+				v.forEach((k2, v2) -> {
+					try {
+						doc.add(new Paragraph("Titulo: " + k2 + ", número de reproducciones:  " + v2, FUENTE_PARRAFO));
+					} catch (DocumentException e) {
+						e.printStackTrace();
+					}
+				});
+			} catch (DocumentException e) {
+				e.printStackTrace();
+			}
+
+		});
+
+	}
+	
+	public void generarPDF() {
+
+		Document documento = new Document(PageSize.A4, 50, 50, 50, 50);
+		try {
+			PdfWriter writer = PdfWriter.getInstance(documento, new FileOutputStream(NOMBRE_PDF));
+			documento.open();
+			anyadirContenido(documento);
+			documento.close();
+			writer.close();
+		} catch (FileNotFoundException | DocumentException fileNotFoundException) {
+			System.out.println("No se encontró el fichero para generar el pdf)" + fileNotFoundException);
+		}
 	}
 }
