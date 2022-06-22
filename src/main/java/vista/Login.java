@@ -151,7 +151,7 @@ public class Login extends JPanel  {//implements KeyListener{
 //	}
 	
 	private void aceptar() {
-		boolean isLogin = Controlador.getInstancia().getLogin(tfNombre.getText(), new String(pfPass.getPassword()));
+		boolean isLogin = Controlador.getInstancia().loginUsuario(tfNombre.getText(), new String(pfPass.getPassword()));
 		
 		if (isLogin) {
 			LaminaSuperior.getInstancia().getbRecientes().setSelected(true);

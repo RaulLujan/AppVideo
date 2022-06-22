@@ -15,57 +15,55 @@ public class CatalogoUsuarios {
 		return instancia;
 	}
 
-	private AdaptadorUsuarioDAO adaptadorUsuario;
-	private FactoriaDAO factoria;
+	private Map<Integer, Usuario> mapaPorID;
+	private Map<String, Usuario> mapaPorLogin;
 
-	private Map<Integer, Usuario> usuariosPorID;
-	private Map<String, Usuario> usuariosPorNombre;
+	private AdaptadorUsuarioDAO adaptador;
 
 	private CatalogoUsuarios() {
 		try {
-			factoria = FactoriaDAO.getInstancia(FactoriaDAO.TDS_DAO);
-			adaptadorUsuario = factoria.getUsuarioDAO();
-			usuariosPorID = new HashMap<Integer, Usuario>();
-			usuariosPorNombre = new HashMap<String, Usuario>();
+			FactoriaDAO factoria = FactoriaDAO.getInstancia(FactoriaDAO.TDS_DAO);
+			adaptador = factoria.getUsuarioDAO();
+			mapaPorID = new HashMap<Integer, Usuario>();
+			mapaPorLogin = new HashMap<String, Usuario>();
 			this.cargarCatalogo();
-
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
 	}
-
-	public List<Usuario> getUsuarios() {
-		List<Usuario> lista = new ArrayList<Usuario>();
-		for (Usuario u : usuariosPorID.values())
-			lista.add(u);
-		return lista;
-	}
-
-	public Usuario getUsuario(String login) {
-		return usuariosPorNombre.get(login);
-	}
-
-	public Usuario getUsuario(int id) {
-		return usuariosPorID.get(id);
+	private void cargarCatalogo() {
+		List<Usuario> lista = adaptador.listarTodosUsuarios();
+		for (Usuario usuario : lista) {
+			mapaPorID.put(usuario.getId(), usuario);
+			mapaPorLogin.put(usuario.getLogin(), usuario);
+		}
 	}
 
 	public void addUsuario(Usuario usuario) {
-		usuariosPorID.put(usuario.getId(), usuario);
-		usuariosPorNombre.put(usuario.getLogin(), usuario);
+		adaptador.insertarUsuario(usuario);
+		mapaPorID.put(usuario.getId(), usuario);
+		mapaPorLogin.put(usuario.getLogin(), usuario);
 	}
-
 	public void removeUsuario(Usuario usuario) {
-		usuariosPorID.remove(usuario.getId());
-		usuariosPorNombre.remove(usuario.getLogin());
+		mapaPorID.remove(usuario.getId());
+		mapaPorLogin.remove(usuario.getLogin());
+		adaptador.borrarUsuario(usuario);
 	}
 
-	private void cargarCatalogo() {
-		List<Usuario> usuariosBD = adaptadorUsuario.listarTodosUsuarios();
-		for (Usuario u : usuariosBD) {
-			usuariosPorID.put(u.getId(), u);
-			usuariosPorNombre.put(u.getLogin(), u);
-		}
+	public boolean existsUsuario(String login) {
+		return mapaPorLogin.containsKey(login);
 	}
+	public Usuario getUsuario(int id) {
+		return mapaPorID.get(id);
+	}
+	public Usuario getUsuario(String login) {
+		return mapaPorLogin.get(login);
+	}
+	
+	public List<Usuario> getUsuarios() {
+		return new ArrayList<Usuario>(mapaPorID.values());
+	}
+
+
 
 }

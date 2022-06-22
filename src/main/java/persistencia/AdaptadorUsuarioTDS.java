@@ -178,7 +178,10 @@ public class AdaptadorUsuarioTDS implements AdaptadorUsuarioDAO {
 			e.printStackTrace();
 		}
 		String email = server.recuperarPropiedadEntidad(entidadUsu, "email");
-		Usuario usuario = new Usuario(id, filtroX, premium, login, password, nombre, apellidos, fechaNac, email);
+		Usuario usuario = new Usuario(login, password, nombre, apellidos, fechaNac, email);
+		usuario.setId(id);
+		usuario.setFiltro(filtroX);
+		usuario.setPremium(premium);
 		int idLV = Integer.valueOf(server.recuperarPropiedadEntidad(entidadUsu, "recentVideo"));
 		AdaptadorListaVideosTDS adaptadorLV = AdaptadorListaVideosTDS.getInstancia();
 		ListaVideos recentVideo = adaptadorLV.consultarListaVideos(idLV);

@@ -212,10 +212,6 @@ public class Registro extends JPanel {
 		} else if (!pass.equals(passRepetir)) {
 			completed = false;
 			errorCampo.setText("Las contraseñas deben coincidir");
-		} else if (!tfUsuario.getText().isEmpty()
-				&& Controlador.getInstancia().isUsuarioRegistrado(tfUsuario.getText())) {
-			completed = false;
-			errorCampo.setText("Este nombre de usuario ya se está usando");
 		}
 
 		if (!completed) {
@@ -255,13 +251,13 @@ public class Registro extends JPanel {
 					LaminaSuperior.getInstancia().mostrar();
 					LaminaSuperior.getInstancia().mostrarLamina("Recientes");
 
-					revalidate();
-					repaint();
 				} else {
 					JOptionPane.showMessageDialog(this,
 							"Ha habido un error al registrar el usuario, parece que ya está registrado",
 							"Error de registro", JOptionPane.ERROR_MESSAGE);
 				}
+				revalidate();
+				repaint();
 
 			}
 		});

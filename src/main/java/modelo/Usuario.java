@@ -8,7 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class Usuario {
-	
+
 	private static final int NUM_RECENT = 5;
 
 	private int id;
@@ -22,22 +22,6 @@ public class Usuario {
 	private String email;
 	private ListaVideos recentVideo;
 	private List<ListaVideos> misListas;
-
-	public Usuario(int id, Filtro filtro, boolean premium, String login, String password, String nombre,
-			String apellidos, Date fechaNac, String email) {
-		super();
-		this.id = id;
-		this.filtro = filtro;
-		this.premium = premium;
-		this.login = login;
-		this.password = password;
-		this.nombre = nombre;
-		this.apellidos = apellidos;
-		this.fechaNac = fechaNac;
-		this.email = email;
-		recentVideo = new ListaVideos("Recientes");
-		misListas = new LinkedList<ListaVideos>();
-	}
 
 	public Usuario(String login, String password, String nombre, String apellidos, Date fechaNac, String email) {
 		super();
@@ -56,6 +40,7 @@ public class Usuario {
 	public int getId() {
 		return id;
 	}
+
 	public void setId(int id) {
 		this.id = id;
 	}
@@ -63,6 +48,7 @@ public class Usuario {
 	public Filtro getFiltro() {
 		return filtro;
 	}
+
 	public void setFiltro(Filtro filtro) {
 		this.filtro = filtro;
 	}
@@ -70,6 +56,7 @@ public class Usuario {
 	public boolean isPremium() {
 		return premium;
 	}
+
 	public void setPremium(boolean premium) {
 		this.premium = premium;
 	}
@@ -77,6 +64,7 @@ public class Usuario {
 	public String getLogin() {
 		return login;
 	}
+
 	public boolean checkLogin(String login) {
 		return this.login.equals(login);
 	}
@@ -84,6 +72,7 @@ public class Usuario {
 	public String getPassword() {
 		return password;
 	}
+
 	public boolean checkPassword(String password) {
 		return this.password.equals(password);
 	}
@@ -100,6 +89,22 @@ public class Usuario {
 		return fechaNac;
 	}
 
+	public int getEdad() {
+		LocalDate fechaActual = LocalDate.now();
+		LocalDate fechaNacimiento = fechaNac.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+		return (int) ChronoUnit.YEARS.between(fechaNacimiento, fechaActual);
+	}
+
+	public boolean isCumple() {
+		if (premium) {
+			LocalDate fechaActual = LocalDate.now();
+			LocalDate fechaNacimiento = fechaNac.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+			return fechaNacimiento.getMonth() == fechaActual.getMonth()
+					&& fechaNacimiento.getDayOfMonth() == fechaActual.getDayOfMonth();
+		}
+		return false;
+	}
+
 	public String getEmail() {
 		return email;
 	}
@@ -107,9 +112,11 @@ public class Usuario {
 	public ListaVideos getRecentVideo() {
 		return recentVideo;
 	}
+
 	public void setRecentVideo(ListaVideos recentVideo) {
 		this.recentVideo = recentVideo;
 	}
+
 	public void addRecentVideo(Video video) {
 		if (recentVideo.containsVideo(video))
 			recentVideo.removeVideo(video);
@@ -121,12 +128,14 @@ public class Usuario {
 	public List<ListaVideos> getMisListas() {
 		return misListas;
 	}
+
 	public List<String> getNombresMisListas() {
 		List<String> nombres = new LinkedList<>();
 		for (ListaVideos lista : misListas)
 			nombres.add(lista.getNombre());
 		return nombres;
 	}
+
 	public ListaVideos getMiLista(String nombre) {
 		ListaVideos miLista = null;
 		for (ListaVideos lista : misListas)
@@ -136,20 +145,17 @@ public class Usuario {
 			}
 		return miLista;
 	}
+
 	public boolean containsMiLista(ListaVideos miLista) {
 		return misListas.contains(miLista);
 	}
+
 	public void addMiLista(ListaVideos miLista) {
 		misListas.add(miLista);
 	}
+
 	public void removeMiLista(ListaVideos miLista) {
 		misListas.remove(miLista);
-	}
-	
-	public int getEdad() {
-		LocalDate fechaActual = LocalDate.now();
-		LocalDate fechaNacimiento = fechaNac.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-		return (int) ChronoUnit.YEARS.between(fechaNacimiento, fechaActual); 
 	}
 
 	@Override
@@ -162,15 +168,10 @@ public class Usuario {
 			return false;
 
 		Usuario otro = (Usuario) obj;
-		return this.filtro == otro.filtro
-				&& this.premium == otro.premium
-				&& this.login.equals(otro.login)
-				&& this.password.equals(otro.password)
-				&& this.nombre.equals(otro.nombre)
-				&& this.apellidos.equals(otro.apellidos)
-				&& this.fechaNac.equals(otro.fechaNac)
-				&& this.email.equals(otro.email)
-				&& this.recentVideo.equals(otro.recentVideo)
+		return this.filtro == otro.filtro && this.premium == otro.premium && this.login.equals(otro.login)
+				&& this.password.equals(otro.password) && this.nombre.equals(otro.nombre)
+				&& this.apellidos.equals(otro.apellidos) && this.fechaNac.equals(otro.fechaNac)
+				&& this.email.equals(otro.email) && this.recentVideo.equals(otro.recentVideo)
 				&& this.misListas.equals(otro.misListas);
 	}
 
@@ -194,18 +195,10 @@ public class Usuario {
 	@Override
 	public String toString() {
 		String[] mes = { "Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic" };
-		String cadena = getClass().getName()
-				+ "[filtro=" + filtro.getClass().getSimpleName()
-				+ ", premium=" + premium
-				+ ", login=" + login
-				+ ",\n\tnombre=" + nombre
-				+ ", apellidos=" + apellidos
-				+ ", fechaNac="
-					+ Integer.toString(fechaNac.getDate())
-					+ " " + mes[fechaNac.getMonth()] + " "
-					+ Integer.toString(1990 + fechaNac.getYear())
-				+ ",\n\temail=" + email
-				+ ",\n\t" + recentVideo;
+		String cadena = getClass().getName() + "[filtro=" + filtro.getClass().getSimpleName() + ", premium=" + premium
+				+ ", login=" + login + ",\n\tnombre=" + nombre + ", apellidos=" + apellidos + ", fechaNac="
+				+ Integer.toString(fechaNac.getDate()) + " " + mes[fechaNac.getMonth()] + " "
+				+ Integer.toString(1990 + fechaNac.getYear()) + ",\n\temail=" + email + ",\n\t" + recentVideo;
 		for (ListaVideos lista : misListas)
 			cadena += "\n\t" + lista;
 		cadena += "]";

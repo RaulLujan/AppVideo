@@ -96,8 +96,10 @@ public class LaminaSuperior extends JPanel {
 		addNuevaListaButton(laminaFuncionalidad);
 		addMisListasButton(laminaFuncionalidad);
 		addRecienteButton(laminaFuncionalidad);
-		addMasVistosrButton(laminaFuncionalidad);
-		addGenerarPDF(laminaFuncionalidad);
+		if (Controlador.getInstancia().isUsuarioPremium()) {
+			addMasVistosrButton(laminaFuncionalidad);
+			addGenerarPDF(laminaFuncionalidad);
+		}
 		laminaFuncionalidad.add(Box.createHorizontalGlue());
 	}
 
@@ -145,7 +147,10 @@ public class LaminaSuperior extends JPanel {
 		premium = createButtonJPanel("Premium", laminaInicio);
 		premium.setForeground(Color.RED);
 
-
+		premium.addActionListener(e -> {
+			Controlador.getInstancia().activarUsuarioPremium();
+		});
+		
 		// TODO se deben mostrar las funciones/botones que son premium --> Generar PDF y
 		// top_ten
 		
@@ -223,12 +228,8 @@ public class LaminaSuperior extends JPanel {
 		login.setVisible(!usuarioLogin);
 		registro.setVisible(!usuarioLogin);
 		
-		if (usuarioLogin) {
-			String nombreUsuario = Controlador.getInstancia().getUsuarioActual().getLogin();
+			String nombreUsuario = Controlador.getInstancia().getNombreUsuario();
 			nombreUsuarioLabel.setText("Hola " + nombreUsuario);
-		} else {
-			nombreUsuarioLabel.setText("Hola Usuari@");
-		}
 	}
 	
 	public void mostrarLamina(String tipo) {

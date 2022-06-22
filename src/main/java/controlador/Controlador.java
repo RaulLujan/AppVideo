@@ -21,42 +21,46 @@ import cargadorVideos.Videos;
 import cargadorVideos.VideosEvent;
 import cargadorVideos.VideosListener;
 import modelo.CatalogoEtiquetas;
+import modelo.CatalogoListasVideos;
 import modelo.CatalogoUsuarios;
 import modelo.CatalogoVideos;
 import modelo.Etiqueta;
 import modelo.ListaVideos;
 import modelo.Usuario;
 import modelo.Video;
+import persistencia.AdaptadorEtiquetaDAO;
 import persistencia.AdaptadorListaVideosDAO;
+import persistencia.AdaptadorUsuarioDAO;
 import persistencia.AdaptadorVideoDAO;
 import persistencia.FactoriaDAO;
 import tds.video.VideoWeb;
 
 public class Controlador implements VideosListener {
 	
-	private static final Font FUENTE_TITULO = new Font(FontFamily.TIMES_ROMAN, 22.0f, Font.BOLD);
-	private static final Font FUENTE_SUBTITULO = new Font(FontFamily.TIMES_ROMAN, 18.0f, Font.ITALIC);
-	private static final Font FUENTE_PARRAFO = new Font(FontFamily.TIMES_ROMAN, 12.0f, Font.NORMAL);
-
-	private static final String NOMBRE_PDF = "listasVideos.pdf";
-
-
 	private static Controlador instancia;
-
 	public static Controlador getInstancia() {
 		if (instancia == null)
 			instancia = new Controlador();
 		return instancia;
 	}
 
-	private Usuario usuarioActual;
-	private FactoriaDAO factoria;
+	private static final Font FUENTE_TITULO = new Font(FontFamily.TIMES_ROMAN, 22.0f, Font.BOLD);
+	private static final Font FUENTE_SUBTITULO = new Font(FontFamily.TIMES_ROMAN, 18.0f, Font.ITALIC);
+	private static final Font FUENTE_PARRAFO = new Font(FontFamily.TIMES_ROMAN, 12.0f, Font.NORMAL);
 
-	private CatalogoVideos catalogoVideos;
-	private CatalogoEtiquetas catalogoEtiquetas;
-
+	private static final String NOMBRE_PDF = "listasVideos.pdf";
+	
+	private AdaptadorUsuarioDAO adaptadorUsuario;
 	private AdaptadorListaVideosDAO adaptadorListaVideos;
 	private AdaptadorVideoDAO adaptadorVideo;
+
+	private CatalogoUsuarios catalogoUsuarios;
+	private CatalogoListasVideos catalogoListas;
+	private CatalogoVideos catalogoVideos;
+	private CatalogoEtiquetas catalogoEtiquetas;
+	//private CatalogoFiltros catalogoFiltros;
+
+	private Usuario usuarioActual;
 
 	private VideoWeb videoWeb;
 
@@ -65,11 +69,12 @@ public class Controlador implements VideosListener {
 			videoWeb = new VideoWeb();
 			usuarioActual = null;
 
+			catalogoUsuarios = CatalogoUsuarios.getInstancia();
+			catalogoListas = CatalogoListasVideos.getInstancia();
 			catalogoVideos = CatalogoVideos.getInstancia();
 			catalogoEtiquetas = CatalogoEtiquetas.getInstancia();
 
-			factoria = FactoriaDAO.getInstancia();
-
+			FactoriaDAO factoria = FactoriaDAO.getInstancia();
 			adaptadorListaVideos = factoria.getListaVideosDAO();
 			adaptadorVideo = factoria.getVideoDAO();
 		} catch (Exception e) {
@@ -77,44 +82,54 @@ public class Controlador implements VideosListener {
 		}
 	}
 
-	public Usuario getUsuarioActual() {
-		return usuarioActual;
-	}
-
-	public boolean isUsuarioRegistrado(String login) {
-		return CatalogoUsuarios.getInstancia().getUsuario(login) != null;
-	}
-
-	public boolean getLogin(String nombre, String pass) {
-		Usuario usuario = CatalogoUsuarios.getInstancia().getUsuario(nombre);
-		if (usuario != null && usuario.getPassword().equals(pass)) {
-			this.usuarioActual = usuario;
-			return true;
-		}
-
-		return false;
-	}
-
-	public boolean registrarUsuario(String nombre, String apellidos, Date fechaNacimiento, String email, String login,
-			String pass) {
-		if (isUsuarioRegistrado(login))
+	public boolean registrarUsuario(String nombre, String apellidos, Date fechaNac, String email, String login, String pass) {
+		if (catalogoUsuarios.existsUsuario(login))
 			return false;
 
-		Usuario usuario = new Usuario(login, pass, nombre, apellidos, fechaNacimiento, email);
-		factoria.getUsuarioDAO().insertarUsuario(usuario);
-		CatalogoUsuarios.getInstancia().addUsuario(usuario);
+		Usuario usuario = new Usuario(login, pass, nombre, apellidos, fechaNac, email);
+		catalogoUsuarios.addUsuario(usuario);
+		catalogoListas.addListaVideos(usuario.getRecentVideo());
+		return true;
+	}
+	public boolean registrarUsuario(String nombre, Date fechaNac, String login, String pass) {
+		return registrarUsuario(nombre, "", fechaNac, "", login, pass);
+	}
 
+	public boolean loginUsuario(String login, String pass) {
+		if (usuarioActual != null || !catalogoUsuarios.existsUsuario(login))
+			return false;
+		Usuario usuario = catalogoUsuarios.getUsuario(login);
+		if (!usuario.checkPassword(pass))
+			return false;
+		usuarioActual = usuario;
 		return true;
 	}
 
-	public boolean registrarUsuario(String nombre, Date fechaNacimiento, String login, String pass) {
-		return registrarUsuario(nombre, "", fechaNacimiento, "", login, pass);
-	}
-
 	public boolean isUsuarioLogin() {
-		return this.usuarioActual != null;
+		return usuarioActual != null;
+	}
+	
+	public String getNombreUsuario() {
+		if (usuarioActual != null)
+			return usuarioActual.getNombre();
+		return "Usuari@";
 	}
 
+	public void activarUsuarioPremium() {
+		if (usuarioActual != null && !usuarioActual.isPremium()) {
+			usuarioActual.setPremium(true);
+			adaptadorUsuario.modificarUsuario(usuarioActual);
+		}
+	}
+	
+	public boolean isUsuarioPremium() {
+		return usuarioActual != null && usuarioActual.isPremium();
+	}
+	
+	public boolean comprobarCumpleUsuario() {
+		return isUsuarioPremium() && usuarioActual.isCumple();
+	}
+	
 	public VideoWeb getVideoWeb() {
 		return videoWeb;
 	}
