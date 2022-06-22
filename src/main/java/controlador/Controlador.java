@@ -75,6 +75,7 @@ public class Controlador implements VideosListener {
 			FactoriaDAO factoria = FactoriaDAO.getInstancia();
 			adaptadorListaVideos = factoria.getListaVideosDAO();
 			adaptadorVideo = factoria.getVideoDAO();
+			adaptadorUsuario = factoria.getUsuarioDAO();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -116,6 +117,13 @@ public class Controlador implements VideosListener {
 	public void activarUsuarioPremium() {
 		if (usuarioActual != null && !usuarioActual.isPremium()) {
 			usuarioActual.setPremium(true);
+			adaptadorUsuario.modificarUsuario(usuarioActual);
+		}
+	}
+	
+	public void desactivarUsuarioPremium() {
+		if (usuarioActual != null && usuarioActual.isPremium()) {
+			usuarioActual.setPremium(false);
 			adaptadorUsuario.modificarUsuario(usuarioActual);
 		}
 	}
@@ -169,6 +177,14 @@ public class Controlador implements VideosListener {
 				catalogoVideos.addVideo(video);
 			}
 		}
+	}
+	
+	public List<Video> getRecientes(){
+		return usuarioActual.getRecentVideo().getVideos();
+	}
+	
+	public List<Video> getTopVideos(){
+		return catalogoVideos.getTopVideos();
 	}
 
 	private Map<String, Map<String, Integer>> getListaVideosNumRepro() {

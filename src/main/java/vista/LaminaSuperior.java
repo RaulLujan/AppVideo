@@ -1,13 +1,17 @@
 package vista;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.io.File;
+
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -19,11 +23,13 @@ import controlador.Controlador;
 public class LaminaSuperior extends JPanel {
 
 	private static LaminaSuperior instancia = null;
+
 	public static LaminaSuperior getInstancia(LaminaCentral laminaCentral) {
 		if (instancia == null)
 			return instancia = new LaminaSuperior(laminaCentral);
 		return instancia;
 	}
+
 	public static LaminaSuperior getInstancia() {
 		return instancia;
 	}
@@ -32,14 +38,16 @@ public class LaminaSuperior extends JPanel {
 	private JPanel laminaFuncionalidad;
 	private LaminaCentral laminaCentral;
 	private ButtonGroup grupoFuncionalidad;
-	
+
 	private JToggleButton bRecientes;
-	
+
 	private JLabel nombreUsuarioLabel;
 	private JButton premium;
+	private boolean premiumSelected = false;
 	private JButton login;
 	private JButton registro;
 	private JButton logout;
+	private JButton bCargadorVideos;
 
 	private LaminaSuperior(LaminaCentral laminaCentral) {
 		laminaInicio = new JPanel();
@@ -87,6 +95,8 @@ public class LaminaSuperior extends JPanel {
 		addLogoutButton(laminaInicio);
 		laminaInicio.add(Box.createHorizontalGlue());
 		addPremiumButton(laminaInicio);
+		laminaInicio.add(Box.createHorizontalGlue());
+		addCargadorVideosBoton(laminaInicio);
 	}
 
 	private void confLaminaFuncionalidad() {
@@ -125,7 +135,7 @@ public class LaminaSuperior extends JPanel {
 		logout = createButtonJPanel("Logout", laminaInicio);
 
 		logout.addActionListener(e -> {
-			int salida = JOptionPane.showConfirmDialog(null, "¿Seguro de que quiere salir?", "Logout",
+			int salida = JOptionPane.showConfirmDialog(null, "ï¿½Seguro de que quiere salir?", "Logout",
 					JOptionPane.YES_NO_CANCEL_OPTION);
 
 			switch (salida) {
@@ -148,12 +158,12 @@ public class LaminaSuperior extends JPanel {
 		premium.setForeground(Color.RED);
 
 		premium.addActionListener(e -> {
-			Controlador.getInstancia().activarUsuarioPremium();
+			if (premiumSelected)
+				Controlador.getInstancia().desactivarUsuarioPremium();
+			else
+				Controlador.getInstancia().activarUsuarioPremium();
 		});
-		
-		// TODO se deben mostrar las funciones/botones que son premium --> Generar PDF y
-		// top_ten
-		
+
 	}
 
 	private void addExplorarButton(JPanel lamina) {
@@ -189,20 +199,37 @@ public class LaminaSuperior extends JPanel {
 	}
 
 	private void addMasVistosrButton(JPanel lamina) {
-		JToggleButton masVistos = createToggleButtonJPanel("Más Vistos", lamina);
+		JToggleButton masVistos = createToggleButtonJPanel("Mï¿½s Vistos", lamina);
 
 		masVistos.addActionListener(e -> {
-			laminaCentral.setLamina(masVistos.getText().replace(" ", "").replace("á", "a"));
+			laminaCentral.setLamina(masVistos.getText().replace(" ", "").replace("ï¿½", "a"));
 		});
 	}
-	
+
 	private void addGenerarPDF(JPanel lamina) {
 		JToggleButton generarPDF = createToggleButtonJPanel("Generar PDF", lamina);
 
 		generarPDF.addActionListener(e -> {
 			laminaCentral.setLamina(generarPDF.getText().replace(" ", ""));
 		});
-	}	
+	}
+
+	private void addCargadorVideosBoton(JPanel lamina) {
+		bCargadorVideos = createButtonJPanel("Cargador Videos", laminaInicio);
+		
+		bCargadorVideos.addActionListener(e -> {
+			 JFileChooser fileChooser = new JFileChooser();
+			    fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+
+			    int seleccion = fileChooser.showOpenDialog((Component)e.getSource());
+			    if (seleccion == JFileChooser.APPROVE_OPTION) {
+			        File fichero = fileChooser.getSelectedFile();
+			        Controlador.getInstancia().nuevosVideos(e);
+			    } 
+			
+		});
+
+	}
 
 	private JButton createButtonJPanel(String texto, JPanel lamina) {
 		JButton boton = new JButton(texto);
@@ -224,14 +251,14 @@ public class LaminaSuperior extends JPanel {
 		laminaFuncionalidad.setVisible(usuarioLogin);
 		premium.setVisible(usuarioLogin);
 		logout.setVisible(usuarioLogin);
-		
+
 		login.setVisible(!usuarioLogin);
 		registro.setVisible(!usuarioLogin);
-		
-			String nombreUsuario = Controlador.getInstancia().getNombreUsuario();
-			nombreUsuarioLabel.setText("Hola " + nombreUsuario);
+
+		String nombreUsuario = Controlador.getInstancia().getNombreUsuario();
+		nombreUsuarioLabel.setText("Hola " + nombreUsuario);
 	}
-	
+
 	public void mostrarLamina(String tipo) {
 		laminaCentral.setLamina(tipo);
 	}
@@ -239,5 +266,5 @@ public class LaminaSuperior extends JPanel {
 	public JToggleButton getbRecientes() {
 		return bRecientes;
 	}
-	
+
 }

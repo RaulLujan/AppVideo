@@ -65,10 +65,10 @@ public class Explorar extends JPanel {
 		pBusqueda.setBorder(BorderFactory.createEtchedBorder(Color.DARK_GRAY, Color.GRAY));
 		pBusqueda.setOpaque(isOpaque);
 
-		JLabel lBuscar = new JLabel("Buscar título:", SwingConstants.RIGHT);
+		JLabel lBuscar = new JLabel("Buscar tï¿½tulo:", SwingConstants.RIGHT);
 		tfBuscar = new JTextField(20);
 		JButton bBuscar = new JButton("Buscar");
-		JButton bNuevaBusq = new JButton("Nueva búsqueda");
+		JButton bNuevaBusq = new JButton("Nueva bï¿½squeda");
 
 		lBuscar.setForeground(Color.WHITE);
 
@@ -119,7 +119,7 @@ public class Explorar extends JPanel {
 
 		JLabel lEtiqDisponibles = new JLabel("Etiquetas disponibles");
 		listaDisponibles = new JList<>();
-		JLabel lEtiqSeleccionadas = new JLabel("Etiquetas seleccionadas búsqueda");
+		JLabel lEtiqSeleccionadas = new JLabel("Etiquetas seleccionadas bï¿½squeda");
 		listaSeleccionadas = new JList<>();
 
 		pEtiquetas.setLayout(new GridBagLayout());
@@ -229,8 +229,8 @@ public class Explorar extends JPanel {
 		JTable tablaVideos;
 		String[] nombresColumnas = {};
 		
+		System.out.println("HOla " + listaVideos.get(0).getTitulo());
 		listaATablaVideos();
-		
 		tablaVideos = new JTable(tablaDatosVideos, nombresColumnas);
 		
 		GridBagConstraints constraintsPVideos = new GridBagConstraints();

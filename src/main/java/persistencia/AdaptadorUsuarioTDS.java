@@ -115,7 +115,7 @@ public class AdaptadorUsuarioTDS implements AdaptadorUsuarioDAO {
 		server.eliminarPropiedadEntidad(entidadUsu, "misListas");
 		server.anadirPropiedadEntidad(entidadUsu, "misListas", concatenarIDListaVideos(usuario.getMisListas()));
 
-		// Escalable por si tiene más propiedades
+		// Escalable por si tiene mas propiedades
 		for (Propiedad prop : entidadUsu.getPropiedades()) {
 			switch (prop.getNombre()) {
 			case "filtro":

@@ -12,9 +12,10 @@ import persistencia.AdaptadorVideoDAO;
 import persistencia.FactoriaDAO;
 
 public class CatalogoVideos {
-	
+
 	private static final int TOP_VIDEOS = 10;
 	private static CatalogoVideos instancia = new CatalogoVideos();
+
 	public static CatalogoVideos getInstancia() {
 		return instancia;
 	}
@@ -33,6 +34,7 @@ public class CatalogoVideos {
 			e.printStackTrace();
 		}
 	}
+
 	private void cargarCatalogo() {
 		List<Video> lista = adaptador.listarTodosVideos();
 		for (Video video : lista)
@@ -43,6 +45,7 @@ public class CatalogoVideos {
 		adaptador.insertarVideo(video);
 		mapaPorID.put(video.getId(), video);
 	}
+
 	public void removeVideo(Video video) {
 		mapaPorID.remove(video.getId());
 		adaptador.borrarVideo(video);
@@ -54,9 +57,11 @@ public class CatalogoVideos {
 				return true;
 		return false;
 	}
+
 	public boolean existsVideo(int id) {
 		return mapaPorID.containsKey(id);
 	}
+
 	public Video getVideo(int id) {
 		return mapaPorID.get(id);
 	}
@@ -64,22 +69,22 @@ public class CatalogoVideos {
 	public List<Video> getVideos() {
 		return new ArrayList<Video>(mapaPorID.values());
 	}
-	
+
 	public List<Video> getVideosOK(Usuario usuario, String subtitulo, List<Etiqueta> etiquetas) {
 		Filtro f1 = new FiltroTitulo(subtitulo);
 		Filtro f2 = new FiltroEtiquetas(etiquetas);
 		Filtro f3 = usuario.getFiltro();
-		return mapaPorID.values().stream()
-				.filter(v -> f1.esVideoOK(v)
-							&& f2.esVideoOK(v)
-							&& f3.esVideoOK(v))
+		return mapaPorID.values().stream().filter(v -> f1.esVideoOK(v) && f2.esVideoOK(v) && f3.esVideoOK(v))
 				.collect(Collectors.toList());
 	}
 
 	public List<Video> getTopVideos() {
-		return mapaPorID.values().stream()
-				.sorted(Comparator.comparing(Video::getNumRepro).reversed())
-				.limit(TOP_VIDEOS).collect(Collectors.toList());
+		return getTopVideos(TOP_VIDEOS);
+	}
+
+	public List<Video> getTopVideos(int numTop) {
+		return mapaPorID.values().stream().sorted(Comparator.comparing(Video::getNumRepro).reversed()).limit(numTop)
+				.collect(Collectors.toList());
 	}
 
 }
