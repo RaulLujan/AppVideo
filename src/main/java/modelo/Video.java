@@ -3,6 +3,7 @@ package modelo;
 import java.sql.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.swing.ImageIcon;
 
@@ -13,7 +14,7 @@ public class Video {
 	private String titulo;
 	private int numRepro;
 	private List<Etiqueta> etiquetas;
-	private Date ultimaReproduccion;
+	private Date ultimaRepro;
 
 	private ImageIcon icono = null;
 
@@ -27,7 +28,6 @@ public class Video {
 	public ImageIcon getIcono() {
 		return icono;
 	}
-
 	public void setIcono(ImageIcon icono) {
 		this.icono = icono;
 	}
@@ -35,7 +35,6 @@ public class Video {
 	public int getId() {
 		return id;
 	}
-
 	public void setId(int id) {
 		this.id = id;
 	}
@@ -47,7 +46,6 @@ public class Video {
 	public String getTitulo() {
 		return titulo;
 	}
-
 	public String getTituloCorto() {
 		if (titulo.length() > 31)
 			return titulo.substring(0, 30) + "...";
@@ -58,34 +56,28 @@ public class Video {
 	public int getNumRepro() {
 		return numRepro;
 	}
-
 	public void setNumRepro(int numRepro) {
 		this.numRepro = numRepro;
 	}
-
-	public void incrementarNumRepro() {
+	public void incrNumRepro() {
 		numRepro++;
 	}
 
 	public List<Etiqueta> getEtiquetas() {
 		return etiquetas;
 	}
-
 	public List<String> getNombresEtiquetas() {
-		List<String> nombres = new LinkedList<>();
-		for (Etiqueta etiqueta : etiquetas)
-			nombres.add(etiqueta.getNombre());
-		return nombres;
+		return etiquetas.stream()
+				.map(et -> et.getNombre())
+				.collect(Collectors.toList());
 	}
-
-	public boolean containsEtiqueta(String nombre) {
-		return etiquetas.stream().anyMatch(et -> et.getNombre().equals(nombre));
-	}
-
 	public boolean containsEtiqueta(Etiqueta etiqueta) {
 		return etiquetas.contains(etiqueta);
 	}
-
+	public boolean containsEtiqueta(String nombre) {
+		return etiquetas.stream()
+				.anyMatch(et -> et.isNombre(nombre));
+	}
 	public boolean addEtiqueta(Etiqueta etiqueta) {
 		if (!etiquetas.contains(etiqueta)) {
 			etiquetas.add(etiqueta);
@@ -94,12 +86,11 @@ public class Video {
 		return false;
 	}
 
-	public Date getUltimaReproduccion() {
-		return ultimaReproduccion;
+	public Date getUltimaRepro() {
+		return ultimaRepro;
 	}
-
-	public void setUltimaReproduccion(Date ultimaReproduccion) {
-		this.ultimaReproduccion = ultimaReproduccion;
+	public void setUltimaRepro(Date ultimaRepro) {
+		this.ultimaRepro = ultimaRepro;
 	}
 
 	@Override
@@ -112,7 +103,9 @@ public class Video {
 			return false;
 
 		Video otro = (Video) obj;
-		return this.url.equals(otro.url) && this.titulo.equals(otro.titulo) && this.numRepro == otro.numRepro
+		return this.url.equals(otro.url)
+				&& this.titulo.equals(otro.titulo)
+				&& this.numRepro == otro.numRepro
 				&& this.etiquetas.equals(otro.etiquetas);
 	}
 
@@ -129,7 +122,10 @@ public class Video {
 
 	@Override
 	public String toString() {
-		String cadena = getClass().getName() + "[url=" + url + ",\n\ttitulo=" + titulo + ", numRep=" + numRepro
+		String cadena = getClass().getName()
+				+ "[url=" + url
+				+ ",\n\ttitulo=" + titulo +
+				", numRep=" + numRepro
 				+ ", etiquetas=";
 		for (Etiqueta etiqueta : etiquetas)
 			cadena += "\n\t" + etiqueta;

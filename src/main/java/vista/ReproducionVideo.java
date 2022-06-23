@@ -7,17 +7,24 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.*;
 
 import controlador.Controlador;
+import modelo.Video;
 import tds.video.VideoWeb;
 
-public class ReproducionVideo extends JPanel {
+public class ReproducionVideo extends JPanel implements ActionListener {
 
 	private JPanel panelTitulo;
 	private JPanel panelReproductor;
 	private JPanel panelBotonoes;
+	
+	private JLabel titulo;
+	
+	private int idVideo;
 	
 	public ReproducionVideo() {
 		confLamina();
@@ -68,7 +75,7 @@ public class ReproducionVideo extends JPanel {
 	}
 
 	private void addComponentes() {
-		JLabel titulo = new JLabel("Sin título");
+		titulo = new JLabel("Sin tï¿½tulo");
 		titulo.setFont(new Font("Arial", Font.BOLD, 24));
 
 		JButton btCancelar = new JButton("Cancelar");
@@ -115,7 +122,7 @@ public class ReproducionVideo extends JPanel {
 	}
 
 	private void addReproductor() {
-		Controlador.getInstancia().ponerVideo();
+//		Controlador.getInstancia().reproducirVideo();
 	}
 
 	private void addCopyRigth() {
@@ -132,5 +139,73 @@ public class ReproducionVideo extends JPanel {
 
 		panelReproductor.add(copyright, constraintsLCopy);
 	}
+	
+	public void reproducirVideo(int id) {
+		this.idVideo = id;
+		actualizar();
+		ReproductorVideo reproductor = new ReproductorVideo();
+		reproductor.start();
+	}
+	
+	public void cancelarVideo() {
+		Controlador.getInstancia().cancelarVideo();
+		this.idVideo = 0;
+		actualizar();
+	}
+
+	public void actualizar() {
+		actualizarTitulo();
+		actualizarNumReproducciones();
+		actualizarEtiquetas();
+		actualizarReproductor();
+	}
+
+	private void actualizarTitulo() {
+//		titulo.setText(Controlador.getInstancia().getTituloVideo(idVideo));
+	}
+	
+	private void actualizarNumReproducciones() {
+//		numReproducciones.setText(Controlador.getInstancia().getNumReproduccionesVideo(idVideo));
+	}
+
+	private void actualizarEtiquetas() {
+//		etiquetas.setText("");
+//		List<String> nombresEtiquetas = Controlador.getInstancia().getEtiquetasVideo(idVideo);
+//		for (String nombre : nombresEtiquetas) {
+//			String otras = etiquetas.getText();
+//			etiquetas.setText(otras + " " + nombre);
+//		}
+	}
+	
+	private void actualizarReproductor() {
+//		BorderLayout layout = (BorderLayout) panelCentro.getLayout();
+//		panelCentro.remove(layout.getLayoutComponent(BorderLayout.CENTER));
+//		
+//		JPanel panel = new JPanel();
+//		panelCentro.add(panel, BorderLayout.CENTER);
+//		
+//		// por defecto, un nuevo panel ya tiene asociado un flow layout centrado
+//		
+//		VideoWeb videoWeb = controlador.getVideoWeb();
+//		panel.add(videoWeb);
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+//		JButton boton = (JButton) e.getSource();
+//		
+//		if (boton.getText().equals(Constantes.ANADIR))
+//			if (!campoNuevaEtiqueta.getText().trim().isEmpty()) {
+//				controlador.etiquetarVideo(video, campoNuevaEtiqueta.getText());
+//				actualizarEtiquetas();
+//			}
+	}
+	
+	private class ReproductorVideo extends Thread {
+//		public void run() {
+//			controlador.reproducirVideo(video);
+//		}
+	}
+	
 
 }

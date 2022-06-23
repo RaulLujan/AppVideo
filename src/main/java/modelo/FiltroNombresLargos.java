@@ -2,12 +2,17 @@ package modelo;
 
 public class FiltroNombresLargos extends Filtro {
 	
+	private static Filtro instancia = new FiltroNombresLargos();
+	public static Filtro getInstancia() {
+		return instancia;
+	}
+	
 	public FiltroNombresLargos() {
-		super("Elimina de las búsquedas los vídeos cuyo titulo tenga más de 16 caracteres");
+		super("Elimina de las bï¿½squedas los vï¿½deos cuyo titulo tenga mï¿½s de 16 caracteres");
 	}
 
 	@Override
-	public boolean esVideoOK(Video video) {
+	public boolean esVideoOK(Video video, Usuario usuario) {
 		return video.getTitulo().length() <= 16;
 	}
 

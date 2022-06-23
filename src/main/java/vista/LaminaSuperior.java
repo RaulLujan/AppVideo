@@ -18,6 +18,8 @@ import javax.swing.JPanel;
 import javax.swing.JToggleButton;
 import javax.swing.border.EmptyBorder;
 
+import cargadorVideos.BuscadorVideos;
+import cargadorVideos.IBuscadorVideos;
 import controlador.Controlador;
 
 public class LaminaSuperior extends JPanel {
@@ -43,7 +45,6 @@ public class LaminaSuperior extends JPanel {
 
 	private JLabel nombreUsuarioLabel;
 	private JButton premium;
-	private boolean premiumSelected = false;
 	private JButton login;
 	private JButton registro;
 	private JButton logout;
@@ -158,10 +159,7 @@ public class LaminaSuperior extends JPanel {
 		premium.setForeground(Color.RED);
 
 		premium.addActionListener(e -> {
-			if (premiumSelected)
-				Controlador.getInstancia().desactivarUsuarioPremium();
-			else
-				Controlador.getInstancia().activarUsuarioPremium();
+				Controlador.getInstancia().setUsuarioPremium();
 		});
 
 	}
@@ -218,17 +216,17 @@ public class LaminaSuperior extends JPanel {
 		bCargadorVideos = createButtonJPanel("Cargador Videos", laminaInicio);
 		
 		bCargadorVideos.addActionListener(e -> {
-			 JFileChooser fileChooser = new JFileChooser();
-			    fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+			IBuscadorVideos componente = new BuscadorVideos();
+			componente.addVideosListener(Controlador.getInstancia());
+			JFileChooser fileChooser = new JFileChooser();
+		    fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 
-			    int seleccion = fileChooser.showOpenDialog((Component)e.getSource());
-			    if (seleccion == JFileChooser.APPROVE_OPTION) {
-			        File fichero = fileChooser.getSelectedFile();
-			        Controlador.getInstancia().nuevosVideos(e);
-			    } 
-			
+		    int seleccion = fileChooser.showOpenDialog((Component)e.getSource());
+		    if (seleccion == JFileChooser.APPROVE_OPTION) {
+		        File fichero = fileChooser.getSelectedFile();
+		        componente.setArchivoVideos(fichero);
+		    } 
 		});
-
 	}
 
 	private JButton createButtonJPanel(String texto, JPanel lamina) {

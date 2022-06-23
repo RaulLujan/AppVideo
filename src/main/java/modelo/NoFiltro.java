@@ -14,7 +14,7 @@ public class NoFiltro extends Filtro {
 	}
 
 	@Override
-	public boolean esVideoOK(Video video) {
+	public boolean esVideoOK(Video video, Usuario usuario) {
 		return true;
 	}
 

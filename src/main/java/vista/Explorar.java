@@ -9,13 +9,17 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.print.PrinterException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.AbstractListModel;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -29,18 +33,19 @@ import javax.swing.border.TitledBorder;
 import javax.swing.table.AbstractTableModel;
 
 import controlador.Controlador;
-import modelo.CatalogoVideos;
+import modelo.Etiqueta;
 import modelo.Video;
 
 public class Explorar extends JPanel {
 	private static final int NUM_COLUMNAS = 4;
 
 	private JTextField tfBuscar;
+	private DefaultListModel<String> modeloDisponibles;
+	private DefaultListModel<String> modeloSeleccionadas;
 	private JList<String> listaDisponibles;
 	private JList<String> listaSeleccionadas;
 	//Revisar
 	private List<Video> listaVideos;
-	private Video[][] tablaDatosVideos;
 
 	private boolean buscado = false;
 	private boolean isOpaque = false;
@@ -65,10 +70,10 @@ public class Explorar extends JPanel {
 		pBusqueda.setBorder(BorderFactory.createEtchedBorder(Color.DARK_GRAY, Color.GRAY));
 		pBusqueda.setOpaque(isOpaque);
 
-		JLabel lBuscar = new JLabel("Buscar t�tulo:", SwingConstants.RIGHT);
+		JLabel lBuscar = new JLabel("Buscar titulo:", SwingConstants.RIGHT);
 		tfBuscar = new JTextField(20);
 		JButton bBuscar = new JButton("Buscar");
-		JButton bNuevaBusq = new JButton("Nueva b�squeda");
+		JButton bNuevaBusq = new JButton("Nueva busqueda");
 
 		lBuscar.setForeground(Color.WHITE);
 
@@ -131,32 +136,17 @@ public class Explorar extends JPanel {
 		lEtiqSeleccionadas.setForeground(Color.WHITE);
 
 		listaDisponibles.setVisibleRowCount(1);
-		listaDisponibles.setModel(new AbstractListModel<String>() {
-			String[] values = new String[] { "Etiqueta1", "Etiqueta2", "Etiqueta3", "Etiqueta4" };
+		modeloDisponibles = new DefaultListModel<>();
+		modeloDisponibles.addAll(Controlador.getInstancia().getEtiquetas());
+		listaDisponibles.setModel(modeloDisponibles);
 
-			public int getSize() {
-				return values.length;
-			}
+		modeloSeleccionadas = new DefaultListModel<>();
+		listaSeleccionadas.setModel(modeloSeleccionadas);
 
-			@Override
-			public String getElementAt(int index) {
-				return values[index];
-			}
-		});
-
-		listaSeleccionadas.setModel(new AbstractListModel<String>() {
-			String[] values = new String[] { "Etiqueta1", "Etiqueta2", "Etiqueta3", "Etiqueta4" };
-
-			public int getSize() {
-				return values.length;
-			}
-
-			@Override
-			public String getElementAt(int index) {
-				return values[index];
-			}
-		});
-
+		addListenerListaDisponibles();
+		addListenerListaSeleccionadas();
+		
+		
 		GridBagConstraints constraintsLEtiDispo = new GridBagConstraints();
 		constraintsLEtiDispo.insets = new Insets(20, 20, 10, 20);
 		constraintsLEtiDispo.fill = GridBagConstraints.CENTER;
@@ -226,12 +216,11 @@ public class Explorar extends JPanel {
 //
 //		addListenerBotonPrueba(bPrueba);
 
-		JTable tablaVideos;
-		String[] nombresColumnas = {};
-		
-		System.out.println("HOla " + listaVideos.get(0).getTitulo());
-		listaATablaVideos();
-		tablaVideos = new JTable(tablaDatosVideos, nombresColumnas);
+		if (!buscado)
+			listaVideos = Controlador.getInstancia().getVideosExplorar();
+		for (Video v : listaVideos)
+			System.out.println(v.getTitulo());
+		JTable tablaVideos = new JTable(listaATablaVideos(), new String[0]); //nombresColumnas
 		
 		GridBagConstraints constraintsPVideos = new GridBagConstraints();
 		constraintsPVideos.insets = new Insets(2, 10, 10, 2);
@@ -248,41 +237,68 @@ public class Explorar extends JPanel {
 		
 	}
 
-	private void listaATablaVideos() {
+	private Video[][] listaATablaVideos() {
 		int numVideos = listaVideos.size();
 		int mod = numVideos % NUM_COLUMNAS;
 		double div = numVideos / NUM_COLUMNAS;
 		int numFilas = (int) ((mod == 0) ? div : div + 1);
+		int numCol = (mod == 0) ? NUM_COLUMNAS : mod;
 
-		for (int i = 0; i < numFilas; i++)
+		Video[][] tablaVideos = new Video[numFilas][NUM_COLUMNAS];
+		for (int i = 0; i < numFilas-1; i++)
 			for (int j = 0; j < NUM_COLUMNAS; j++)
-				tablaDatosVideos[i][j] = listaVideos.get((j * 10) + i);
+				tablaVideos[i][j] = listaVideos.get(i * NUM_COLUMNAS + j);
+		int i = numFilas-1;
+		for (int j = 0; j < numCol; j++)
+			tablaVideos[i][j] = listaVideos.get(i * NUM_COLUMNAS + j);
+		return tablaVideos;
 	}
 
+	private void addListenerListaDisponibles() {
+		listaDisponibles.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				if (e.getClickCount() == 2) {
+					JList<String> resultados = (JList<String>) e.getComponent();
+					String etiqueta = resultados.getSelectedValue();
+					modeloDisponibles.removeElement(etiqueta);
+					modeloSeleccionadas.addElement(etiqueta);
+				}
+			}
+		});
+		
+	}
+
+	private void addListenerListaSeleccionadas() {
+		listaSeleccionadas.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				if (e.getClickCount() == 2) {
+					JList<String> resultados = (JList<String>) e.getComponent();
+					String etiqueta = resultados.getSelectedValue();
+					modeloSeleccionadas.removeElement(etiqueta);
+					modeloDisponibles.addElement(etiqueta);
+				}
+			}
+		});
+	}
+	
 	private void addListenerBotonNuevaBusqueda(JButton bNuevaBusq) {
 		bNuevaBusq.addActionListener(e -> {
 			tfBuscar.setText("");
-			listaDisponibles.add(listaSeleccionadas);
-			listaSeleccionadas.removeAll();
+			modeloSeleccionadas.removeAllElements();
+			modeloDisponibles.removeAllElements();
+			modeloDisponibles.addAll(Controlador.getInstancia().getEtiquetas());
 		});
 	}
 
 	private void addListenerBotonBuscar(JButton bBuscar) {
 		bBuscar.addActionListener(e -> {
-			listaVideos = (List<Video>) CatalogoVideos.getInstancia().getVideosOK(null,tfBuscar.getText(),null);
+			List<String> etiquetas = new ArrayList<>(modeloSeleccionadas.getSize());
+			for (int i = 0; i < modeloSeleccionadas.getSize(); i++)
+				etiquetas.add(i, modeloSeleccionadas.getElementAt(i));
+			System.out.println(etiquetas);
+			listaVideos = Controlador.getInstancia().getVideosBuscar(tfBuscar.getText(),etiquetas);
 			buscado = true;
 			confVideos();
-		});
-	}
-
-	private void addListenerBotonPrueba(JButton bPrueba) {
-		bPrueba.addActionListener(e -> {
-			removeAll();
-			LaminaSuperior.getInstancia().mostrar();
-			LaminaSuperior.getInstancia().mostrarLamina("ReproducionVideo");
-
-			revalidate();
-			repaint();
 		});
 	}
 

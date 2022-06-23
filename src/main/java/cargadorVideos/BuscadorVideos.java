@@ -9,7 +9,7 @@ public class BuscadorVideos implements IBuscadorVideos {
 	private Vector<VideosListener> listListener;
 
 	public BuscadorVideos() {
-		this.listListener = new Vector();
+		this.listListener = new Vector<>();
 		videos = null;
 	}
 

@@ -83,26 +83,6 @@ public class AdaptadorListaVideosTDS implements AdaptadorListaVideosDAO {
 		server.anadirPropiedadEntidad(entidadLV, "numVideos", String.valueOf(listaVideos.getNumVideos()));
 		server.eliminarPropiedadEntidad(entidadLV, "videos");
 		server.anadirPropiedadEntidad(entidadLV, "videos", concatenarIDVideos(listaVideos.getVideos()));
-
-		// Escalable por si tiene más propiedades
-		for (Propiedad prop : entidadLV.getPropiedades()) {
-			switch (prop.getNombre()) {
-			case "nombre":
-				prop.setValor(listaVideos.getNombre());
-				break;
-			case "numVideos":
-				prop.setValor(String.valueOf(listaVideos.getNumVideos()));
-				break;
-			case "videos":
-				prop.setValor(concatenarIDVideos(listaVideos.getVideos()));
-				break;
-			case "usuario":
-				prop.setValor(String.valueOf(listaVideos.getUsuarioId()));
-				break;
-			default:
-				break;
-			}
-		}
 	}
 
 	@Override

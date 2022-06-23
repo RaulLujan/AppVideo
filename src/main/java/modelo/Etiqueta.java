@@ -19,6 +19,9 @@ public class Etiqueta {
 	public String getNombre() {
 		return nombre;
 	}
+	public boolean isNombre(String nombre) {
+		return this.nombre.equals(nombre);
+	}
 	
 	@Override
 	public boolean equals(Object obj) {

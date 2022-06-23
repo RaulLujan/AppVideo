@@ -2,6 +2,7 @@ package modelo;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ListaVideos {
 	
@@ -38,7 +39,7 @@ public class ListaVideos {
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
 	}
-	public boolean checkNombre(String nombre) {
+	public boolean isNombre(String nombre) {
 		return this.nombre.equals(nombre);
 	}
 	
@@ -49,10 +50,9 @@ public class ListaVideos {
 		return videos;
 	}
 	public List<Integer> getIdVideos() {
-		List<Integer> codigos = new LinkedList<>();
-		for (Video video : videos)
-			codigos.add(video.getId());
-		return codigos;
+		return videos.stream()
+				.map(v -> v.getId())
+				.collect(Collectors.toList());
 	}
 	public boolean containsVideo(Video video) {
 		return videos.contains(video);

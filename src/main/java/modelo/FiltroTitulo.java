@@ -2,15 +2,20 @@ package modelo;
 
 public class FiltroTitulo extends Filtro {
 	
-	private String subtitulo;
-	
-	public FiltroTitulo(String subtitulo) {
-		super("Un usuario podrá buscar vídeos utilizando como filtros de búsqueda el título (o una parte de él)");
-		this.subtitulo = subtitulo;
+	private static FiltroTitulo instancia = new FiltroTitulo();
+	public static Filtro getInstancia(String subtitulo) {
+		instancia.subtitulo = subtitulo;
+		return instancia;
 	}
+	
+	private String subtitulo;
 
+	private FiltroTitulo() {
+		super("Un usuario podrï¿½ buscar vï¿½deos utilizando como filtros de bï¿½squeda el tï¿½tulo (o una parte de ï¿½l)");
+	}
+	
 	@Override
-	public boolean esVideoOK(Video video) {
+	public boolean esVideoOK(Video video, Usuario usuario) {
 		return video.getTitulo().contains(subtitulo);
 	}
 

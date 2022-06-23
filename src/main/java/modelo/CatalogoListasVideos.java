@@ -24,7 +24,7 @@ public class CatalogoListasVideos {
 			FactoriaDAO factoria = FactoriaDAO.getInstancia(FactoriaDAO.TDS_DAO);
 			adaptador = factoria.getListaVideosDAO();
 			mapa = new HashMap<Integer, ListaVideos>();
-			this.cargarCatalogo();
+			cargarCatalogo();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

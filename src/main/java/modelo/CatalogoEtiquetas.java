@@ -24,7 +24,7 @@ public class CatalogoEtiquetas {
 			FactoriaDAO factoria = FactoriaDAO.getInstancia(FactoriaDAO.TDS_DAO);
 			adaptador = factoria.getEtiquetaDAO();
 			mapaPorNombre = new HashMap<String, Etiqueta>();
-			this.cargarCatalogo();
+			cargarCatalogo();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -51,6 +51,9 @@ public class CatalogoEtiquetas {
 		return mapaPorNombre.get(nombre);
 	}
 
+	public List<String> getNombresEtiquetas() {
+		return new ArrayList<String>(mapaPorNombre.keySet());
+	}
 	public List<Etiqueta> getEtiquetas() {
 		return new ArrayList<Etiqueta>(mapaPorNombre.values());
 	}

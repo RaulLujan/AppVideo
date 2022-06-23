@@ -2,12 +2,17 @@ package modelo;
 
 public class FiltroImpopulares extends Filtro {
 	
+	private static Filtro instancia = new FiltroImpopulares();
+	public static Filtro getInstancia() {
+		return instancia;
+	}
+	
 	public FiltroImpopulares() {
-		super("Elimina de la búsqueda los vídeos que han sido reproducidos menos de 5 veces");
+		super("Elimina de la bï¿½squeda los vï¿½deos que han sido reproducidos menos de 5 veces");
 	}
 
 	@Override
-	public boolean esVideoOK(Video video) {
+	public boolean esVideoOK(Video video, Usuario usuario) {
 		return video.getNumRepro() >= 5;
 	}
 

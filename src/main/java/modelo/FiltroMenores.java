@@ -2,15 +2,17 @@ package modelo;
 
 public class FiltroMenores extends Filtro {
 	
-	private Usuario usuario;
+	private static Filtro instancia = new FiltroMenores();
+	public static Filtro getInstancia() {
+		return instancia;
+	}
 	
-	public FiltroMenores(Usuario usuario) {
-		super("Elimina los vídeos con la etiqueta \"Adultos\" si el usuario es menor de 18 años");
-		this.usuario = usuario;
+	public FiltroMenores() {
+		super("Elimina los vï¿½deos con la etiqueta \"Adultos\" si el usuario es menor de 18 aï¿½os");
 	}
 	
 	@Override
-	public boolean esVideoOK(Video video) {
+	public boolean esVideoOK(Video video, Usuario usuario) {
 		CatalogoEtiquetas catalogo = CatalogoEtiquetas.getInstancia();
 		if (usuario.getEdad() >= 18 || !catalogo.existsEtiqueta("Adultos"))
 			return true;

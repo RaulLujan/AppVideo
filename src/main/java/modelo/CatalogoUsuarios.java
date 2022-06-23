@@ -26,7 +26,7 @@ public class CatalogoUsuarios {
 			adaptador = factoria.getUsuarioDAO();
 			mapaPorID = new HashMap<Integer, Usuario>();
 			mapaPorLogin = new HashMap<String, Usuario>();
-			this.cargarCatalogo();
+			cargarCatalogo();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -63,7 +63,5 @@ public class CatalogoUsuarios {
 	public List<Usuario> getUsuarios() {
 		return new ArrayList<Usuario>(mapaPorID.values());
 	}
-
-
 
 }

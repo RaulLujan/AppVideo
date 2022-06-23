@@ -5,8 +5,11 @@ import java.io.FileOutputStream;
 import java.util.Date;
 import java.util.EventObject;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
+import javax.swing.ImageIcon;
 
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
@@ -26,37 +29,24 @@ import modelo.Etiqueta;
 import modelo.ListaVideos;
 import modelo.Usuario;
 import modelo.Video;
-import persistencia.AdaptadorEtiquetaDAO;
-import persistencia.AdaptadorListaVideosDAO;
-import persistencia.AdaptadorUsuarioDAO;
-import persistencia.AdaptadorVideoDAO;
 import persistencia.FactoriaDAO;
 import tds.video.VideoWeb;
 
 public class Controlador implements VideosListener {
-	
+
 	private static Controlador instancia;
+
 	public static Controlador getInstancia() {
 		if (instancia == null)
 			instancia = new Controlador();
 		return instancia;
 	}
 
-	private static final Font FUENTE_TITULO = new Font(FontFamily.TIMES_ROMAN, 22.0f, Font.BOLD);
-	private static final Font FUENTE_SUBTITULO = new Font(FontFamily.TIMES_ROMAN, 18.0f, Font.ITALIC);
-	private static final Font FUENTE_PARRAFO = new Font(FontFamily.TIMES_ROMAN, 12.0f, Font.NORMAL);
-
-	private static final String NOMBRE_PDF = "listasVideos.pdf";
-	
-	private AdaptadorUsuarioDAO adaptadorUsuario;
-	private AdaptadorListaVideosDAO adaptadorListaVideos;
-	private AdaptadorVideoDAO adaptadorVideo;
-
 	private CatalogoUsuarios catalogoUsuarios;
 	private CatalogoListasVideos catalogoListas;
 	private CatalogoVideos catalogoVideos;
 	private CatalogoEtiquetas catalogoEtiquetas;
-	//private CatalogoFiltros catalogoFiltros;
+	// private CatalogoFiltros catalogoFiltros;
 
 	private Usuario usuarioActual;
 
@@ -71,17 +61,13 @@ public class Controlador implements VideosListener {
 			catalogoListas = CatalogoListasVideos.getInstancia();
 			catalogoVideos = CatalogoVideos.getInstancia();
 			catalogoEtiquetas = CatalogoEtiquetas.getInstancia();
-
-			FactoriaDAO factoria = FactoriaDAO.getInstancia();
-			adaptadorListaVideos = factoria.getListaVideosDAO();
-			adaptadorVideo = factoria.getVideoDAO();
-			adaptadorUsuario = factoria.getUsuarioDAO();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	public boolean registrarUsuario(String nombre, String apellidos, Date fechaNac, String email, String login, String pass) {
+	public boolean registrarUsuario(String nombre, String apellidos, Date fechaNac, String email, String login,
+			String pass) {
 		if (catalogoUsuarios.existsUsuario(login))
 			return false;
 
@@ -90,6 +76,7 @@ public class Controlador implements VideosListener {
 		catalogoListas.addListaVideos(usuario.getRecentVideo());
 		return true;
 	}
+
 	public boolean registrarUsuario(String nombre, Date fechaNac, String login, String pass) {
 		return registrarUsuario(nombre, "", fechaNac, "", login, pass);
 	}
@@ -98,78 +85,133 @@ public class Controlador implements VideosListener {
 		if (usuarioActual != null || !catalogoUsuarios.existsUsuario(login))
 			return false;
 		Usuario usuario = catalogoUsuarios.getUsuario(login);
-		if (!usuario.checkPassword(pass))
+		if (!usuario.isPassword(pass))
 			return false;
 		usuarioActual = usuario;
 		return true;
 	}
 
+	// TODO: LOGOUT
+	public boolean logoutUsuario() {
+		if (usuarioActual == null)
+			return false;
+		usuarioActual = null;
+		return true;
+	}
+	
 	public boolean isUsuarioLogin() {
 		return usuarioActual != null;
 	}
-	
+
+	public boolean isUsuarioPremium() {
+		return isUsuarioLogin() && usuarioActual.isPremium();
+	}
+
+	public boolean isCumpleUsuario() {
+		return isUsuarioPremium() && usuarioActual.isCumple();
+	}
+
 	public String getNombreUsuario() {
-		if (usuarioActual != null)
+		if (isUsuarioLogin())
 			return usuarioActual.getNombre();
 		return "Usuari@";
 	}
 
-	public void activarUsuarioPremium() {
-		if (usuarioActual != null && !usuarioActual.isPremium()) {
+	public void setUsuarioPremium() {
+		if (isUsuarioLogin() && !isUsuarioPremium()) {
 			usuarioActual.setPremium(true);
-			adaptadorUsuario.modificarUsuario(usuarioActual);
+			FactoriaDAO.getInstancia().getUsuarioDAO().modificarUsuario(usuarioActual);
 		}
 	}
+
+	public void generarPDF() {
+		if (isUsuarioPremium())
+			usuarioActual.generarPDF();
+	}
+
+	// TODO: filtros
 	
-	public void desactivarUsuarioPremium() {
-		if (usuarioActual != null && usuarioActual.isPremium()) {
-			usuarioActual.setPremium(false);
-			adaptadorUsuario.modificarUsuario(usuarioActual);
-		}
+	public List<String> getEtiquetas() {
+		return catalogoEtiquetas.getNombresEtiquetas();
 	}
 	
-	public boolean isUsuarioPremium() {
-		return usuarioActual != null && usuarioActual.isPremium();
-	}
-	
-	public boolean comprobarCumpleUsuario() {
-		return isUsuarioPremium() && usuarioActual.isCumple();
-	}
+	// TODO: etiquetar Video
 	
 	public VideoWeb getVideoWeb() {
 		return videoWeb;
 	}
 
+	// TODO: get/setIconoVideo
+	public ImageIcon getIconoVideo(int id) {
+		if (catalogoVideos.existsVideo(id)) {
+			Video video = catalogoVideos.getVideo(id);
+			ImageIcon icono = video.getIcono();
+			if (icono == null) {
+				icono = videoWeb.getThumb(video.getUrl());
+				video.setIcono(icono);
+			}
+			return icono;
+		}
+		return null;
+	}
+	
 	public void reproducirVideo(int id) {
 		if (usuarioActual != null && catalogoVideos.existsVideo(id)) {
 			Video video = catalogoVideos.getVideo(id);
 
 			usuarioActual.addRecentVideo(video);
-			adaptadorListaVideos.modificarListaVideos(usuarioActual.getRecentVideo());
+			FactoriaDAO.getInstancia().getListaVideosDAO().modificarListaVideos(usuarioActual.getRecentVideo());
 
-			video.incrementarNumRepro();
-			adaptadorVideo.modificarVideo(video);
+			video.incrNumRepro();
+			FactoriaDAO.getInstancia().getVideoDAO().modificarVideo(video);
 
 			videoWeb.playVideo(video.getUrl());
 		}
 	}
-
-	public void ponerVideo() {
-		videoWeb.playVideo("https://www.youtube.com/watch?v=hnRphfqIvsM");
+	
+	public void cancelarVideo() {
+		videoWeb.cancel();
 	}
 
+	public List<Video> getVideosExplorar() {
+		return catalogoVideos.getVideos();
+	}
+
+	public List<Video> getVideosBuscar(String subtitulo, List<String> nombres) {
+		List<Etiqueta> etiquetas = new LinkedList<Etiqueta>();
+		for (String nombre : nombres)
+			etiquetas.add(catalogoEtiquetas.getEtiqueta(nombre));
+		return catalogoVideos.getVideosOK(usuarioActual, subtitulo, etiquetas);
+	}
+	
+	// TODO: crear/eliminar/modificar ListaVideos
+	// TODO: getMisListas/MiLista
+
+	public List<Video> getRecientes() {
+		if (isUsuarioLogin())
+			return usuarioActual.getRecentVideo().getVideos();
+		return null;
+	}
+
+	public List<Video> getTopVideos() {
+		if (isUsuarioPremium())
+			return catalogoVideos.getTopVideos();
+		else
+			return null;
+	}
+	
 	@Override
 	public void nuevosVideos(EventObject e) {
 		VideosEvent videos = (VideosEvent) e;
-		for (cargadorVideos.Video videoCargadorV : videos.getListaVideos().getVideo()) {
-			Video video = new Video(videoCargadorV.getURL(), videoCargadorV.getTitulo());
+		for (cargadorVideos.Video videoCV : videos.getListaVideos().getVideo()) {
+			Video video = new Video(videoCV.getURL(), videoCV.getTitulo());
 			if (!catalogoVideos.existsVideo(video.getUrl())) {
-				for (String etiquetaCargadorV : videoCargadorV.getEtiqueta()) {
+				for (String etiquetaCV : videoCV.getEtiqueta()) {
 					Etiqueta etiqueta = null;
-					if (catalogoEtiquetas.existsEtiqueta(etiquetaCargadorV)) {
-						etiqueta = catalogoEtiquetas.getEtiqueta(etiquetaCargadorV);
+					if (catalogoEtiquetas.existsEtiqueta(etiquetaCV)) {
+						etiqueta = catalogoEtiquetas.getEtiqueta(etiquetaCV);
 					} else {
-						etiqueta = new Etiqueta(etiquetaCargadorV);
+						etiqueta = new Etiqueta(etiquetaCV);
 						catalogoEtiquetas.addEtiqueta(etiqueta);
 					}
 					video.addEtiqueta(etiqueta);
@@ -178,68 +220,5 @@ public class Controlador implements VideosListener {
 			}
 		}
 	}
-	
-	public List<Video> getRecientes(){
-		return usuarioActual.getRecentVideo().getVideos();
-	}
-	
-	public List<Video> getTopVideos(){
-		return catalogoVideos.getTopVideos();
-	}
 
-	private Map<String, Map<String, Integer>> getListaVideosNumRepro() {
-		Map<String, Map<String, Integer>> resultado = new HashMap<String, Map<String, Integer>>();
-		List<ListaVideos> listaVideos = usuarioActual.getMisListas();
-
-		for (ListaVideos lv : listaVideos) {
-			Map<String, Integer> videos = new HashMap<>();
-
-			for (Video v : lv.getVideos()) {
-				videos.put(v.getTitulo(), v.getNumRepro());
-			}
-
-			resultado.put(lv.getNombre(), videos);
-		}
-
-		return resultado;
-	}
-
-	private void anyadirContenido(Document doc) throws DocumentException {
-		String tituloLista;
-		Map<String, Integer> videosDeLista;
-
-		doc.addTitle("Listas de videos");
-
-		Map<String, Map<String, Integer>> listasVideos = getListaVideosNumRepro();
-		listasVideos.forEach((k, v) -> {
-			try {
-				doc.add(new Paragraph(k, FUENTE_SUBTITULO));
-				v.forEach((k2, v2) -> {
-					try {
-						doc.add(new Paragraph("Titulo: " + k2 + ", n�mero de reproducciones:  " + v2, FUENTE_PARRAFO));
-					} catch (DocumentException e) {
-						e.printStackTrace();
-					}
-				});
-			} catch (DocumentException e) {
-				e.printStackTrace();
-			}
-
-		});
-
-	}
-	
-	public void generarPDF() {
-
-		Document documento = new Document(PageSize.A4, 50, 50, 50, 50);
-		try {
-			PdfWriter writer = PdfWriter.getInstance(documento, new FileOutputStream(NOMBRE_PDF));
-			documento.open();
-			anyadirContenido(documento);
-			documento.close();
-			writer.close();
-		} catch (FileNotFoundException | DocumentException fileNotFoundException) {
-			System.out.println("No se encontr� el fichero para generar el pdf)" + fileNotFoundException);
-		}
-	}
 }

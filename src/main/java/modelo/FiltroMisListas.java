@@ -2,15 +2,17 @@ package modelo;
 
 public class FiltroMisListas extends Filtro {
 	
-	private Usuario usuario;
+	private static Filtro instancia = new FiltroMisListas();
+	public static Filtro getInstancia() {
+		return instancia;
+	}
 	
-	public FiltroMisListas(Usuario usuario) {
-		super("Elimina de las búsquedas los vídeos que ya están contenidos en alguna lista del usuario");
-		this.usuario = usuario;
+	public FiltroMisListas() {
+		super("Elimina de las bï¿½squedas los vï¿½deos que ya estï¿½n contenidos en alguna lista del usuario");
 	}
 
 	@Override
-	public boolean esVideoOK(Video video) {
+	public boolean esVideoOK(Video video, Usuario usuario) {
 		for (ListaVideos videos : usuario.getMisListas())
 			if (videos.containsVideo(video))
 				return false;
