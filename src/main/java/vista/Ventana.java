@@ -29,6 +29,7 @@ import cargadorVideos.BuscadorVideos;
 import cargadorVideos.IBuscadorVideos;
 import controlador.Controlador;
 
+@SuppressWarnings("serial")
 public class Ventana extends JFrame {
 	
 	private JPanel laminaCentral;
@@ -42,7 +43,6 @@ public class Ventana extends JFrame {
 
 	private JPanel laminaFuncionalidad;
 	private ButtonGroup grupoFuncionalidad;
-	private JToggleButton bRecientes;
 
 	public Ventana() {
 		super("AppVideo");
@@ -51,11 +51,13 @@ public class Ventana extends JFrame {
 
 		// Se estrablecen las dimensiones
 		Toolkit pantalla = Toolkit.getDefaultToolkit();
-		Dimension dPantalla = pantalla.getScreenSize();
-		int alturaPantalla = dPantalla.height;
-		int anchoPantalla = dPantalla.width;
-		setSize(anchoPantalla/2 + anchoPantalla/6, alturaPantalla/2 + alturaPantalla/6);
-		setLocation(anchoPantalla/6, alturaPantalla/6);
+		Dimension dimPantalla = pantalla.getScreenSize();
+		int anchoPantalla = dimPantalla.width;
+		int altoPantalla  = dimPantalla.height;
+		int ancho = anchoPantalla/2 + anchoPantalla/6;
+		int alto  =  altoPantalla/2 +  altoPantalla/6;
+		setSize(ancho, alto);
+		setLocation(anchoPantalla/6, altoPantalla/6);
 		//setSize(anchoPantalla/2, alturaPantalla/2);
 		//setLocation(anchoPantalla/4, alturaPantalla/4);
 		
@@ -103,12 +105,13 @@ public class Ventana extends JFrame {
 		// 1.2.2.3 addButtonMisListas a LaminaFuncionalidad
 		addButtonFuncionalidad("Mis Listas");
 		// 1.2.2.4 addButtonRecientes a LaminaFuncionalidad
-		bRecientes = addButtonFuncionalidad("Recientes");
+		addButtonFuncionalidad("Recientes");
 		if (Controlador.getInstancia().isUsuarioPremium()) {
 			// 1.2.2.5 addButtonMasVistos a LaminaFuncionalidad
 			addButtonFuncionalidad("Mas Vistos");
 			// 1.2.2.6 addButtonGenerarPDF a LaminaFuncionalidad
 			addButtonFuncionalidad("Generar PDF");
+			// TODO filtros
 		}
 		
 		laminaFuncionalidad.add(Box.createHorizontalGlue());
@@ -136,56 +139,83 @@ public class Ventana extends JFrame {
 		laminaInicio.add(Box.createHorizontalGlue());
 		
 		// 1.2.1.1 addButtonLogout a LaminaInicio
-		bLogout = new JButton("Logout");
-		laminaInicio.add(bLogout);
-		bLogout.addActionListener(e -> {
-			int salida = JOptionPane.showConfirmDialog(null, "�Seguro de que quiere salir?", "Logout", JOptionPane.YES_NO_CANCEL_OPTION);
-			switch (salida) {
-			case JOptionPane.YES_OPTION:
-				System.exit(0);
-				break;
-			case JOptionPane.NO_OPTION:
-			case JOptionPane.CANCEL_OPTION:
-				break;
-			}
-		});
+		bLogout = addButtonInicio("Logout");
 		
 		laminaInicio.add(Box.createHorizontalGlue());
 		
 		// 1.2.1.1 addButtonPremium a LaminaInicio
-		bPremium = new JButton("Premium");
-		laminaInicio.add(bPremium);
+		bPremium = addButtonInicio("Premium");
 		bPremium.setForeground(Color.RED);
-		bPremium.addActionListener(e -> {
-			Controlador.getInstancia().setUsuarioPremium();
-		});
 		
 		laminaInicio.add(Box.createHorizontalGlue());
 		
 		// 1.2.1.1 addButtonCargador a LaminaInicio
-		JButton bCargador = new JButton("Cargador Videos");
-		laminaInicio.add(bCargador);
-		bCargador.addActionListener(e -> {
-			IBuscadorVideos componente = new BuscadorVideos();
-			componente.addVideosListener(Controlador.getInstancia());
-			JFileChooser fileChooser = new JFileChooser();
-		    fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-		    int seleccion = fileChooser.showOpenDialog((Component)e.getSource());
-		    if (seleccion == JFileChooser.APPROVE_OPTION) {
-		        File fichero = fileChooser.getSelectedFile();
-		        componente.setArchivoVideos(fichero);
-		    } 
-		});
-		
+		addButtonInicio("Cargador Videos");
 		
 		// MOSTRAR
 		mostrarLaminaSuperior();
 	}
 
+	private JToggleButton addButtonFuncionalidad(String texto) {
+		JToggleButton boton = new JToggleButton(texto);
+		boton.setForeground(Color.WHITE);
+		boton.setBackground(new Color(160, 160, 160));
+		boton.addActionListener(e -> {
+			setLaminaCentral(boton.getText());
+		});
+		laminaFuncionalidad.add(boton);
+		grupoFuncionalidad.add(boton);
+		return boton;
+	}
+
+	private JButton addButtonInicio(String texto) {
+		JButton boton = new JButton(texto);
+		boton.addActionListener(e -> {
+			String text = boton.getText();
+			switch (text) {
+			case "Login":
+			case "Registro":
+				setLaminaCentral(text);
+				break;
+
+			case "Logout":
+				int salida = JOptionPane.showConfirmDialog(null, "�Seguro de que quiere salir?", "Logout", JOptionPane.YES_NO_CANCEL_OPTION);
+				switch (salida) {
+				case JOptionPane.YES_OPTION:
+					// TODO LOGOUT
+					System.exit(0);
+					break;
+				case JOptionPane.NO_OPTION:
+				case JOptionPane.CANCEL_OPTION:
+					break;
+				}
+				break;
+				
+			case "Premium":
+				Controlador.getInstancia().setUsuarioPremium();
+				break;
+				
+			case "Cargador videos":
+				IBuscadorVideos componente = new BuscadorVideos();
+				componente.addVideosListener(Controlador.getInstancia());
+				JFileChooser fileChooser = new JFileChooser();
+			    fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+			    int seleccion = fileChooser.showOpenDialog((Component)e.getSource());
+			    if (seleccion == JFileChooser.APPROVE_OPTION) {
+			        File fichero = fileChooser.getSelectedFile();
+			        componente.setArchivoVideos(fichero);
+			    } 
+				break;
+			}
+		});
+		laminaInicio.add(boton);
+		return boton;
+	}
+
 	public void setLaminaCentral(String titulo) {
 		String t = titulo.replace(" ", "");
 		try {
-			Class<?> c = Class.forName("vista."+t);
+			Class<?> c = Class.forName("vista.Tab"+t);
 			System.out.println(c.toString());
 			Class<?> cArgs[] = { Ventana.class };
 			Constructor<?> constructor = c.getConstructor(cArgs);
@@ -207,27 +237,6 @@ public class Ventana extends JFrame {
 			System.out.println(e.getMessage());
 		}
 
-	}
-
-	private JToggleButton addButtonFuncionalidad(String texto) {
-		JToggleButton boton = new JToggleButton(texto);
-		boton.setForeground(Color.WHITE);
-		boton.setBackground(new Color(160, 160, 160));
-		laminaFuncionalidad.add(boton);
-		grupoFuncionalidad.add(boton);
-		boton.addActionListener(e -> {
-			setLaminaCentral(boton.getText());
-		});
-		return boton;
-	}
-
-	private JButton addButtonInicio(String texto) {
-		JButton boton = new JButton(texto);
-		laminaInicio.add(boton);
-		boton.addActionListener(e -> {
-			setLaminaCentral(boton.getText());
-		});
-		return boton;
 	}
 	
 	public void mostrarLaminaSuperior() {

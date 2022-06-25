@@ -18,9 +18,10 @@ import javax.swing.border.TitledBorder;
 
 import controlador.Controlador;
 
-public class Login extends JPanel  {//implements KeyListener{
+@SuppressWarnings("serial")
+public class TabLogin extends JPanel  {//implements KeyListener{
 	
-	public Login(Ventana parent) {
+	public TabLogin(Ventana parent) {
 		
 		// CONF LAMINA
 		setLayout(new GridBagLayout());

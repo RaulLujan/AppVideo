@@ -15,12 +15,12 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
-public class NuevaLista extends JPanel {
+public class TabNuevaLista extends JPanel {
 	
 	private boolean isOpaque = false;
 	private GridBagConstraints c;
 	
-	public NuevaLista() {
+	public TabNuevaLista(Ventana parent) {
 		c = new GridBagConstraints();
 		
 		// CONF LAMINA

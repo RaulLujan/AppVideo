@@ -14,9 +14,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
-public class MisListas extends JPanel {
+public class TabMisListas extends JPanel {
 	
-	public MisListas() {
+	public TabMisListas(Ventana parent) {
 		
 		// CONF LAMINA
 		setLayout(new BorderLayout());

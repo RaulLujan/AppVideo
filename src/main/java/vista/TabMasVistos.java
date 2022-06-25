@@ -18,11 +18,11 @@ import javax.swing.SwingConstants;
 import controlador.Controlador;
 import modelo.Video;
 
-public class MasVistos extends JPanel {
+public class TabMasVistos extends JPanel {
 
 	private boolean isOpaque = false;
 
-	public MasVistos() {
+	public TabMasVistos(Ventana parent) {
 		
 		// CONF LAMINA
 		setLayout(new BorderLayout());

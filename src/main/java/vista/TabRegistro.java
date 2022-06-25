@@ -21,9 +21,10 @@ import com.toedter.calendar.JDateChooser;
 
 import controlador.Controlador;
 
-public class Registro extends JPanel {
+@SuppressWarnings("serial")
+public class TabRegistro extends JPanel {
 	
-	public Registro(Ventana parent) {
+	public TabRegistro(Ventana parent) {
 		
 		// CONF LAMINA
 		setLayout(new GridBagLayout());

@@ -4,9 +4,9 @@ import javax.swing.JPanel;
 
 import controlador.Controlador;
 
-public class GenerarPDF extends JPanel {
+public class TabGenerarPDF extends JPanel {
 	
-	public GenerarPDF() {
+	public TabGenerarPDF(Ventana parent) {
 		Controlador.getInstancia().generarPDF();
 	}
 

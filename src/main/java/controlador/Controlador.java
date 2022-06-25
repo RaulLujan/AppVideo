@@ -10,10 +10,12 @@ import javax.swing.ImageIcon;
 import cargadorVideos.VideosEvent;
 import cargadorVideos.VideosListener;
 import modelo.CatalogoEtiquetas;
+import modelo.CatalogoFiltros;
 import modelo.CatalogoListasVideos;
 import modelo.CatalogoUsuarios;
 import modelo.CatalogoVideos;
 import modelo.Etiqueta;
+import modelo.Filtro;
 import modelo.Usuario;
 import modelo.Video;
 import persistencia.FactoriaDAO;
@@ -33,7 +35,7 @@ public class Controlador implements VideosListener {
 	private CatalogoListasVideos catalogoListas;
 	private CatalogoVideos catalogoVideos;
 	private CatalogoEtiquetas catalogoEtiquetas;
-	// private CatalogoFiltros catalogoFiltros;
+	 private CatalogoFiltros catalogoFiltros;
 
 	private Usuario usuarioActual;
 
@@ -48,13 +50,26 @@ public class Controlador implements VideosListener {
 			catalogoListas = CatalogoListasVideos.getInstancia();
 			catalogoVideos = CatalogoVideos.getInstancia();
 			catalogoEtiquetas = CatalogoEtiquetas.getInstancia();
+			catalogoFiltros = CatalogoFiltros.getInstancia();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
+	
+	public boolean isUsuarioLogin() {
+		return usuarioActual != null;
+	}
 
-	public boolean registrarUsuario(String nombre, String apellidos, Date fechaNac, String email, String login,
-			String pass) {
+	// Ventana
+	public String getNombreUsuario() {
+		if (isUsuarioLogin())
+			return usuarioActual.getNombre();
+		return "Usuari@";
+	}
+
+	// TabRegistro
+	public boolean registrarUsuario(String nombre, String apellidos,
+			Date fechaNac, String email, String login, String pass) {
 		if (catalogoUsuarios.existsUsuario(login))
 			return false;
 
@@ -63,13 +78,13 @@ public class Controlador implements VideosListener {
 		catalogoListas.addListaVideos(usuario.getRecentVideo());
 		return true;
 	}
-
 	public boolean registrarUsuario(String nombre, Date fechaNac, String login, String pass) {
 		return registrarUsuario(nombre, "", fechaNac, "", login, pass);
 	}
 
+	// TabLogin
 	public boolean loginUsuario(String login, String pass) {
-		if (usuarioActual != null || !catalogoUsuarios.existsUsuario(login))
+		if (isUsuarioLogin() || !catalogoUsuarios.existsUsuario(login))
 			return false;
 		Usuario usuario = catalogoUsuarios.getUsuario(login);
 		if (!usuario.isPassword(pass))
@@ -78,100 +93,134 @@ public class Controlador implements VideosListener {
 		return true;
 	}
 
-	// TODO: LOGOUT
+	// TODO LOGOUT
+	// Ventana
 	public boolean logoutUsuario() {
-		if (usuarioActual == null)
+		if (!isUsuarioLogin())
 			return false;
 		usuarioActual = null;
 		return true;
 	}
-	
-	public boolean isUsuarioLogin() {
-		return usuarioActual != null;
+
+	// Ventana
+	public void setUsuarioPremium() {
+		if (isUsuarioLogin() && !isUsuarioPremium()) {
+			usuarioActual.setPremium(true);
+			FactoriaDAO.getInstancia().getUsuarioDAO()
+				.modificarUsuario(usuarioActual);
+		}
 	}
 
 	public boolean isUsuarioPremium() {
 		return isUsuarioLogin() && usuarioActual.isPremium();
 	}
 
+	// Ventana
 	public boolean isCumpleUsuario() {
 		return isUsuarioPremium() && usuarioActual.isCumple();
 	}
 
-	public String getNombreUsuario() {
-		if (isUsuarioLogin())
-			return usuarioActual.getNombre();
-		return "Usuari@";
-	}
-
-	public void setUsuarioPremium() {
-		if (isUsuarioLogin() && !isUsuarioPremium()) {
-			usuarioActual.setPremium(true);
-			FactoriaDAO.getInstancia().getUsuarioDAO().modificarUsuario(usuarioActual);
-		}
-	}
-
+	// TabGenerarPDF
 	public void generarPDF() {
 		if (isUsuarioPremium())
 			usuarioActual.generarPDF();
 	}
 
-	// TODO: filtros
+	// TODO filtros
 	
-	public List<String> getEtiquetas() {
-		return catalogoEtiquetas.getNombresEtiquetas();
+	// TabFiltros
+	public List<String> getNombresFiltros() {
+		return catalogoFiltros.getFiltros();
 	}
 	
-	// TODO: etiquetar Video
+	// TabFiltros
+	public String getDescripcionFiltro(String nombre) {
+		if (catalogoFiltros.existsFiltro(nombre)) {
+			Filtro filtro = catalogoFiltros.getFiltro(nombre);
+			return filtro.getDescripcion();
+		}
+		return "El filtro no existe.";
+	}
 	
+	// TabFiltros, TabExplorar, TabNuevaLista
+	public String getFiltroUsuario() {
+		if (isUsuarioLogin())
+			return usuarioActual.getFiltro().getClass().getSimpleName();
+		return "NoFiltro";
+	}
+	
+	// TabFiltros
+	public void setFiltroUsuario(String nombre) {
+		if (isUsuarioPremium()) {
+			Filtro filtro = catalogoFiltros.getFiltro(nombre);
+			if (usuarioActual.getFiltro() != filtro) {
+				usuarioActual.setFiltro(filtro);
+				FactoriaDAO.getInstancia().getUsuarioDAO()
+					.modificarUsuario(usuarioActual);
+			}
+		}
+	}
+	
+	// CaratulaVideo
+	public ImageIcon getIconoVideo(Video video) {
+		ImageIcon icono = video.getIcono();
+		if (icono == null) {
+			icono = videoWeb.getThumb(video.getUrl());
+			video.setIcono(icono);
+		}
+		return icono;
+	}
+	
+	// TabReproductor
 	public VideoWeb getVideoWeb() {
 		return videoWeb;
 	}
 
-	// TODO: get/setIconoVideo
-	public ImageIcon getIconoVideo(int id) {
-		if (catalogoVideos.existsVideo(id)) {
-			Video video = catalogoVideos.getVideo(id);
-			ImageIcon icono = video.getIcono();
-			if (icono == null) {
-				icono = videoWeb.getThumb(video.getUrl());
-				video.setIcono(icono);
-			}
-			return icono;
+	// TabReproductor
+	public boolean setEtiquetaVideo(String nombre, Video video) {
+		if (!catalogoEtiquetas.existsEtiqueta(nombre))
+			catalogoEtiquetas.addEtiqueta(new Etiqueta(nombre));
+		Etiqueta etiqueta = catalogoEtiquetas.getEtiqueta(nombre);
+		if (!video.containsEtiqueta(etiqueta)) {
+			video.addEtiqueta(etiqueta);
+			FactoriaDAO.getInstancia().getVideoDAO()
+				.modificarVideo(video);
+			return true;
 		}
-		return null;
+		return false;
 	}
 	
-	public String getTituloCortoVideo(int id) {
-		if (catalogoVideos.existsVideo(id)) {
-			Video video = catalogoVideos.getVideo(id);
-			return video.getTituloCorto();
-		}
-		return "Sin titulo";
-	}
-	
-	public void reproducirVideo(int id) {
-		if (usuarioActual != null && catalogoVideos.existsVideo(id)) {
-			Video video = catalogoVideos.getVideo(id);
-
+	// TabReproductor
+	public void playVideo(Video video) {
+		if (isUsuarioLogin()) {
 			usuarioActual.addRecentVideo(video);
-			FactoriaDAO.getInstancia().getListaVideosDAO().modificarListaVideos(usuarioActual.getRecentVideo());
+			FactoriaDAO.getInstancia().getListaVideosDAO()
+				.modificarListaVideos(usuarioActual.getRecentVideo());
 
 			video.incrNumRepro();
-			FactoriaDAO.getInstancia().getVideoDAO().modificarVideo(video);
+			FactoriaDAO.getInstancia().getVideoDAO()
+				.modificarVideo(video);
 
 			videoWeb.playVideo(video.getUrl());
 		}
 	}
 	
-	public void cancelarVideo() {
+	// TabReproductor
+	public void cancelVideo() {
 		videoWeb.cancel();
 	}
+	
+	// TabExplorar, TabNuevaLista
+	public List<String> getEtiquetas() {
+		return catalogoEtiquetas.getNombresEtiquetas();
+	}
 
+	// TabExplorar, TabNuevaLista
 	public List<Video> getVideosExplorar() {
 		return catalogoVideos.getVideos();
 	}
 
+	// TabExplorar, TabNuevaLista
 	public List<Video> getVideosBuscar(String subtitulo, List<String> nombres) {
 		List<Etiqueta> etiquetas = new LinkedList<Etiqueta>();
 		for (String nombre : nombres)

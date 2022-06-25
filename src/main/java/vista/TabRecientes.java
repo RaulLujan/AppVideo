@@ -6,10 +6,10 @@ import java.awt.Color;
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 
-public class Recientes extends JPanel{
+public class TabRecientes extends JPanel{
 	private boolean isOpaque = false;
 
-	public Recientes() {
+	public TabRecientes(Ventana parent) {
 		
 		// CONF LAMINA
 		setLayout(new BorderLayout());
