@@ -6,130 +6,168 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 
-import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
+import javax.swing.border.MatteBorder;
 import javax.swing.border.TitledBorder;
 
 import controlador.Controlador;
 
 public class Login extends JPanel  {//implements KeyListener{
-	private JTextField tfNombre;
-	private JPasswordField pfPass;
-
-	public Login() {
-		confLamina();
-	}
-
-	private void confLamina() {
+	
+	public Login(Ventana parent) {
+		
+		// CONF LAMINA
 		setLayout(new GridBagLayout());
 		setBackground(new Color(96, 96, 96));
+		
+		// addTitulo
 		TitledBorder titulo = new TitledBorder("Login");
 		titulo.setTitleColor(Color.WHITE);
 		titulo.setTitleFont(new Font("Arial", Font.BOLD, 25));
 		setBorder(titulo);
-		addFormulario();
-		addBotonesForm();
-		//addListenerTeclado();
-//		addKeyListener(this);
-//		requestFocus();
-//		setFocusable(true);
-	}
-
-	private void addFormulario() {
-		JLabel lNombre = new JLabel("Nombre:");
-		lNombre.setFont(new Font("Arial", Font.BOLD, 15));
-		lNombre.setForeground((Color.WHITE));
-		tfNombre = new JTextField();
-		tfNombre.setPreferredSize(new Dimension(200, 20));
-
-		JLabel lPass = new JLabel("Password:");
-		lPass.setFont(new Font("Arial", Font.BOLD, 15));
-		lPass.setForeground((Color.WHITE));
-		pfPass = new JPasswordField();
-		pfPass.setPreferredSize(new Dimension(200, 20));
 		
-		GridBagConstraints constraintsLNombre = new GridBagConstraints();
-		constraintsLNombre.insets = new Insets(20, 10, 20, 5);
-		constraintsLNombre.anchor = GridBagConstraints.EAST;
-		constraintsLNombre.gridx = 0;
-		constraintsLNombre.gridy = 0;
+		// addEtiquetas
+		addLabel("Nombre: ", 0);
+		addLabel("Password: ", 1);
 		
-		GridBagConstraints constraintsTNombre = new GridBagConstraints();
-		constraintsTNombre.insets = new Insets(20, 5, 20, 15);
-		constraintsTNombre.anchor = GridBagConstraints.EAST;
-		constraintsTNombre.gridx = 1;
-		constraintsTNombre.gridy = 0;
+		// addCampos
+		JTextField tfNombre = addTextField(false, 0);
+		tfNombre.requestFocus();
+		tfNombre.selectAll();
+		JPasswordField pfPass = (JPasswordField) addTextField(true, 1);
 		
-		GridBagConstraints constraintsLPass = new GridBagConstraints();
-		constraintsLPass.insets = new Insets(10, 20, 20, 5);
-		constraintsLPass.anchor = GridBagConstraints.EAST;
-		constraintsLPass.gridx = 0;
-		constraintsLPass.gridy = 1;
+		// addLabelErrorCampo
+		JLabel errorCampo = addLabelErrorCampo();
 		
-		GridBagConstraints constraintsTPass = new GridBagConstraints();
-		constraintsTPass.insets = new Insets(10, 5, 20, 15);
-		constraintsTPass.fill = GridBagConstraints.EAST;
-		constraintsTPass.gridx = 1;
-		constraintsTPass.gridy = 1;
-
-		add(lNombre, constraintsLNombre);
-		add(tfNombre, constraintsTNombre);
-		add(lPass, constraintsLPass);
-		add(pfPass, constraintsTPass);
-
-	}
-
-	private void addBotonesForm() {
-		JButton bAceptar = new JButton("Aceptar");
-		JButton bCancelar = new JButton("Cancelar");
-
-		GridBagConstraints constraintsBAceptar = new GridBagConstraints();
-		constraintsBAceptar.insets = new Insets(20, 20, 20, 15);
-		constraintsBAceptar.fill = GridBagConstraints.FIRST_LINE_START;
-		constraintsBAceptar.gridx = 0;
-		constraintsBAceptar.gridy = 2;
-		
-		GridBagConstraints constraintsBCancelar = new GridBagConstraints();
-		constraintsBCancelar.insets = new Insets(20, 20, 20, 15);
-		constraintsBCancelar.anchor = GridBagConstraints.FIRST_LINE_END;
-		constraintsBCancelar.gridx = 1;
-		constraintsBCancelar.gridy = 2;
-
-		add(bAceptar, constraintsBAceptar);
-		add(bCancelar, constraintsBCancelar);
-		
-		addListenerBotonLogin(bAceptar);
-		addListenerBotonCancelar(bCancelar);
-
-	}
-
-	private void addListenerBotonCancelar(JButton bCancelar) {
-		bCancelar.addActionListener(e -> {
-			cancelar();
-		});
-	}
-
-	private void addListenerBotonLogin(JButton bAceptar) {
+		// addBotones
+		// addBotonAceptar
+		JButton bAceptar = addButton("Aceptar", 0, 2);
 		bAceptar.addActionListener(e -> {
-			aceptar();
+			// aceptar
+			String pass = new String(pfPass.getPassword());
+			
+			boolean isOKLoginCampos = false;
+			if (tfNombre.getText().trim().isEmpty()) {
+				errorCampo.setText("Usuario no valido");
+			} else if (pass.trim().isEmpty()) {
+				errorCampo.setText("Contraseña no valida");
+			} else {
+				isOKLoginCampos = true;
+			}
+			
+			if (isOKLoginCampos) {
+				errorCampo.setVisible(false);
+				boolean isLogin = Controlador.getInstancia().loginUsuario(
+						tfNombre.getText(), pass);
+			
+				if (isLogin) {
+					parent.setLaminaCentral("Recientes");
+					parent.mostrarLaminaSuperior();
+				
+				} else {
+					JOptionPane.showMessageDialog(this,
+							"Nombre de usuario o contraseña no valido",
+							"Error", JOptionPane.ERROR_MESSAGE);
+				}
+		
+			} else {
+				errorCampo.setVisible(true);
+			}
+			revalidate();
+			repaint();
 		});
 //		bAceptar.addKeyListener(new KeyAdapter() {
 //			@Override
 //			public void keyPressed(KeyEvent e) {
 //				aceptar();
 //			}
-//		});
+//	    });
+		// addBotonCancelar
+		JButton bCancelar = addButton("Cancelar", 1, 2);
+		bCancelar.addActionListener(e -> {
+			// cancelar
+			tfNombre.setText("");
+			pfPass.setText("");
+		});
+//		bCancelar.addKeyListener(new KeyAdapter() {
+//			@Override
+//			public void keyPressed(KeyEvent e) {
+//				cancelar();
+//			}
+//	    });
+		
+//		addListenerTeclado();
+//		addKeyListener(this);
+//		requestFocus();
+//		setFocusable(true);
+	}
+
+	private JLabel addLabel(String texto, int y) {
+		JLabel label = new JLabel(texto);
+		label.setFont(new Font("Arial", Font.BOLD, 15));
+		label.setForeground((Color.WHITE));
+		
+		GridBagConstraints constraints = new GridBagConstraints();
+		constraints.insets = new Insets(20, 10, 20, 5);
+		constraints.anchor = GridBagConstraints.EAST;
+		constraints.gridx = 0;
+		constraints.gridy = y;
+		
+		add(label, constraints);
+		return label;
+	}
+
+	private JTextField addTextField(boolean pass, int y) {
+		JTextField textField = pass ? new JPasswordField() : new JTextField();
+		textField.setPreferredSize(new Dimension(200, 20));
+		
+		GridBagConstraints constraints = new GridBagConstraints();
+		constraints.insets = new Insets(10, 5, 20, 15);
+		constraints.fill = GridBagConstraints.EAST;
+		constraints.gridx = 1;
+		constraints.gridy = y;
+		
+		add(textField, constraints);
+		return textField;
+	}
+
+	private JButton addButton(String text, int x, int y) {
+		JButton button = new JButton(text);
+		
+		GridBagConstraints constraints = new GridBagConstraints();
+		constraints.insets = new Insets(20, 20, 20, 15);
+		constraints.fill = GridBagConstraints.FIRST_LINE_START;
+		constraints.gridx = x;
+		constraints.gridy = y;
+		
+		add(button, constraints);
+		return button;
 	}
 	
+	private JLabel addLabelErrorCampo() {
+		JLabel label = new JLabel();
+		label.setVisible(false);
+		label.setFont(new Font("Arial", Font.BOLD, 20));
+		label.setForeground((Color.RED));
+		label.setBackground(Color.BLUE);
+		label.setBorder(new MatteBorder(2,2,2,2,Color.RED));
+		
+		GridBagConstraints constraints = new GridBagConstraints();
+		constraints.insets = new Insets(5, 20, 20, 15);
+		constraints.fill = GridBagConstraints.CENTER;
+		constraints.gridx = 1;
+		constraints.gridy = 3;
+		
+		add(label, constraints);
+		return label;
+	}
+
 //	private void addListenerTeclado() {
 //		addKeyListener(new KeyAdapter() {
 //			
@@ -150,27 +188,6 @@ public class Login extends JPanel  {//implements KeyListener{
 //		});
 //	}
 	
-	private void aceptar() {
-		boolean isLogin = Controlador.getInstancia().loginUsuario(tfNombre.getText(), new String(pfPass.getPassword()));
-		
-		if (isLogin) {
-			LaminaSuperior.getInstancia().getbRecientes().setSelected(true);
-			removeAll();
-			LaminaSuperior.getInstancia().mostrar();
-			LaminaSuperior.getInstancia().mostrarLamina("Recientes");
-		
-			revalidate();
-			repaint();
-		} else {
-			JOptionPane.showMessageDialog(this, "Nombre de usuario o contrase�a no valido", "Error", JOptionPane.ERROR_MESSAGE);
-		}
-	}
-	
-	private void cancelar() {
-		tfNombre.setText("");
-		pfPass.setText("");
-	}
-
 //	@Override
 //	public void keyTyped(KeyEvent e) {
 //		// TODO Auto-generated method stub

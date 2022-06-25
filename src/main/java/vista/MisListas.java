@@ -14,23 +14,20 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
-public class MisListas extends JPanel{
-	private boolean isOpaque = false;
-
-	public MisListas() {
-		confLamina();
-	}
+public class MisListas extends JPanel {
 	
-	private void confLamina() {
+	public MisListas() {
+		
+		// CONF LAMINA
 		setLayout(new BorderLayout());
 		setBackground(new Color(96, 96, 96));
 		setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 		
-		confSeleccionar();
-		confVideos();
-	}
-	
-	private void confSeleccionar() {
+		// addReproductor
+		JPanel repr = new Reproductor(null);
+		add(repr, BorderLayout.CENTER);
+		
+		// addMisListas
 		JPanel pGeneral = new JPanel();
 		JPanel pSeleccionarLista = new JPanel();
 		JPanel pListaVideos = new JPanel();
@@ -78,11 +75,5 @@ public class MisListas extends JPanel{
 		pGeneral.add(pCancelar);
 		
 		add(pGeneral, BorderLayout.WEST);
-		
-	}
-	
-	private void confVideos() {
-		JPanel l = new JPanel();
-		add(l, BorderLayout.CENTER);
 	}
 }

@@ -23,20 +23,19 @@ public class MasVistos extends JPanel {
 	private boolean isOpaque = false;
 
 	public MasVistos() {
-		confLamina();
-	}
-
-	private void confLamina() {
+		
+		// CONF LAMINA
 		setLayout(new BorderLayout());
 		setBackground(new Color(96, 96, 96));
 		setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-
-		confVideos();
-	}
-
-	private void confVideos() {
+		
+		// addReproductor
+		JPanel repr = new Reproductor(null);
+		add(repr, BorderLayout.CENTER);
+		
+		// addMasVistos
 		JPanel l = new JPanel();
-		add(l, BorderLayout.CENTER);
+		add(l, BorderLayout.EAST);
 		
 		List<Video> listaTopVideos = Controlador.getInstancia().getTopVideos();
 	}

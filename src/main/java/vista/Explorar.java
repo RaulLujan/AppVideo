@@ -27,8 +27,10 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.AbstractTableModel;
 
@@ -37,6 +39,7 @@ import modelo.Etiqueta;
 import modelo.Video;
 
 public class Explorar extends JPanel {
+	
 	private static final int NUM_COLUMNAS = 4;
 
 	private JTextField tfBuscar;
@@ -51,14 +54,11 @@ public class Explorar extends JPanel {
 	private boolean isOpaque = false;
 
 	public Explorar() {
-		confLamina();
-	}
-
-	private void confLamina() {
-
+		
+		// CONF LAMINA
 		setLayout(new GridBagLayout());
 		setBackground(new Color(96, 96, 96));
-
+		
 		confBusqueda();
 		confEtiquetas();
 		confVideos();
@@ -79,7 +79,7 @@ public class Explorar extends JPanel {
 
 		GridBagConstraints constraintsLBuscar = new GridBagConstraints();
 		constraintsLBuscar.insets = new Insets(20, 20, 10, 5);
-		constraintsLBuscar.anchor = GridBagConstraints.EAST;
+		constraintsLBuscar.anchor = GridBagConstraints.WEST;
 		constraintsLBuscar.gridx = 0;
 		constraintsLBuscar.gridy = 0;
 
@@ -178,10 +178,10 @@ public class Explorar extends JPanel {
 
 		GridBagConstraints constraintsPEtiquetas = new GridBagConstraints();
 		constraintsPEtiquetas.insets = new Insets(10, 2, 10, 10);
-		constraintsPEtiquetas.anchor = GridBagConstraints.EAST;
+		constraintsPEtiquetas.fill = GridBagConstraints.VERTICAL;
 		constraintsPEtiquetas.gridx = 1;
 		constraintsPEtiquetas.gridy = 0;
-		constraintsPEtiquetas.gridheight = 3;
+		constraintsPEtiquetas.gridheight = 2;
 		constraintsPEtiquetas.gridwidth = 1;
 		add(pEtiquetas, constraintsPEtiquetas);
 	}
@@ -216,11 +216,29 @@ public class Explorar extends JPanel {
 //
 //		addListenerBotonPrueba(bPrueba);
 
+		
+		JScrollPane pVideos = new JScrollPane();
+		pVideos.setPreferredSize(new Dimension(500, 240));
+		
 		if (!buscado)
 			listaVideos = Controlador.getInstancia().getVideosExplorar();
 		for (Video v : listaVideos)
 			System.out.println(v.getTitulo());
-		JTable tablaVideos = new JTable(listaATablaVideos(), new String[0]); //nombresColumnas
+		DefaultListModel<CaratulaVideo> modelVideos =new DefaultListModel<>();
+		modelVideos.clear();
+		for (Video video : listaVideos)
+			modelVideos.addElement(new CaratulaVideo(video));
+	
+		JList<CaratulaVideo> tablaVideos = new JList<>(modelVideos);
+		tablaVideos.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		tablaVideos.setBackground(new Color(96, 96, 96));
+		tablaVideos.setCellRenderer(CaratulaVideo.getProcesador());
+		pVideos.setViewportView(tablaVideos);
+		
+		//listaATablaVideos(tablaVideos); 
+		//tablaVideos.setBackground(new Color(96, 96, 96));
+		//for (Video video : listaVideos)
+		//	tablaVideos.add(new CaratulaVideo(video));
 		
 		GridBagConstraints constraintsPVideos = new GridBagConstraints();
 		constraintsPVideos.insets = new Insets(2, 10, 10, 2);
@@ -228,29 +246,34 @@ public class Explorar extends JPanel {
 		constraintsPVideos.gridx = 0;
 		constraintsPVideos.gridy = 1;
 
-		add(new JScrollPane(tablaVideos), constraintsPVideos);
-		try {
-			tablaVideos.print();
-		} catch (PrinterException e) {
-			e.printStackTrace();
-		}
+		add(pVideos, constraintsPVideos);
+		//add(new JScrollPane(tablaVideos), constraintsPVideos);
+//		try {
+//
+//			tablaVideos.print();
+//		} catch (PrinterException e) {
+//			e.printStackTrace();
+//		}
+		
+		
+		
 		
 	}
 
-	private Video[][] listaATablaVideos() {
+	private JPanel[][] listaATablaVideos() {
 		int numVideos = listaVideos.size();
 		int mod = numVideos % NUM_COLUMNAS;
 		double div = numVideos / NUM_COLUMNAS;
 		int numFilas = (int) ((mod == 0) ? div : div + 1);
 		int numCol = (mod == 0) ? NUM_COLUMNAS : mod;
 
-		Video[][] tablaVideos = new Video[numFilas][NUM_COLUMNAS];
+		JPanel[][] tablaVideos = new JPanel[numFilas][NUM_COLUMNAS];
 		for (int i = 0; i < numFilas-1; i++)
 			for (int j = 0; j < NUM_COLUMNAS; j++)
-				tablaVideos[i][j] = listaVideos.get(i * NUM_COLUMNAS + j);
+				tablaVideos[i][j] = new CaratulaVideo(listaVideos.get(i * NUM_COLUMNAS + j));
 		int i = numFilas-1;
 		for (int j = 0; j < numCol; j++)
-			tablaVideos[i][j] = listaVideos.get(i * NUM_COLUMNAS + j);
+			tablaVideos[i][j] = new CaratulaVideo(listaVideos.get(i * NUM_COLUMNAS + j));
 		return tablaVideos;
 	}
 

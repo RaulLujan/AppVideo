@@ -10,19 +10,18 @@ public class Recientes extends JPanel{
 	private boolean isOpaque = false;
 
 	public Recientes() {
-		confLamina();
-	}
-
-	private void confLamina() {
+		
+		// CONF LAMINA
 		setLayout(new BorderLayout());
 		setBackground(new Color(96, 96, 96));
 		setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-
-		confVideos();
-	}
-
-	private void confVideos() {
+		
+		// addReproductor
+		JPanel repr = new Reproductor(null);
+		add(repr, BorderLayout.CENTER);
+		
+		// addRecientes
 		JPanel l = new JPanel();
-		add(l, BorderLayout.CENTER);
+		add(l, BorderLayout.EAST);
 	}
 }

@@ -3,7 +3,7 @@ package modelo;
 import java.sql.Date;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.stream.*;
 
 import javax.swing.ImageIcon;
 
@@ -47,8 +47,8 @@ public class Video {
 		return titulo;
 	}
 	public String getTituloCorto() {
-		if (titulo.length() > 31)
-			return titulo.substring(0, 30) + "...";
+		if (titulo.length() > 21)
+			return titulo.substring(0, 20) + "...";
 		else
 			return titulo;
 	}

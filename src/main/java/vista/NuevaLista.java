@@ -16,15 +16,14 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
 public class NuevaLista extends JPanel {
+	
 	private boolean isOpaque = false;
 	private GridBagConstraints c;
 	
 	public NuevaLista() {
 		c = new GridBagConstraints();
-		confLamina();
-	}
-
-	private void confLamina() {
+		
+		// CONF LAMINA
 		setLayout(new GridBagLayout());
 		setBackground(new Color(96, 96, 96));
 		setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
@@ -33,7 +32,7 @@ public class NuevaLista extends JPanel {
 		confBusqueda();
 		confBotonesVideos();
 	}
-	
+
 	private void confIntroducirNombre() {
 		JPanel pGeneral = new JPanel();
 		JPanel pGrupoIntroducir = new JPanel();
@@ -71,10 +70,10 @@ public class NuevaLista extends JPanel {
 		JPanel pBusqueda = new JPanel();
 		JPanel pInsertarBusq = new JPanel();
 
-		JLabel lBuscar = new JLabel("Buscar título: ", SwingConstants.RIGHT);
+		JLabel lBuscar = new JLabel("Buscar tï¿½tulo: ", SwingConstants.RIGHT);
 		JTextField tfBuscar = new JTextField(20);
 		JButton bBuscar = new JButton("Buscar");
-		JButton bNuevaBusq = new JButton("Nueva búsqueda");
+		JButton bNuevaBusq = new JButton("Nueva bï¿½squeda");
 
 		pBusqueda.setLayout(new BoxLayout(pBusqueda, BoxLayout.Y_AXIS));
 		pBusqueda.setBorder(BorderFactory.createEtchedBorder(Color.DARK_GRAY, Color.GRAY));
@@ -107,7 +106,7 @@ public class NuevaLista extends JPanel {
 		JPanel pBotonesVideoLista = new JPanel();
 		JPanel pAceptar = new JPanel();
 		
-		JButton bAnyadir = new JButton("Añadir");
+		JButton bAnyadir = new JButton("Aï¿½adir");
 		JButton bQuitar = new JButton("Quitar");
 		JButton bAceptar = new JButton("Aceptar");
 		

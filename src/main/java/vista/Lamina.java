@@ -8,25 +8,22 @@ import java.awt.event.ActionListener;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-public class Lamina extends JPanel implements ActionListener{
-
+public class Lamina extends JPanel {
 	
 	public Lamina() {
-		confLamina();
-	}
-
-	public void actionPerformed(ActionEvent e) {
-		setBackground(Color.WHITE);
-	}
-	
-	private void confLamina() {
-		LaminaCentral laminaCentral = LaminaCentral.getInstancia();
-		LaminaSuperior laminaSuperior = LaminaSuperior.getInstancia(laminaCentral);
 		
+		// CONF LAMINA
 		setLayout(new BorderLayout());
 		setBorder(new EmptyBorder(10, 5, 10, 5));
 		
+		// addLaminas superior y central
+		LaminaCentral laminaCentral = new LaminaCentral();
+		LaminaSuperior laminaSuperior = new LaminaSuperior(laminaCentral);
 		add(laminaSuperior, BorderLayout.NORTH);
-		add(laminaCentral, BorderLayout.CENTER);		
+		add(laminaCentral, BorderLayout.CENTER);
 	}
+
+//	public void actionPerformed(ActionEvent e) {
+//		setBackground(Color.WHITE);
+//	}
 }

@@ -1,23 +1,11 @@
 package controlador;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.util.Date;
 import java.util.EventObject;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import javax.swing.ImageIcon;
-
-import com.itextpdf.text.Document;
-import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.Font;
-import com.itextpdf.text.PageSize;
-import com.itextpdf.text.Paragraph;
-import com.itextpdf.text.Font.FontFamily;
-import com.itextpdf.text.pdf.PdfWriter;
 
 import cargadorVideos.VideosEvent;
 import cargadorVideos.VideosListener;
@@ -26,7 +14,6 @@ import modelo.CatalogoListasVideos;
 import modelo.CatalogoUsuarios;
 import modelo.CatalogoVideos;
 import modelo.Etiqueta;
-import modelo.ListaVideos;
 import modelo.Usuario;
 import modelo.Video;
 import persistencia.FactoriaDAO;
@@ -153,6 +140,14 @@ public class Controlador implements VideosListener {
 			return icono;
 		}
 		return null;
+	}
+	
+	public String getTituloCortoVideo(int id) {
+		if (catalogoVideos.existsVideo(id)) {
+			Video video = catalogoVideos.getVideo(id);
+			return video.getTituloCorto();
+		}
+		return "Sin titulo";
 	}
 	
 	public void reproducirVideo(int id) {

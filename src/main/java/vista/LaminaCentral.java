@@ -1,12 +1,9 @@
 package vista;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Graphics;
-import java.awt.GridBagConstraints;
 import java.awt.GridLayout;
-import java.awt.Insets;
 import java.lang.reflect.Constructor;
 
 import javax.swing.BorderFactory;
@@ -14,18 +11,9 @@ import javax.swing.JPanel;
 
 public class LaminaCentral extends JPanel {
 	
-	private static LaminaCentral instancia = null;
-	public static LaminaCentral getInstancia() {
-		if (instancia == null)
-			return new LaminaCentral();
-		return instancia;
-	}
-
-	private LaminaCentral() {
-		confLamina();
-	}
-	
-	private void confLamina() {
+	public LaminaCentral() {
+		
+		// CONF LAMINA
 		setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		setBackground(new Color(96, 96, 96));
 		
