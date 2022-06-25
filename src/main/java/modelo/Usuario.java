@@ -102,6 +102,11 @@ public class Usuario {
 	public Date getFechaNac() {
 		return fechaNac;
 	}
+	
+	public void setFechaNac(Date fechaNac) {
+		this.fechaNac = fechaNac;
+	}
+	
 	public int getEdad() {
 		LocalDate fechaActual = LocalDate.now();
 		LocalDate fechaNacimiento = fechaNac.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
