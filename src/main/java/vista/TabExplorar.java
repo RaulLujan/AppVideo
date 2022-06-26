@@ -87,10 +87,9 @@ public class TabExplorar extends JPanel {
 			}
 		});
 		
-		DefaultListCellRenderer renderer = (DefaultListCellRenderer) lista.getCellRenderer();
-		renderer.setHorizontalAlignment(SwingConstants.CENTER);
+		//lista.setAlignmentX(SwingConstants.CENTER);
 		
-		parent.add(lista);
+		parent.add(lista, SwingConstants.CENTER);
 		return lista;
 	}
 }

@@ -12,25 +12,26 @@ import tds.video.VideoWeb;
 
 @SuppressWarnings("serial")
 public class TabReproductor extends JPanel {
-	
+
 	private Controlador controlador = Controlador.getInstancia();
 
 	public TabReproductor(Ventana window) {
 		VideoWeb videoWeb = controlador.getVideoWeb();
 		Video video = controlador.getVideoActual();
-		
+
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		setBackground(new Color(96, 96, 96));
 		setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
 		// CONF REPRODUCTOR
-		
+
 		// addTitulo
 		addLabel(this, video.getTitulo(), 30);
 		// addNumRepro
-		addLabel(this, "Visto por : "+video.getNumRepro()+" usuarios", 24);
-		
+		addLabel(this, "Visto por : " + video.getNumRepro() + " usuarios", 24);
+
 		// addReproductor
+		videoWeb.setAlignmentX(CENTER_ALIGNMENT);
 		add(videoWeb);
 		// addCopyrigth
 		JLabel copyrigth = addLabel(this, videoWeb.getVersion(), 10);
@@ -38,8 +39,8 @@ public class TabReproductor extends JPanel {
 		// addEtiquetas
 		JPanel panelEtiquetas = addPanel();
 		for (Etiqueta et : video.getEtiquetas())
-			addLabel(panelEtiquetas, et.getNombre(), 10);
-		
+			addLabelEtiqueta(panelEtiquetas, et.getNombre(), 10);
+
 		// addNuevaEtiqueta
 		JPanel panelNuevaEtiqueta = addPanel();
 		addLabel(panelNuevaEtiqueta, "Nueva etiqueta:", 10);
@@ -53,14 +54,14 @@ public class TabReproductor extends JPanel {
 			if (!nombre.trim().isEmpty()) {
 				boolean ok = controlador.setEtiquetaVideo(nombre);
 				if (ok) {
-					addLabelEtiqueta(panelEtiquetas, nombre, 10);
+					addLabel(panelEtiquetas, nombre, 10);
 					campoNuevaEtiqueta.setText("");
 				}
 			}
 		});
-		
+
 	}
-	
+
 	private JPanel addPanel() {
 		JPanel panel = new JPanel();
 		panel.setBackground(new Color(96, 96, 96));
@@ -72,16 +73,15 @@ public class TabReproductor extends JPanel {
 		JLabel label = new JLabel(texto);
 		label.setFont(new Font("Arial", Font.BOLD, size));
 		label.setForeground(Color.WHITE);
-		panel.add(label, SwingConstants.CENTER);
+		label.setAlignmentX(LEFT_ALIGNMENT);
+		panel.add(label);
 		return label;
 	}
-	
+
 	private JLabel addLabelEtiqueta(JPanel panel, String texto, int size) {
-		JLabel label = new JLabel(texto);
-		label.setFont(new Font("Arial", Font.BOLD, size));
-		label.setForeground(Color.BLACK);
+		JLabel label = addLabel(panel, texto, size);
 		label.setBackground(Color.GRAY);
-		panel.add(label, SwingConstants.CENTER);
+		
 		return label;
 	}
 
