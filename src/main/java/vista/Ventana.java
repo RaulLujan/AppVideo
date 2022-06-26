@@ -28,11 +28,11 @@ import javax.swing.border.EmptyBorder;
 import cargadorVideos.BuscadorVideos;
 import cargadorVideos.IBuscadorVideos;
 import controlador.Controlador;
+import pulsador.Luz;
 
 @SuppressWarnings("serial")
 public class Ventana extends JFrame {
 
-	private static final String CARGADOR_VIDEOS = "Cargador Videos";
 	public static final String PREMIUM = "Premium";
 	public static final String LOGOUT = "Logout";
 	public static final String REGISTRO = "Registro";
@@ -156,24 +156,8 @@ public class Ventana extends JFrame {
 		
 		pInicio.add(Box.createHorizontalGlue());
 		
-		// 1.2.1.1 addButtonCargador a LaminaInicio
-		// TODO borrar linea
-		addButtonInicio(CARGADOR_VIDEOS);
-		// TODO usar pulsador en vez de JButton, seria algo asi
-//		Pulsador bCargador = new Pulsador();
-//		bCargador.addActionListener(e -> {
-//			IBuscadorVideos componente = new BuscadorVideos();
-//			componente.addVideosListener(controlador);
-//			JFileChooser fileChooser = new JFileChooser();
-//		    fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-//		    int seleccion = fileChooser.showOpenDialog((Component)e.getSource());
-//		    if (seleccion == JFileChooser.APPROVE_OPTION) {
-//		        File fichero = fileChooser.getSelectedFile();
-//		        componente.setArchivoVideos(fichero);
-//		    } 
-//			break;
-//		});
-//		pInicio.add(bCargador);
+		// 1.2.1.1 addButtonCargador (Pulsador Luz) a LaminaInicio
+		addButtonCargador();
 		
 		// MOSTRAR
 		mostrarLaminaSuperior();
@@ -247,6 +231,24 @@ public class Ventana extends JFrame {
 		});
 		pInicio.add(boton);
 		return boton;
+	}
+	
+	private void addButtonCargador() {
+		Luz pulsador = new Luz();
+		pulsador.addEncendidoListener(e ->{
+			IBuscadorVideos componente = new BuscadorVideos();
+			componente.addVideosListener(controlador);
+			JFileChooser fileChooser = new JFileChooser();
+		    fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+		    int seleccion = fileChooser.showOpenDialog((Component)e.getSource());
+		    if (seleccion == JFileChooser.APPROVE_OPTION) {
+		        File fichero = fileChooser.getSelectedFile();
+		        componente.setArchivoVideos(fichero);
+		    } 
+			
+		});
+		
+		pInicio.add(pulsador);
 	}
 
 	public void setLaminaCentral(String titulo) {
