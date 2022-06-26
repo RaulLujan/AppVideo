@@ -1,5 +1,6 @@
 package vista;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
 
@@ -19,31 +20,50 @@ public class TabReproductor extends JPanel {
 		VideoWeb videoWeb = controlador.getVideoWeb();
 		Video video = controlador.getVideoActual();
 
-		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+		setLayout(new BorderLayout());
 		setBackground(new Color(96, 96, 96));
 		setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
 		// CONF REPRODUCTOR
-
+		
+		// conf parte NORTH
+		JPanel pInfoVideo = new JPanel();
+		pInfoVideo.setBackground(new Color(96, 96, 96));
+		pInfoVideo.setLayout(new BoxLayout(pInfoVideo, BoxLayout.Y_AXIS));
 		// addTitulo
-		addLabel(this, video.getTitulo(), 30);
+		addLabel(pInfoVideo, video.getTitulo(), 30);
 		// addNumRepro
-		addLabel(this, "Visto por : " + video.getNumRepro() + " usuarios", 24);
-
+		addLabel(pInfoVideo, "Visto por : " + video.getNumRepro() + " usuarios", 24);
+		add(pInfoVideo, BorderLayout.NORTH);
+		
+		// conf parte CENTER
+		
+		JPanel pVideo = new JPanel();
+		pVideo.setBackground(new Color(96, 96, 96));
+		pVideo.setLayout(new BoxLayout(pVideo, BoxLayout.Y_AXIS));
 		// addReproductor
 		videoWeb.setAlignmentX(CENTER_ALIGNMENT);
-		videoWeb.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-		add(videoWeb);
+		pVideo.add(videoWeb);
+		
 		// addCopyrigth
-		JLabel copyrigth = addLabel(this, videoWeb.getVersion(), 10);
+		JLabel copyrigth = addLabel(pVideo, videoWeb.getVersion(), 10);
 		copyrigth.setForeground(Color.WHITE);
 		// addEtiquetas
-		JPanel panelEtiquetas = addPanel();
+		JPanel panelEtiquetas = new JPanel();
+		panelEtiquetas.setBackground(new Color(96, 96, 96));
+		
 		for (Etiqueta et : video.getEtiquetas())
 			addLabelEtiqueta(panelEtiquetas, et.getNombre(), 10);
+		
+		pVideo.add(panelEtiquetas);
+		
+		add(pVideo, BorderLayout.CENTER);
 
+		// conf parte SOUTH
 		// addNuevaEtiqueta
-		JPanel panelNuevaEtiqueta = addPanel();
+		JPanel panelNuevaEtiqueta = new JPanel();
+		panelNuevaEtiqueta.setBackground(new Color(96, 96, 96));
+		
 		addLabel(panelNuevaEtiqueta, "Nueva etiqueta:", 10);
 		JTextField campoNuevaEtiqueta = new JTextField();
 		campoNuevaEtiqueta.setColumns(16);
@@ -60,13 +80,15 @@ public class TabReproductor extends JPanel {
 				}
 			}
 		});
+		
+		add(panelNuevaEtiqueta, BorderLayout.SOUTH);
 
 	}
 
 	private JPanel addPanel() {
 		JPanel panel = new JPanel();
 		panel.setBackground(new Color(96, 96, 96));
-		add(Box.createHorizontalGlue());
+		//add(Box.createHorizontalGlue());
 		add(panel);
 		return panel;
 	}
@@ -83,6 +105,7 @@ public class TabReproductor extends JPanel {
 	private JLabel addLabelEtiqueta(JPanel panel, String texto, int size) {
 		JLabel label = new JLabel(texto);
 		label.setFont(new Font("Arial", Font.BOLD, size));
+		label.setOpaque(true);
 		label.setForeground(Color.BLACK);
 		label.setBackground(Color.LIGHT_GRAY);
 		panel.add(label);

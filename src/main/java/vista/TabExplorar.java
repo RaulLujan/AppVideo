@@ -2,6 +2,7 @@ package vista;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -39,6 +40,7 @@ public class TabExplorar extends JPanel {
 		// addPanelEtiquetas
 		JPanel pEtiquetas = new JPanel();
 		pEtiquetas.setLayout(new BoxLayout(pEtiquetas, BoxLayout.Y_AXIS));
+		pEtiquetas.setAlignmentX(Component.CENTER_ALIGNMENT);
 		pEtiquetas.setBorder(BorderFactory.createEtchedBorder(Color.DARK_GRAY, Color.GRAY));
 		pEtiquetas.setOpaque(isOpaque);
 		add(pEtiquetas, BorderLayout.EAST);
@@ -86,8 +88,7 @@ public class TabExplorar extends JPanel {
 				}
 			}
 		});
-		
-		lista.setAlignmentX(SwingConstants.CENTER);
+		lista.setAlignmentX(Component.CENTER_ALIGNMENT);
 		parent.add(Box.createHorizontalGlue());
 		parent.add(lista);
 		parent.add(Box.createHorizontalGlue());
