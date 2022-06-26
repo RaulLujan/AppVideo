@@ -30,7 +30,6 @@ public class TabReproductor extends JPanel {
 		JPanel pInfoVideo = new JPanel();
 		pInfoVideo.setBackground(new Color(96, 96, 96));
 		pInfoVideo.setLayout(new BoxLayout(pInfoVideo, BoxLayout.Y_AXIS));
-		pInfoVideo.setAlignmentX(CENTER_ALIGNMENT);
 		// addTitulo
 		addLabel(pInfoVideo, video.getTitulo(), 30);
 		// addNumRepro
@@ -41,6 +40,7 @@ public class TabReproductor extends JPanel {
 		
 		JPanel pVideoReproductor = new JPanel();
 		JPanel pVideo = new JPanel();
+		pVideo.setOpaque(false);
 		pVideoReproductor.setBackground(new Color(96, 96, 96));
 		pVideoReproductor.setLayout(new BoxLayout(pVideoReproductor, BoxLayout.Y_AXIS));
 		
@@ -52,14 +52,14 @@ public class TabReproductor extends JPanel {
 		pVideoReproductor.add(Box.createHorizontalGlue());
 		
 		// addCopyrigth
-		JLabel copyrigth = addLabel(pVideoReproductor, videoWeb.getVersion(), 10);
+		JLabel copyrigth = addLabel(pVideoReproductor, videoWeb.getVersion(), 12);
 		copyrigth.setForeground(Color.WHITE);
 		// addEtiquetas
 		JPanel panelEtiquetas = new JPanel();
 		panelEtiquetas.setBackground(new Color(96, 96, 96));
 		
 		for (Etiqueta et : video.getEtiquetas())
-			addLabelEtiqueta(panelEtiquetas, et.getNombre(), 12);
+			addLabelEtiqueta(panelEtiquetas, et.getNombre(), 14);
 		
 		pVideoReproductor.add(panelEtiquetas);
 		
@@ -90,12 +90,6 @@ public class TabReproductor extends JPanel {
 		add(panelNuevaEtiqueta, BorderLayout.SOUTH);
 
 	}
-
-	/*
-	 * private JPanel addPanel() { JPanel panel = new JPanel();
-	 * panel.setBackground(new Color(96, 96, 96));
-	 * //add(Box.createHorizontalGlue()); add(panel); return panel; }
-	 */
 	
 	private JLabel addLabel(JPanel panel, String texto, int size) {
 		JLabel label = new JLabel(texto, SwingConstants.CENTER);
