@@ -285,7 +285,7 @@ public class Ventana extends JFrame {
 
 	}
 	
-	private void mostrarLaminaSuperior() {
+	public void mostrarLaminaSuperior() {
 		String nombreUsuario = controlador.getNombreUsuario();
 		lSaludo.setText("Hola " + nombreUsuario);
 		
