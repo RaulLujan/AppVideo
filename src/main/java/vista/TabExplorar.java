@@ -40,7 +40,6 @@ public class TabExplorar extends JPanel {
 		// addPanelEtiquetas
 		JPanel pEtiquetas = new JPanel();
 		pEtiquetas.setLayout(new BoxLayout(pEtiquetas, BoxLayout.Y_AXIS));
-		pEtiquetas.setAlignmentX(Component.CENTER_ALIGNMENT);
 		pEtiquetas.setBorder(BorderFactory.createEtchedBorder(Color.DARK_GRAY, Color.GRAY));
 		pEtiquetas.setOpaque(isOpaque);
 		add(pEtiquetas, BorderLayout.EAST);
@@ -75,6 +74,9 @@ public class TabExplorar extends JPanel {
 
 	private JList<String> addList(JPanel parent,
 			DefaultListModel<String> model, DefaultListModel<String> other) {
+		JPanel panel = new JPanel();
+		panel.setOpaque(isOpaque);
+	
 		JList<String> lista = new JList<>();
 		lista.setModel(model);
 		lista.addMouseListener(new MouseAdapter() {
@@ -89,9 +91,8 @@ public class TabExplorar extends JPanel {
 			}
 		});
 		lista.setAlignmentX(Component.CENTER_ALIGNMENT);
-		parent.add(Box.createHorizontalGlue());
-		parent.add(lista);
-		parent.add(Box.createHorizontalGlue());
+		panel.add(lista);
+		parent.add(panel);
 		return lista;
 	}
 }

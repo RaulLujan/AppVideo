@@ -30,6 +30,7 @@ public class TabReproductor extends JPanel {
 		JPanel pInfoVideo = new JPanel();
 		pInfoVideo.setBackground(new Color(96, 96, 96));
 		pInfoVideo.setLayout(new BoxLayout(pInfoVideo, BoxLayout.Y_AXIS));
+		pInfoVideo.setAlignmentX(CENTER_ALIGNMENT);
 		// addTitulo
 		addLabel(pInfoVideo, video.getTitulo(), 30);
 		// addNumRepro
@@ -42,7 +43,9 @@ public class TabReproductor extends JPanel {
 		pVideo.setBackground(new Color(96, 96, 96));
 		pVideo.setLayout(new BoxLayout(pVideo, BoxLayout.Y_AXIS));
 		// addReproductor
+		pVideo.add(Box.createHorizontalGlue());
 		videoWeb.setAlignmentX(CENTER_ALIGNMENT);
+		pVideo.add(Box.createHorizontalGlue());
 		pVideo.add(videoWeb);
 		
 		// addCopyrigth
@@ -85,16 +88,14 @@ public class TabReproductor extends JPanel {
 
 	}
 
-	private JPanel addPanel() {
-		JPanel panel = new JPanel();
-		panel.setBackground(new Color(96, 96, 96));
-		//add(Box.createHorizontalGlue());
-		add(panel);
-		return panel;
-	}
-
+	/*
+	 * private JPanel addPanel() { JPanel panel = new JPanel();
+	 * panel.setBackground(new Color(96, 96, 96));
+	 * //add(Box.createHorizontalGlue()); add(panel); return panel; }
+	 */
+	
 	private JLabel addLabel(JPanel panel, String texto, int size) {
-		JLabel label = new JLabel(texto);
+		JLabel label = new JLabel(texto, SwingConstants.CENTER);
 		label.setFont(new Font("Arial", Font.BOLD, size));
 		label.setForeground(Color.WHITE);
 		label.setAlignmentX(LEFT_ALIGNMENT);
