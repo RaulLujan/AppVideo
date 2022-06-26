@@ -39,28 +39,31 @@ public class TabReproductor extends JPanel {
 		
 		// conf parte CENTER
 		
+		JPanel pVideoReproductor = new JPanel();
 		JPanel pVideo = new JPanel();
-		pVideo.setBackground(new Color(96, 96, 96));
-		pVideo.setLayout(new BoxLayout(pVideo, BoxLayout.Y_AXIS));
+		pVideoReproductor.setBackground(new Color(96, 96, 96));
+		pVideoReproductor.setLayout(new BoxLayout(pVideoReproductor, BoxLayout.Y_AXIS));
+		
 		// addReproductor
-		pVideo.add(Box.createHorizontalGlue());
-		videoWeb.setAlignmentX(CENTER_ALIGNMENT);
-		pVideo.add(Box.createHorizontalGlue());
+		pVideoReproductor.add(Box.createHorizontalGlue());
 		pVideo.add(videoWeb);
+		videoWeb.setAlignmentX(CENTER_ALIGNMENT);
+		pVideoReproductor.add(pVideo);
+		pVideoReproductor.add(Box.createHorizontalGlue());
 		
 		// addCopyrigth
-		JLabel copyrigth = addLabel(pVideo, videoWeb.getVersion(), 10);
+		JLabel copyrigth = addLabel(pVideoReproductor, videoWeb.getVersion(), 10);
 		copyrigth.setForeground(Color.WHITE);
 		// addEtiquetas
 		JPanel panelEtiquetas = new JPanel();
 		panelEtiquetas.setBackground(new Color(96, 96, 96));
 		
 		for (Etiqueta et : video.getEtiquetas())
-			addLabelEtiqueta(panelEtiquetas, et.getNombre(), 10);
+			addLabelEtiqueta(panelEtiquetas, et.getNombre(), 12);
 		
-		pVideo.add(panelEtiquetas);
+		pVideoReproductor.add(panelEtiquetas);
 		
-		add(pVideo, BorderLayout.CENTER);
+		add(pVideoReproductor, BorderLayout.CENTER);
 
 		// conf parte SOUTH
 		// addNuevaEtiqueta

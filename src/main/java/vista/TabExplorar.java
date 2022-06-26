@@ -65,7 +65,7 @@ public class TabExplorar extends JPanel {
 	}
 	
 	private JLabel addLabel(JPanel parent, String texto) {
-		JLabel label = new JLabel(texto);
+		JLabel label = new JLabel(texto, SwingConstants.CENTER);
 		label.setForeground(Color.WHITE);
 		label.setBorder(new EmptyBorder(5, 5, 5, 5));
 		parent.add(label);
