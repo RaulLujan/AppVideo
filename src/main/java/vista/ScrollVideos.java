@@ -48,10 +48,12 @@ public class ScrollVideos extends JScrollPane {
 				@SuppressWarnings("unchecked")
 				JList<CaratulaVideos> resultados = (JList<CaratulaVideos>) e.getComponent();
 				CaratulaVideos caratula = resultados.getSelectedValue();
-				selected = caratula.getVideo();
-				if (e.getClickCount() == 2) {
-					Controlador.getInstancia().setVideoActual(selected);
-					window.setLaminaCentral("Reproductor");
+				if (caratula != null) {
+					selected = caratula.getVideo();
+					if (e.getClickCount() == 2) {
+						Controlador.getInstancia().setVideoActual(selected);
+						window.setLaminaCentral("Reproductor");
+					}
 				}
 			}
 		});

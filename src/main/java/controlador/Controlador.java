@@ -90,9 +90,6 @@ public class Controlador implements VideosListener {
 		catalogoListas.addListaVideos(usuario.getRecentVideo());
 		return true;
 	}
-	public boolean registrarUsuario(String nombre, Date fechaNac, String login, String pass) {
-		return registrarUsuario(nombre, "", fechaNac, "", login, pass);
-	}
 
 	// TabLogin
 	public boolean loginUsuario(String login, String pass) {
@@ -210,10 +207,8 @@ public class Controlador implements VideosListener {
 			usuarioActual.addRecentVideo(videoActual);
 			adaptadorListaVideos.modificarListaVideos(usuarioActual.getRecentVideo());
 
-			System.out.println(videoActual.getNumRepro());
 			videoActual.incrNumRepro();
 			adaptadorVideo.modificarVideo(videoActual);
-			System.out.println(videoActual.getNumRepro());
 
 			videoWeb.playVideo(videoActual.getUrl());
 		}

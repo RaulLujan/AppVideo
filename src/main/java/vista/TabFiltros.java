@@ -56,7 +56,6 @@ public class TabFiltros extends JPanel {
 		pFiltroUsuario.add(lFiltroUsuario);
 		pLateral.add(pFiltroUsuario, BorderLayout.NORTH);
 		
-		System.out.println("1");
 		// addPanelFiltros
 		JPanel pFiltros = new JPanel();
 		pFiltros.setLayout(new BoxLayout(pFiltros, BoxLayout.Y_AXIS));
@@ -66,7 +65,6 @@ public class TabFiltros extends JPanel {
 		spFiltros.setBorder(new TitledBorder("Filtros"));
 		pLateral.add(spFiltros, BorderLayout.CENTER);
 		
-		System.out.println("1");
 		// addAplicar
 		JPanel pAplicar = new JPanel();
 		JButton bAplicar = new JButton("Aplicar");
@@ -81,7 +79,6 @@ public class TabFiltros extends JPanel {
 		
 		// CONF PanelCentral
 		
-		System.out.println("1");
 		// addLabelDescripcion
 		JPanel plDescripcion = new JPanel();
 		FlowLayout layout1 = (FlowLayout) plDescripcion.getLayout();
@@ -90,7 +87,6 @@ public class TabFiltros extends JPanel {
 		plDescripcion.add(lDescripcion);
 		pCentral.add(plDescripcion, BorderLayout.NORTH);
 		
-		System.out.println("1");
 		// addAreaDescripcion
 //		JPanel paDescripcion = new JPanel();
 //		paDescripcion.setLayout(new BorderLayout());
@@ -105,7 +101,6 @@ public class TabFiltros extends JPanel {
 		
 		// CONF PanelFiltros
 		
-		System.out.println("1");
 		List<String> filtros = controlador.getNombresFiltros();
 		ButtonGroup grupo = new ButtonGroup();
 		for (String filtro : filtros) {

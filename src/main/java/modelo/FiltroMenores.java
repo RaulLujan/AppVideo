@@ -16,7 +16,7 @@ public class FiltroMenores extends Filtro {
 		CatalogoEtiquetas catalogo = CatalogoEtiquetas.getInstancia();
 		if (usuario.getEdad() >= 18 || !catalogo.existsEtiqueta("Adultos"))
 			return true;
-		return video.containsEtiqueta(catalogo.getEtiqueta("Adultos"));
+		return !video.containsEtiqueta(catalogo.getEtiqueta("Adultos"));
 	}
 
 }

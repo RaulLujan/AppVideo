@@ -42,7 +42,7 @@ public class TabRegistro extends JPanel {
 		addLabel("Email: ", 3);
 		addLabel("* Usuari@: ", 4);
 		addLabel("* Contraseña: ", 5);
-		addLabel("* Repetir contrase�a: ", 6);
+		addLabel("* Repetir contraseña: ", 6);
 		
 		// addCampos
 		JTextField tfNombre = addTextField(false, 0);
@@ -87,7 +87,7 @@ public class TabRegistro extends JPanel {
 				errorCampo.setVisible(false);
 				boolean isRegistrado = Controlador.getInstancia().registrarUsuario(
 						tfNombre.getText(),
-						tfApellidos.getName(),
+						tfApellidos.getText(),
 						dcFechaNac.getDate(),
 						tfEmail.getText(),
 						tfUsuario.getText(),

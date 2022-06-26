@@ -9,7 +9,6 @@ public class ListaVideos {
 	private int id;
 	private String nombre;
 	private List<Video> videos;
-	private Usuario usuario;
 	
 	public ListaVideos(String nombre) {
 		this.nombre = nombre;
@@ -24,13 +23,6 @@ public class ListaVideos {
 	}
 	public void setId(int id) {
 		this.id = id;
-	}
-	
-	public int getUsuarioId() {
-		return usuario.getId();
-	}
-	public void setUsuario(Usuario usuario) {
-		this.usuario = usuario;
 	}
 	
 	public String getNombre() {

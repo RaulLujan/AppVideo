@@ -157,7 +157,23 @@ public class Ventana extends JFrame {
 		pInicio.add(Box.createHorizontalGlue());
 		
 		// 1.2.1.1 addButtonCargador a LaminaInicio
+		// TODO borrar linea
 		addButtonInicio(CARGADOR_VIDEOS);
+		// TODO usar pulsador en vez de JButton, seria algo asi
+//		Pulsador bCargador = new Pulsador();
+//		bCargador.addActionListener(e -> {
+//			IBuscadorVideos componente = new BuscadorVideos();
+//			componente.addVideosListener(controlador);
+//			JFileChooser fileChooser = new JFileChooser();
+//		    fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+//		    int seleccion = fileChooser.showOpenDialog((Component)e.getSource());
+//		    if (seleccion == JFileChooser.APPROVE_OPTION) {
+//		        File fichero = fileChooser.getSelectedFile();
+//		        componente.setArchivoVideos(fichero);
+//		    } 
+//			break;
+//		});
+//		pInicio.add(bCargador);
 		
 		// MOSTRAR
 		mostrarLaminaSuperior();
@@ -211,11 +227,11 @@ public class Ventana extends JFrame {
 					if (respuesta == JOptionPane.YES_OPTION) {
 						controlador.setUsuarioPremium();
 						mostrarLaminaSuperior();
-						// TODO repaint
 					}
 				}
 				break;
 				
+			// TODO borrar case
 			case CARGADOR_VIDEOS:
 				IBuscadorVideos componente = new BuscadorVideos();
 				componente.addVideosListener(controlador);

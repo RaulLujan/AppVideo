@@ -53,14 +53,7 @@ public class AdaptadorUsuarioTDS implements AdaptadorUsuarioDAO {
 
 	@Override
 	public void insertarUsuario(Usuario usuario) {
-		Entidad entidadU = null;
-		boolean existe = true;
-		try {
-			entidadU = server.recuperarEntidad(usuario.getId());
-		} catch (NullPointerException e) {
-			existe = false;
-		}
-		if (existe)
+		if (server.recuperarEntidad(usuario.getId()) != null)
 			return;
 
 		AdaptadorListaVideosTDS adaptadorLV = AdaptadorListaVideosTDS.getInstancia();
@@ -68,7 +61,7 @@ public class AdaptadorUsuarioTDS implements AdaptadorUsuarioDAO {
 			adaptadorLV.insertarListaVideos(listaVideos);
 		adaptadorLV.insertarListaVideos(usuario.getRecentVideo());
 
-		entidadU = new Entidad();
+		Entidad entidadU = new Entidad();
 		entidadU.setNombre("usuario");
 		entidadU.setPropiedades(new ArrayList<Propiedad>(Arrays.asList(
 				new Propiedad("filtro", usuario.getFiltro().getClass().getSimpleName()),
@@ -95,32 +88,35 @@ public class AdaptadorUsuarioTDS implements AdaptadorUsuarioDAO {
 		adaptadorLV.borrarListaVideos(usuario.getRecentVideo());
 		Entidad entidadU = server.recuperarEntidad(usuario.getId());
 		server.borrarEntidad(entidadU);
-
 	}
 
 	@Override
 	public void modificarUsuario(Usuario usuario) {
 		Entidad entidadU = server.recuperarEntidad(usuario.getId());
-		server.eliminarPropiedadEntidad(entidadU, "filtro");
-		server.anadirPropiedadEntidad(entidadU, "filtro", usuario.getFiltro().getClass().getSimpleName());
-		server.eliminarPropiedadEntidad(entidadU, "premium");
-		server.anadirPropiedadEntidad(entidadU, "premium", String.valueOf(usuario.isPremium()));
-		server.eliminarPropiedadEntidad(entidadU, "login");
-		server.anadirPropiedadEntidad(entidadU, "login", usuario.getLogin());
-		server.eliminarPropiedadEntidad(entidadU, "password");
-		server.anadirPropiedadEntidad(entidadU, "password", usuario.getPassword());
-		server.eliminarPropiedadEntidad(entidadU, "nombre");
-		server.anadirPropiedadEntidad(entidadU, "nombre", usuario.getNombre());
-		server.eliminarPropiedadEntidad(entidadU, "apellidos");
-		server.anadirPropiedadEntidad(entidadU, "apellidos", usuario.getApellidos());
-		server.eliminarPropiedadEntidad(entidadU, "fechaNac");
-		server.anadirPropiedadEntidad(entidadU, "fechaNac", dateFormat.format(usuario.getFechaNac()));
-		server.eliminarPropiedadEntidad(entidadU, "email");
-		server.anadirPropiedadEntidad(entidadU, "email", usuario.getEmail());
-		server.eliminarPropiedadEntidad(entidadU, "recentVideo");
-		server.anadirPropiedadEntidad(entidadU, "recentVideo", String.valueOf(usuario.getRecentVideo().getId()));
-		server.eliminarPropiedadEntidad(entidadU, "misListas");
-		server.anadirPropiedadEntidad(entidadU, "misListas", concatenarIDsListasVideos(usuario.getMisListas()));
+		for (Propiedad prop : entidadU.getPropiedades()) {
+			if (prop.getNombre().equals("filtro")) {
+				prop.setValor(usuario.getFiltro().getClass().getSimpleName());
+			} else if (prop.getNombre().equals("premium")) {
+				prop.setValor(String.valueOf(usuario.isPremium()));
+			} else if (prop.getNombre().equals("login")) {
+				prop.setValor(usuario.getLogin());
+			} else if (prop.getNombre().equals("password")) {
+				prop.setValor(usuario.getPassword());
+			} else if (prop.getNombre().equals("nombre")) {
+				prop.setValor(usuario.getNombre());
+			} else if (prop.getNombre().equals("apellidos")) {
+				prop.setValor(usuario.getApellidos());
+			} else if (prop.getNombre().equals("fechaNac")) {
+				prop.setValor(dateFormat.format(usuario.getFechaNac()));
+			} else if (prop.getNombre().equals("email")) {
+				prop.setValor(usuario.getEmail());
+			} else if (prop.getNombre().equals("recentVideo")) {
+				prop.setValor(String.valueOf(usuario.getRecentVideo().getId()));
+			} else if (prop.getNombre().equals("misListas")) {
+				prop.setValor(concatenarIDsListasVideos(usuario.getMisListas()));
+			}
+			server.modificarPropiedad(prop);
+		}
 	}
 
 	@Override
@@ -129,21 +125,21 @@ public class AdaptadorUsuarioTDS implements AdaptadorUsuarioDAO {
 		if (pool.contains(id))
 			return (Usuario) pool.getObject(id);
 
-		Entidad entidadUsu = server.recuperarEntidad(id);
+		Entidad entidadU = server.recuperarEntidad(id);
 		CatalogoFiltros catalogo = CatalogoFiltros.getInstancia();
-		Filtro filtro = catalogo.getFiltro(server.recuperarPropiedadEntidad(entidadUsu, "filtro"));
-		boolean premium = Boolean.parseBoolean(server.recuperarPropiedadEntidad(entidadUsu, "premium"));
-		String login = server.recuperarPropiedadEntidad(entidadUsu, "login");
-		String password = server.recuperarPropiedadEntidad(entidadUsu, "password");
-		String nombre = server.recuperarPropiedadEntidad(entidadUsu, "nombre");
-		String apellidos = server.recuperarPropiedadEntidad(entidadUsu, "apellidos");
+		Filtro filtro = catalogo.getFiltro(server.recuperarPropiedadEntidad(entidadU, "filtro"));
+		boolean premium = Boolean.parseBoolean(server.recuperarPropiedadEntidad(entidadU, "premium"));
+		String login = server.recuperarPropiedadEntidad(entidadU, "login");
+		String password = server.recuperarPropiedadEntidad(entidadU, "password");
+		String nombre = server.recuperarPropiedadEntidad(entidadU, "nombre");
+		String apellidos = server.recuperarPropiedadEntidad(entidadU, "apellidos");
 		Date fechaNac = null;
 		try {
-			fechaNac = dateFormat.parse(server.recuperarPropiedadEntidad(entidadUsu, "fechaNac"));
+			fechaNac = dateFormat.parse(server.recuperarPropiedadEntidad(entidadU, "fechaNac"));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		String email = server.recuperarPropiedadEntidad(entidadUsu, "email");
+		String email = server.recuperarPropiedadEntidad(entidadU, "email");
 		
 		Usuario usuario = new Usuario(login, password, nombre, apellidos, fechaNac, email);
 		usuario.setId(id);
@@ -153,9 +149,9 @@ public class AdaptadorUsuarioTDS implements AdaptadorUsuarioDAO {
 		pool.addObject(id, usuario);
 		
 		AdaptadorListaVideosTDS adaptadorLV = AdaptadorListaVideosTDS.getInstancia();
-		int idLV = Integer.valueOf(server.recuperarPropiedadEntidad(entidadUsu, "recentVideo"));
+		int idLV = Integer.valueOf(server.recuperarPropiedadEntidad(entidadU, "recentVideo"));
 		ListaVideos recentVideo = adaptadorLV.consultarListaVideos(idLV);
-		List<ListaVideos> misListas = obtenerListasVideos(server.recuperarPropiedadEntidad(entidadUsu, "misListas"));
+		List<ListaVideos> misListas = obtenerListasVideos(server.recuperarPropiedadEntidad(entidadU, "misListas"));
 		
 		usuario.setRecentVideo(recentVideo);
 		for (ListaVideos listaViedos : misListas)

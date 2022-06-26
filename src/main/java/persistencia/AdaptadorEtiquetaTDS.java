@@ -28,17 +28,10 @@ public class AdaptadorEtiquetaTDS implements AdaptadorEtiquetaDAO {
 	
 	@Override
 	public void insertarEtiqueta(Etiqueta etiqueta) {
-		Entidad entidadE = null;
-		boolean existe = true; 
-		try {
-			entidadE = server.recuperarEntidad(etiqueta.getId());
-		} catch (NullPointerException e) {
-			existe = false;
-		}
-		if (existe)
+		if (server.recuperarEntidad(etiqueta.getId()) != null)
 			return;
 
-		entidadE = new Entidad();
+		Entidad entidadE = new Entidad();
 		entidadE.setNombre("etiqueta");
 		entidadE.setPropiedades(new ArrayList<Propiedad>(Arrays.asList(
 				new Propiedad("nombre", etiqueta.getNombre()))));
@@ -57,8 +50,12 @@ public class AdaptadorEtiquetaTDS implements AdaptadorEtiquetaDAO {
 	@Override
 	public void modificarEtiqueta(Etiqueta etiqueta) {
 		Entidad entidadE = server.recuperarEntidad(etiqueta.getId());
-		server.eliminarPropiedadEntidad(entidadE, "nombre");
-		server.anadirPropiedadEntidad(entidadE, "nombre", etiqueta.getNombre());
+		for (Propiedad prop : entidadE.getPropiedades()) {
+			if (prop.getNombre().equals("nombre")) {
+				prop.setValor(etiqueta.getNombre());
+			}
+			server.modificarPropiedad(prop);
+		}
 	}
 
 	@Override

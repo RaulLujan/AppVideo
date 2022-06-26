@@ -47,52 +47,41 @@ public class AdaptadorListaVideosTDS implements AdaptadorListaVideosDAO {
 
 	@Override
 	public void insertarListaVideos(ListaVideos listaVideos) {
-		Entidad entidadLV = null;
-		boolean existe = true; 
-		try {
-			entidadLV = server.recuperarEntidad(listaVideos.getId());
-		} catch (NullPointerException e) {
-			existe = false;
-		}
-		if (existe)
+		if (server.recuperarEntidad(listaVideos.getId()) != null)
 			return;
-		System.out.println(existe);
-		System.out.println(listaVideos.getNumVideos());
 
 		AdaptadorVideoTDS adaptadorV = AdaptadorVideoTDS.getInstancia();
 		for (Video video : listaVideos.getVideos())
 			adaptadorV.insertarVideo(video);
 		
-		System.out.println(entidadLV);
-		entidadLV = new Entidad();
-		System.out.println(entidadLV);
+		Entidad entidadLV = new Entidad();
 		entidadLV.setNombre("listaVideos");
 		entidadLV.setPropiedades(new ArrayList<Propiedad>(Arrays.asList(
 				new Propiedad("nombre", listaVideos.getNombre()),
 				new Propiedad("videos", concatenarIDsVideos(listaVideos.getVideos())))));
-		System.out.println(entidadLV);
 
 		entidadLV = server.registrarEntidad(entidadLV);
-		System.out.println(entidadLV);
 		
 		listaVideos.setId(entidadLV.getId());
-
 	}
 
 	@Override
 	public void borrarListaVideos(ListaVideos listaVideos) {
 		Entidad entidadLV = server.recuperarEntidad(listaVideos.getId());
 		server.borrarEntidad(entidadLV);
-
 	}
 
 	@Override
 	public void modificarListaVideos(ListaVideos listaVideos) {
 		Entidad entidadLV = server.recuperarEntidad(listaVideos.getId());
-		server.eliminarPropiedadEntidad(entidadLV, "nombre");
-		server.anadirPropiedadEntidad(entidadLV, "nombre", listaVideos.getNombre());
-		server.eliminarPropiedadEntidad(entidadLV, "videos");
-		server.anadirPropiedadEntidad(entidadLV, "videos", concatenarIDsVideos(listaVideos.getVideos()));
+		for (Propiedad prop : entidadLV.getPropiedades()) {
+			if (prop.getNombre().equals("nombre")) {
+				prop.setValor(listaVideos.getNombre());
+			} else if (prop.getNombre().equals("videos")) {
+				prop.setValor(concatenarIDsVideos(listaVideos.getVideos()));
+			}
+			server.modificarPropiedad(prop);
+		}
 	}
 
 	@Override

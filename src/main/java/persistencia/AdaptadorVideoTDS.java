@@ -47,17 +47,10 @@ public class AdaptadorVideoTDS implements AdaptadorVideoDAO {
 
 	@Override
 	public void insertarVideo(Video video) {
-		Entidad entidadV = null;
-		boolean existe = true; 
-		try {
-			entidadV = server.recuperarEntidad(video.getId());
-		} catch (NullPointerException e) {
-			existe = false;
-		}
-		if (existe)
+		if (server.recuperarEntidad(video.getId()) != null)
 			return;
 		
-		entidadV = new Entidad();
+		Entidad entidadV = new Entidad();
 		entidadV.setNombre("video");
 		entidadV.setPropiedades(new ArrayList<Propiedad>(Arrays.asList(
 				new Propiedad("url", video.getUrl()),
@@ -79,14 +72,18 @@ public class AdaptadorVideoTDS implements AdaptadorVideoDAO {
 	@Override
 	public void modificarVideo(Video video) {
 		Entidad entidadV = server.recuperarEntidad(video.getId());
-		server.eliminarPropiedadEntidad(entidadV, "url");
-		server.anadirPropiedadEntidad(entidadV, "url", video.getUrl());
-		server.eliminarPropiedadEntidad(entidadV, "titulo");
-		server.anadirPropiedadEntidad(entidadV, "titulo", video.getTitulo());
-		server.eliminarPropiedadEntidad(entidadV, "numRepro");
-		server.anadirPropiedadEntidad(entidadV, "numRepro", String.valueOf(video.getNumRepro()));
-		server.eliminarPropiedadEntidad(entidadV, "etiquetas");
-		server.anadirPropiedadEntidad(entidadV, "etiquetas", concatenarIDsEtiquetas(video.getEtiquetas()));
+		for (Propiedad prop : entidadV.getPropiedades()) {
+			if (prop.getNombre().equals("url")) {
+				prop.setValor(video.getUrl());
+			} else if (prop.getNombre().equals("titulo")) {
+				prop.setValor(video.getTitulo());
+			} else if (prop.getNombre().equals("numRepro")) {
+				prop.setValor(String.valueOf(video.getNumRepro()));
+			} else if (prop.getNombre().equals("etiquetas")) {
+				prop.setValor(concatenarIDsEtiquetas(video.getEtiquetas()));
+			}
+			server.modificarPropiedad(prop);
+		}
 	}
 
 	@Override
