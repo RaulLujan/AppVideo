@@ -158,6 +158,7 @@ public class Ventana extends JFrame {
 		
 		// 1.2.1.1 addButtonCargador (Pulsador Luz) a LaminaInicio
 		addButtonCargador();
+
 		
 		// MOSTRAR
 		mostrarLaminaSuperior();
@@ -214,28 +215,15 @@ public class Ventana extends JFrame {
 					}
 				}
 				break;
-				
-			// TODO borrar case
-			case CARGADOR_VIDEOS:
-				IBuscadorVideos componente = new BuscadorVideos();
-				componente.addVideosListener(controlador);
-				JFileChooser fileChooser = new JFileChooser();
-			    fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-			    int seleccion = fileChooser.showOpenDialog((Component)e.getSource());
-			    if (seleccion == JFileChooser.APPROVE_OPTION) {
-			        File fichero = fileChooser.getSelectedFile();
-			        componente.setArchivoVideos(fichero);
-			    } 
-				break;
 			}
 		});
 		pInicio.add(boton);
 		return boton;
 	}
 	
-	private void addButtonCargador() {
-		Luz pulsador = new Luz();
-		pulsador.addEncendidoListener(e ->{
+	private Luz addButtonCargador() {
+		Luz bCargador = new Luz();
+		bCargador.addEncendidoListener(e -> {
 			IBuscadorVideos componente = new BuscadorVideos();
 			componente.addVideosListener(controlador);
 			JFileChooser fileChooser = new JFileChooser();
@@ -245,10 +233,9 @@ public class Ventana extends JFrame {
 		        File fichero = fileChooser.getSelectedFile();
 		        componente.setArchivoVideos(fichero);
 		    } 
-			
 		});
-		
-		pInicio.add(pulsador);
+		pInicio.add(bCargador);
+		return bCargador;
 	}
 
 	public void setLaminaCentral(String titulo) {
