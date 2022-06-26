@@ -36,20 +36,20 @@ public class CatalogoUsuarios {
 	}
 
 	public boolean addUsuario(Usuario usuario) {
-		if (!existsUsuario(usuario.getLogin())) {
-			adaptador.insertarUsuario(usuario);
-			mapaPorLogin.put(usuario.getLogin(), usuario);
-			return true;
-		}
-		return false;
+		if (existsUsuario(usuario.getLogin()))
+			return false;
+		
+		adaptador.insertarUsuario(usuario);
+		mapaPorLogin.put(usuario.getLogin(), usuario);
+		return true;
 	}
 	public boolean removeUsuario(Usuario usuario) {
-		if (existsUsuario(usuario.getLogin())) {
-			mapaPorLogin.remove(usuario.getLogin());
-			adaptador.borrarUsuario(usuario);
-			return true;
-		}
-		return false;
+		if (!existsUsuario(usuario.getLogin()))
+			return false;
+		
+		mapaPorLogin.remove(usuario.getLogin());
+		adaptador.borrarUsuario(usuario);
+		return true;
 	}
 
 	public boolean existsUsuario(String login) {

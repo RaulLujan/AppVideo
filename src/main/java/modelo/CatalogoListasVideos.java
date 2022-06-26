@@ -36,13 +36,15 @@ public class CatalogoListasVideos {
 		}
 	}
 
-	public void addListaVideos(ListaVideos lv) {
+	public boolean addListaVideos(ListaVideos lv) {
 		adaptador.insertarListaVideos(lv);
 		mapaPorID.put(lv.getId(), lv);
+		return true;
 	}
-	public void removeListaVideos(ListaVideos lv) {
+	public boolean removeListaVideos(ListaVideos lv) {
 		mapaPorID.remove(lv.getId());
 		adaptador.borrarListaVideos(lv);
+		return true;
 	}
 
 	public boolean existsVideo(int id) {

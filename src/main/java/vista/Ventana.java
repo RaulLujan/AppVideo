@@ -32,6 +32,11 @@ import controlador.Controlador;
 @SuppressWarnings("serial")
 public class Ventana extends JFrame {
 
+	private static final String CARGADOR_VIDEOS = "Cargador Videos";
+	public static final String PREMIUM = "Premium";
+	public static final String LOGOUT = "Logout";
+	public static final String REGISTRO = "Registro";
+	public static final String LOGIN = "Login";
 	private static final Toolkit pantalla = Toolkit.getDefaultToolkit();
 	private static final Dimension dimPantalla = pantalla.getScreenSize();
 	private static final int anchoPantalla = dimPantalla.width;
@@ -134,29 +139,29 @@ public class Ventana extends JFrame {
 		pInicio.add(Box.createHorizontalGlue());
 		
 		// 1.2.1.1 addButtonLogin a LaminaInicio
-		bLogin = addButtonInicio("Login");
+		bLogin = addButtonInicio(LOGIN);
 		// 1.2.1.1 addButtonRegistro a LaminaInicio
-		bRegistro = addButtonInicio("Registro");
+		bRegistro = addButtonInicio(REGISTRO);
 		
 		pInicio.add(Box.createHorizontalGlue());
 		
 		// 1.2.1.1 addButtonLogout a LaminaInicio
-		bLogout = addButtonInicio("Logout");
+		bLogout = addButtonInicio(LOGOUT);
 		
 		pInicio.add(Box.createHorizontalGlue());
 		
 		// 1.2.1.1 addButtonPremium a LaminaInicio
-		bPremium = addButtonInicio("Premium");
+		bPremium = addButtonInicio(PREMIUM);
 		bPremium.setForeground(Color.RED);
 		
 		pInicio.add(Box.createHorizontalGlue());
 		
 		// 1.2.1.1 addButtonCargador a LaminaInicio
-		addButtonInicio("Cargador Videos");
+		addButtonInicio(CARGADOR_VIDEOS);
 		
 		// MOSTRAR
 		mostrarLaminaSuperior();
-		setLaminaCentral("Login");
+		setLaminaCentral(LOGIN);
 	}
 
 	private JToggleButton addButtonFuncionalidad(String texto) {
@@ -176,17 +181,17 @@ public class Ventana extends JFrame {
 		boton.addActionListener(e -> {
 			String text = boton.getText();
 			switch (text) {
-			case "Login":
-			case "Registro":
+			case LOGIN:
+			case REGISTRO:
 				setLaminaCentral(text);
 				break;
 
-			case "Logout":
-				int salida = JOptionPane.showConfirmDialog(null, "�Seguro de que quiere salir?", "Logout", JOptionPane.YES_NO_CANCEL_OPTION);
+			case LOGOUT:
+				int salida = JOptionPane.showConfirmDialog(null, "¿Seguro de que quiere salir?", LOGOUT, JOptionPane.YES_NO_CANCEL_OPTION);
 				switch (salida) {
 				case JOptionPane.YES_OPTION:
 					controlador.logoutUsuario();
-					setLaminaCentral("Login");
+					setLaminaCentral(LOGIN);
 					mostrarLaminaSuperior();
 //					System.exit(0);
 					break;
@@ -196,7 +201,7 @@ public class Ventana extends JFrame {
 				}
 				break;
 				
-			case "Premium":
+			case PREMIUM:
 				if (!controlador.isUsuarioPremium()) {
 					int respuesta = JOptionPane.showConfirmDialog(
 							this,
@@ -211,7 +216,7 @@ public class Ventana extends JFrame {
 				}
 				break;
 				
-			case "Cargador videos":
+			case CARGADOR_VIDEOS:
 				IBuscadorVideos componente = new BuscadorVideos();
 				componente.addVideosListener(controlador);
 				JFileChooser fileChooser = new JFileChooser();
@@ -241,7 +246,7 @@ public class Ventana extends JFrame {
 			nuevaLamina.setSize(getPreferredSize());
 			pCentral.removeAll();
 			
-			if (titulo.equals("Login") || titulo.equals("Registro"))
+			if (titulo.equals(LOGIN) || titulo.equals(REGISTRO))
 				pCentral.setLayout(new FlowLayout());
 			else
 				pCentral.setLayout(new GridLayout(1, 1));

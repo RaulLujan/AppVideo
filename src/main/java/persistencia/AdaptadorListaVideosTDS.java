@@ -28,41 +28,53 @@ public class AdaptadorListaVideosTDS implements AdaptadorListaVideosDAO {
 		server = FactoriaServicioPersistencia.getInstance().getServicioPersistencia();
 	}
 	
-	private String concatenarIDVideos(List<Video> listaLV) {
-		String idsLV = "";
-		for (Video lv : listaLV)
-			idsLV += lv.getId() + " ";
-		return idsLV;
+	private String concatenarIDsVideos(List<Video> listaV) {
+		String idsV = "";
+		for (Video v : listaV)
+			idsV += v.getId() + " ";
+		return idsV.trim();
 	}
-
-	private List<Video> obtenerVideosDesdeID(String id) {
-		List<Video> listaVideos = new LinkedList<Video>();
-		StringTokenizer strTok = new StringTokenizer(id, " ");
-		AdaptadorVideoTDS adaptadorVideo = AdaptadorVideoTDS.getInstancia();
+	private List<Video> obtenerVideos(String idsV) {
+		List<Video> listaV = new LinkedList<Video>();
+		StringTokenizer strTok = new StringTokenizer(idsV, " ");
+		AdaptadorVideoTDS adaptadorV = AdaptadorVideoTDS.getInstancia();
 		while (strTok.hasMoreTokens()) {
-			int idVideo = Integer.valueOf((String) strTok.nextElement());
-			listaVideos.add(adaptadorVideo.consultarVideo(idVideo));
+			int idV = Integer.valueOf((String) strTok.nextElement());
+			listaV.add(adaptadorV.consultarVideo(idV));
 		}
-		return listaVideos;
+		return listaV;
 	}
 
 	@Override
 	public void insertarListaVideos(ListaVideos listaVideos) {
 		Entidad entidadLV = null;
-		if (server.recuperarEntidad(listaVideos.getId()) != null)
+		boolean existe = true; 
+		try {
+			entidadLV = server.recuperarEntidad(listaVideos.getId());
+		} catch (NullPointerException e) {
+			existe = false;
+		}
+		if (existe)
 			return;
+		System.out.println(existe);
+		System.out.println(listaVideos.getNumVideos());
 
-		entidadLV = new Entidad();
-		AdaptadorVideoTDS adaptadorVideo = AdaptadorVideoTDS.getInstancia();
+		AdaptadorVideoTDS adaptadorV = AdaptadorVideoTDS.getInstancia();
 		for (Video video : listaVideos.getVideos())
-			adaptadorVideo.insertarVideo(video);
+			adaptadorV.insertarVideo(video);
+		
+		System.out.println(entidadLV);
 		entidadLV = new Entidad();
+		System.out.println(entidadLV);
 		entidadLV.setNombre("listaVideos");
-		entidadLV
-				.setPropiedades(new ArrayList<Propiedad>(Arrays.asList(new Propiedad("nombre", listaVideos.getNombre()),
-						new Propiedad("videos", concatenarIDVideos(listaVideos.getVideos())))));
+		entidadLV.setPropiedades(new ArrayList<Propiedad>(Arrays.asList(
+				new Propiedad("nombre", listaVideos.getNombre()),
+				new Propiedad("videos", concatenarIDsVideos(listaVideos.getVideos())))));
+		System.out.println(entidadLV);
 
 		entidadLV = server.registrarEntidad(entidadLV);
+		System.out.println(entidadLV);
+		
 		listaVideos.setId(entidadLV.getId());
 
 	}
@@ -79,26 +91,25 @@ public class AdaptadorListaVideosTDS implements AdaptadorListaVideosDAO {
 		Entidad entidadLV = server.recuperarEntidad(listaVideos.getId());
 		server.eliminarPropiedadEntidad(entidadLV, "nombre");
 		server.anadirPropiedadEntidad(entidadLV, "nombre", listaVideos.getNombre());
-		server.eliminarPropiedadEntidad(entidadLV, "numVideos");
-		server.anadirPropiedadEntidad(entidadLV, "numVideos", String.valueOf(listaVideos.getNumVideos()));
 		server.eliminarPropiedadEntidad(entidadLV, "videos");
-		server.anadirPropiedadEntidad(entidadLV, "videos", concatenarIDVideos(listaVideos.getVideos()));
+		server.anadirPropiedadEntidad(entidadLV, "videos", concatenarIDsVideos(listaVideos.getVideos()));
 	}
 
 	@Override
 	public ListaVideos consultarListaVideos(int id) {
-		
-		if (PoolDAO.getUnicaInstancia().contains(id))
-			return (ListaVideos) PoolDAO.getUnicaInstancia().getObject(id);
+		PoolDAO pool = PoolDAO.getInstancia();
+		if (pool.contains(id))
+			return (ListaVideos) pool.getObject(id);
 		
 		Entidad entidadLV = server.recuperarEntidad(id);
 		String nombre = server.recuperarPropiedadEntidad(entidadLV, "nombre");
+		
 		ListaVideos listaVideos = new ListaVideos(nombre);
 		listaVideos.setId(id);
 		
-		PoolDAO.getUnicaInstancia().addObject(id, listaVideos);
+		pool.addObject(id, listaVideos);
 		
-		List<Video> videos = obtenerVideosDesdeID(server.recuperarPropiedadEntidad(entidadLV, "videos"));
+		List<Video> videos = obtenerVideos(server.recuperarPropiedadEntidad(entidadLV, "videos"));
 		for (Video video : videos)
 			listaVideos.addLastVideo(video);
 		
@@ -107,11 +118,11 @@ public class AdaptadorListaVideosTDS implements AdaptadorListaVideosDAO {
 
 	@Override
 	public List<ListaVideos> listarTodasListasVideos() {
-		List<ListaVideos> listasVideos = new LinkedList<ListaVideos>();
-		List<Entidad> entidadLV = server.recuperarEntidades("listaVideos");
-		for (Entidad eListaVideos : entidadLV)
-			listasVideos.add(consultarListaVideos(eListaVideos.getId()));
-		return listasVideos;
+		List<ListaVideos> listaLV = new LinkedList<ListaVideos>();
+		List<Entidad> entidadesLV = server.recuperarEntidades("listaVideos");
+		for (Entidad entidadLV : entidadesLV)
+			listaLV.add(consultarListaVideos(entidadLV.getId()));
+		return listaLV;
 	}
 
 }

@@ -4,6 +4,7 @@ public abstract class FactoriaDAO {
 	
 	public static final String TDS_DAO = "persistencia.FactoriaTDS";
 	private static FactoriaDAO instancia = null;
+	
 	public static FactoriaDAO getInstancia(String tipo) {
 		if (instancia == null) {
 			try {
@@ -15,9 +16,9 @@ public abstract class FactoriaDAO {
 				e.getMessage();
 			}
 		}
-
 		return instancia;
 	}
+	
 	public static FactoriaDAO getInstancia() {
 		if (instancia == null)
 			return getInstancia(FactoriaDAO.TDS_DAO);
@@ -25,8 +26,7 @@ public abstract class FactoriaDAO {
 			return instancia;
 	}
 
-	protected FactoriaDAO() {
-	}
+	protected FactoriaDAO() {}
 
 	public abstract AdaptadorUsuarioDAO getUsuarioDAO();
 	public abstract AdaptadorEtiquetaDAO getEtiquetaDAO();

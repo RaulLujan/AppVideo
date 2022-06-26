@@ -5,7 +5,7 @@ import java.util.Hashtable;
 public class PoolDAO {
 	
 	private static PoolDAO instancia;
-	public static PoolDAO getUnicaInstancia() {
+	public static PoolDAO getInstancia() {
 		if (instancia == null)
 			instancia = new PoolDAO();
 		return instancia;

@@ -17,8 +17,7 @@ public class AdaptadorEtiquetaTDS implements AdaptadorEtiquetaDAO {
 	public static AdaptadorEtiquetaTDS getInstancia() {
 		if (instancia == null)
 			return new AdaptadorEtiquetaTDS();
-		else
-			return instancia;
+		return instancia;
 	}
 	
 	private ServicioPersistencia server;
@@ -29,49 +28,63 @@ public class AdaptadorEtiquetaTDS implements AdaptadorEtiquetaDAO {
 	
 	@Override
 	public void insertarEtiqueta(Etiqueta etiqueta) {
-		Entidad entidadEtiqueta = null;
-		if (server.recuperarEntidad(etiqueta.getId()) != null)
+		Entidad entidadE = null;
+		boolean existe = true; 
+		try {
+			entidadE = server.recuperarEntidad(etiqueta.getId());
+		} catch (NullPointerException e) {
+			existe = false;
+		}
+		if (existe)
 			return;
 
-		entidadEtiqueta = new Entidad();
-		entidadEtiqueta.setNombre("etiqueta");
-		entidadEtiqueta
-				.setPropiedades(new ArrayList<Propiedad>(Arrays.asList(new Propiedad("nombre", etiqueta.getNombre()))));
+		entidadE = new Entidad();
+		entidadE.setNombre("etiqueta");
+		entidadE.setPropiedades(new ArrayList<Propiedad>(Arrays.asList(
+				new Propiedad("nombre", etiqueta.getNombre()))));
 
-		entidadEtiqueta = server.registrarEntidad(entidadEtiqueta);
+		entidadE = server.registrarEntidad(entidadE);
 
-		etiqueta.setId(entidadEtiqueta.getId());
+		etiqueta.setId(entidadE.getId());
 	}
 
 	@Override
 	public void borrarEtiqueta(Etiqueta etiqueta) {
-		Entidad entidadEtiqueta = server.recuperarEntidad(etiqueta.getId());
-		server.borrarEntidad(entidadEtiqueta);
+		Entidad entidadE = server.recuperarEntidad(etiqueta.getId());
+		server.borrarEntidad(entidadE);
 	}
 
 	@Override
 	public void modificarEtiqueta(Etiqueta etiqueta) {
-		Entidad entidadEtiqueta = server.recuperarEntidad(etiqueta.getId());
-		server.eliminarPropiedadEntidad(entidadEtiqueta, "nombre");
-		server.anadirPropiedadEntidad(entidadEtiqueta, "nombre", etiqueta.getNombre());
+		Entidad entidadE = server.recuperarEntidad(etiqueta.getId());
+		server.eliminarPropiedadEntidad(entidadE, "nombre");
+		server.anadirPropiedadEntidad(entidadE, "nombre", etiqueta.getNombre());
 	}
 
 	@Override
 	public Etiqueta consultarEtiqueta(int id) {
-		Entidad entidadEtiqueta = server.recuperarEntidad(id);
-		String nombre = server.recuperarPropiedadEntidad(entidadEtiqueta, "nombre");
+		PoolDAO pool = PoolDAO.getInstancia();
+		if (pool.contains(id))
+			return (Etiqueta) pool.getObject(id);
+		
+		Entidad entidadE = server.recuperarEntidad(id);
+		String nombre = server.recuperarPropiedadEntidad(entidadE, "nombre");
+		
 		Etiqueta etiqueta = new Etiqueta(nombre);
 		etiqueta.setId(id);
+		
+		pool.addObject(id, etiqueta);
+		
 		return etiqueta;
 	}
 
 	@Override
 	public List<Etiqueta> listarTodasEtiquetas() {
-		List<Etiqueta> entidadEtiqueta = new LinkedList<Etiqueta>();
-		List<Entidad> eEtiquetas = server.recuperarEntidades("etiqueta");
-		for (Entidad eEtiqueta : eEtiquetas)
-			entidadEtiqueta.add(consultarEtiqueta(eEtiqueta.getId()));
-		return entidadEtiqueta;
+		List<Etiqueta> listaE = new LinkedList<Etiqueta>();
+		List<Entidad> entidadesE = server.recuperarEntidades("etiqueta");
+		for (Entidad entidadE : entidadesE)
+			listaE.add(consultarEtiqueta(entidadE.getId()));
+		return listaE;
 	}
 
 }

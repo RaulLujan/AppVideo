@@ -19,8 +19,7 @@ public class AdaptadorVideoTDS implements AdaptadorVideoDAO {
 	public static AdaptadorVideoTDS getInstancia() {
 		if (instancia == null)
 			return new AdaptadorVideoTDS();
-		else
-			return instancia;
+		return instancia;
 	}
 
 	private ServicioPersistencia server;
@@ -29,82 +28,98 @@ public class AdaptadorVideoTDS implements AdaptadorVideoDAO {
 		server = FactoriaServicioPersistencia.getInstance().getServicioPersistencia();
 	}
 
-	private String concatenarIDListaEtiquetas(List<Etiqueta> listaEtiquetas) {
-		String idEtiquetas = "";
-		for (Etiqueta e : listaEtiquetas)
-			idEtiquetas += e.getId() + " ";
-		return idEtiquetas;
+	private String concatenarIDsEtiquetas(List<Etiqueta> listaE) {
+		String idsE = "";
+		for (Etiqueta e : listaE)
+			idsE += e.getId() + " ";
+		return idsE.trim();
 	}
-
-	private List<Etiqueta> obtenerEtiquetasDesdeID(String id) {
-		List<Etiqueta> listaEtiquetas = new LinkedList<Etiqueta>();
-		StringTokenizer strTok = new StringTokenizer(id, " ");
-		AdaptadorEtiquetaTDS adaptadorEtiqueta = AdaptadorEtiquetaTDS.getInstancia();
+	private List<Etiqueta> obtenerEtiquetas(String idsE) {
+		List<Etiqueta> listaE = new LinkedList<Etiqueta>();
+		StringTokenizer strTok = new StringTokenizer(idsE, " ");
+		AdaptadorEtiquetaTDS adaptadorE = AdaptadorEtiquetaTDS.getInstancia();
 		while (strTok.hasMoreTokens()) {
-			int idEtiqueta = Integer.valueOf((String) strTok.nextElement());
-			listaEtiquetas.add(adaptadorEtiqueta.consultarEtiqueta(idEtiqueta));
+			int idE = Integer.valueOf((String) strTok.nextElement());
+			listaE.add(adaptadorE.consultarEtiqueta(idE));
 		}
-		return listaEtiquetas;
+		return listaE;
 	}
 
 	@Override
 	public void insertarVideo(Video video) {
-		Entidad entidadVideo = null;
-		if (server.recuperarEntidad(video.getId()) != null)
+		Entidad entidadV = null;
+		boolean existe = true; 
+		try {
+			entidadV = server.recuperarEntidad(video.getId());
+		} catch (NullPointerException e) {
+			existe = false;
+		}
+		if (existe)
 			return;
-		entidadVideo = new Entidad();
-		entidadVideo.setNombre("video");
-		entidadVideo.setPropiedades(new ArrayList<Propiedad>(
-				Arrays.asList(new Propiedad("url", video.getUrl()),
-						new Propiedad("titulo", video.getTitulo()),
-						new Propiedad("numReproducciones", String.valueOf(video.getNumRepro())),
-						new Propiedad("etiquetas", concatenarIDListaEtiquetas(video.getEtiquetas())))));
+		
+		entidadV = new Entidad();
+		entidadV.setNombre("video");
+		entidadV.setPropiedades(new ArrayList<Propiedad>(Arrays.asList(
+				new Propiedad("url", video.getUrl()),
+				new Propiedad("titulo", video.getTitulo()),
+				new Propiedad("numRepro", String.valueOf(video.getNumRepro())),
+				new Propiedad("etiquetas", concatenarIDsEtiquetas(video.getEtiquetas())))));
 
-		entidadVideo = server.registrarEntidad(entidadVideo);
-		video.setId(entidadVideo.getId());
+		entidadV = server.registrarEntidad(entidadV);
+		
+		video.setId(entidadV.getId());
 	}
 
 	@Override
 	public void borrarVideo(Video video) {
-		Entidad entidadVideo = server.recuperarEntidad(video.getId());
-		server.borrarEntidad(entidadVideo);
+		Entidad entidadV = server.recuperarEntidad(video.getId());
+		server.borrarEntidad(entidadV);
 	}
 
 	@Override
 	public void modificarVideo(Video video) {
-		Entidad entidadVideo = server.recuperarEntidad(video.getId());
-		server.eliminarPropiedadEntidad(entidadVideo, "url");
-		server.anadirPropiedadEntidad(entidadVideo, "url", video.getUrl());
-		server.eliminarPropiedadEntidad(entidadVideo, "titulo");
-		server.anadirPropiedadEntidad(entidadVideo, "titulo", video.getTitulo());
-		server.eliminarPropiedadEntidad(entidadVideo, "numReproducciones");
-		server.anadirPropiedadEntidad(entidadVideo, "numReproducciones", String.valueOf(video.getNumRepro()));
-		server.eliminarPropiedadEntidad(entidadVideo, "etiquetas");
-		server.anadirPropiedadEntidad(entidadVideo, "etiquetas", concatenarIDListaEtiquetas(video.getEtiquetas()));
+		Entidad entidadV = server.recuperarEntidad(video.getId());
+		server.eliminarPropiedadEntidad(entidadV, "url");
+		server.anadirPropiedadEntidad(entidadV, "url", video.getUrl());
+		server.eliminarPropiedadEntidad(entidadV, "titulo");
+		server.anadirPropiedadEntidad(entidadV, "titulo", video.getTitulo());
+		server.eliminarPropiedadEntidad(entidadV, "numRepro");
+		server.anadirPropiedadEntidad(entidadV, "numRepro", String.valueOf(video.getNumRepro()));
+		server.eliminarPropiedadEntidad(entidadV, "etiquetas");
+		server.anadirPropiedadEntidad(entidadV, "etiquetas", concatenarIDsEtiquetas(video.getEtiquetas()));
 	}
 
 	@Override
 	public Video consultarVideo(int id) {
-		Entidad eVideo = server.recuperarEntidad(id);
-		String url = server.recuperarPropiedadEntidad(eVideo, "url");
-		String titulo = server.recuperarPropiedadEntidad(eVideo, "titulo");
-		int numReproducciones = Integer.parseInt(server.recuperarPropiedadEntidad(eVideo, "numReproducciones"));
+		PoolDAO pool = PoolDAO.getInstancia();
+		if (pool.contains(id))
+			return (Video) pool.getObject(id);
+		
+		Entidad entidadV = server.recuperarEntidad(id);
+		String url = server.recuperarPropiedadEntidad(entidadV, "url");
+		String titulo = server.recuperarPropiedadEntidad(entidadV, "titulo");
+		int numRepro = Integer.parseInt(server.recuperarPropiedadEntidad(entidadV, "numRepro"));
+		
 		Video video = new Video(url, titulo);
 		video.setId(id);
-		video.setNumRepro(numReproducciones);
-		List<Etiqueta> etiquetas = obtenerEtiquetasDesdeID(server.recuperarPropiedadEntidad(eVideo, "etiquetas"));
+		video.setNumRepro(numRepro);
+
+		pool.addObject(id, video);
+		
+		List<Etiqueta> etiquetas = obtenerEtiquetas(server.recuperarPropiedadEntidad(entidadV, "etiquetas"));
 		for (Etiqueta etiqueta : etiquetas)
 			video.addEtiqueta(etiqueta);
+		
 		return video;
 	}
 
 	@Override
 	public List<Video> listarTodosVideos() {
-		List<Video> videos = new LinkedList<Video>();
-		List<Entidad> entidadVideo = server.recuperarEntidades("video");
-		for (Entidad eVideo : entidadVideo)
-			videos.add(consultarVideo(eVideo.getId()));
-		return videos;
+		List<Video> listaV = new LinkedList<Video>();
+		List<Entidad> entidadesV = server.recuperarEntidades("video");
+		for (Entidad entidadV : entidadesV)
+			listaV.add(consultarVideo(entidadV.getId()));
+		return listaV;
 	}
 
 }

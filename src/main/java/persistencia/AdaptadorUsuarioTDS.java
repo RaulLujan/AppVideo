@@ -23,8 +23,7 @@ public class AdaptadorUsuarioTDS implements AdaptadorUsuarioDAO {
 	public static AdaptadorUsuarioTDS getInstancia() {
 		if (instancia == null)
 			return new AdaptadorUsuarioTDS();
-		else
-			return instancia;
+		return instancia;
 	}
 
 	private ServicioPersistencia server;
@@ -35,16 +34,15 @@ public class AdaptadorUsuarioTDS implements AdaptadorUsuarioDAO {
 		dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 	}
 
-	private String concatenarIDListaVideos(List<ListaVideos> listaLV) {
+	private String concatenarIDsListasVideos(List<ListaVideos> listaLV) {
 		String idsLV = "";
 		for (ListaVideos lv : listaLV)
 			idsLV += lv.getId() + " ";
-		return idsLV;
+		return idsLV.trim();
 	}
-
-	private List<ListaVideos> obtenerListasVideosDesdeID(String id) {
+	private List<ListaVideos> obtenerListasVideos(String idsLV) {
 		List<ListaVideos> listaLV = new LinkedList<ListaVideos>();
-		StringTokenizer strTok = new StringTokenizer(id, " ");
+		StringTokenizer strTok = new StringTokenizer(idsLV, " ");
 		AdaptadorListaVideosTDS adaptadorLV = AdaptadorListaVideosTDS.getInstancia();
 		while (strTok.hasMoreTokens()) {
 			int idLV = Integer.valueOf((String) strTok.nextElement());
@@ -55,8 +53,14 @@ public class AdaptadorUsuarioTDS implements AdaptadorUsuarioDAO {
 
 	@Override
 	public void insertarUsuario(Usuario usuario) {
-		Entidad entidadUsu = null;
-		if (server.recuperarEntidad(usuario.getId()) != null)
+		Entidad entidadU = null;
+		boolean existe = true;
+		try {
+			entidadU = server.recuperarEntidad(usuario.getId());
+		} catch (NullPointerException e) {
+			existe = false;
+		}
+		if (existe)
 			return;
 
 		AdaptadorListaVideosTDS adaptadorLV = AdaptadorListaVideosTDS.getInstancia();
@@ -64,21 +68,23 @@ public class AdaptadorUsuarioTDS implements AdaptadorUsuarioDAO {
 			adaptadorLV.insertarListaVideos(listaVideos);
 		adaptadorLV.insertarListaVideos(usuario.getRecentVideo());
 
-		entidadUsu = new Entidad();
-		entidadUsu.setNombre("usuario");
-		entidadUsu.setPropiedades(new ArrayList<Propiedad>(Arrays.asList(
+		entidadU = new Entidad();
+		entidadU.setNombre("usuario");
+		entidadU.setPropiedades(new ArrayList<Propiedad>(Arrays.asList(
 				new Propiedad("filtro", usuario.getFiltro().getClass().getSimpleName()),
 				new Propiedad("premium", String.valueOf(usuario.isPremium())),
-				new Propiedad("login", usuario.getLogin()), new Propiedad("password", usuario.getPassword()),
-				new Propiedad("nombre", usuario.getNombre()), new Propiedad("apellidos", usuario.getApellidos()),
+				new Propiedad("login", usuario.getLogin()),
+				new Propiedad("password", usuario.getPassword()),
+				new Propiedad("nombre", usuario.getNombre()),
+				new Propiedad("apellidos", usuario.getApellidos()),
 				new Propiedad("fechaNac", dateFormat.format(usuario.getFechaNac())),
 				new Propiedad("email", usuario.getEmail()),
 				new Propiedad("recentVideo", String.valueOf(usuario.getRecentVideo().getId())),
-				new Propiedad("misListas", concatenarIDListaVideos(usuario.getMisListas())))));
+				new Propiedad("misListas", concatenarIDsListasVideos(usuario.getMisListas())))));
 
-		entidadUsu = server.registrarEntidad(entidadUsu);
+		entidadU = server.registrarEntidad(entidadU);
 
-		usuario.setId(entidadUsu.getId());
+		usuario.setId(entidadU.getId());
 	}
 
 	@Override
@@ -87,44 +93,43 @@ public class AdaptadorUsuarioTDS implements AdaptadorUsuarioDAO {
 		for (ListaVideos listaVideos : usuario.getMisListas())
 			adaptadorLV.borrarListaVideos(listaVideos);
 		adaptadorLV.borrarListaVideos(usuario.getRecentVideo());
-		Entidad entidadUsu = server.recuperarEntidad(usuario.getId());
-		server.borrarEntidad(entidadUsu);
+		Entidad entidadU = server.recuperarEntidad(usuario.getId());
+		server.borrarEntidad(entidadU);
 
 	}
 
 	@Override
 	public void modificarUsuario(Usuario usuario) {
-		Entidad entidadUsu = server.recuperarEntidad(usuario.getId());
-		server.eliminarPropiedadEntidad(entidadUsu, "filtro");
-		server.anadirPropiedadEntidad(entidadUsu, "filtro", usuario.getFiltro().getClass().getSimpleName());
-		server.eliminarPropiedadEntidad(entidadUsu, "premium");
-		server.anadirPropiedadEntidad(entidadUsu, "premium", String.valueOf(usuario.isPremium()));
-		server.eliminarPropiedadEntidad(entidadUsu, "login");
-		server.anadirPropiedadEntidad(entidadUsu, "login", usuario.getLogin());
-		server.eliminarPropiedadEntidad(entidadUsu, "password");
-		server.anadirPropiedadEntidad(entidadUsu, "password", usuario.getPassword());
-		server.eliminarPropiedadEntidad(entidadUsu, "nombre");
-		server.anadirPropiedadEntidad(entidadUsu, "nombre", usuario.getNombre());
-		server.eliminarPropiedadEntidad(entidadUsu, "apellidos");
-		server.anadirPropiedadEntidad(entidadUsu, "apellidos", usuario.getApellidos());
-		server.eliminarPropiedadEntidad(entidadUsu, "fechaNac");
-		server.anadirPropiedadEntidad(entidadUsu, "fechaNac", dateFormat.format(usuario.getFechaNac()));
-		server.eliminarPropiedadEntidad(entidadUsu, "email");
-		server.anadirPropiedadEntidad(entidadUsu, "email", usuario.getEmail());
-		server.eliminarPropiedadEntidad(entidadUsu, "recentVideo");
-		server.anadirPropiedadEntidad(entidadUsu, "recentVideo", String.valueOf(usuario.getRecentVideo().getId()));
-		server.eliminarPropiedadEntidad(entidadUsu, "misListas");
-		server.anadirPropiedadEntidad(entidadUsu, "misListas", concatenarIDListaVideos(usuario.getMisListas()));
+		Entidad entidadU = server.recuperarEntidad(usuario.getId());
+		server.eliminarPropiedadEntidad(entidadU, "filtro");
+		server.anadirPropiedadEntidad(entidadU, "filtro", usuario.getFiltro().getClass().getSimpleName());
+		server.eliminarPropiedadEntidad(entidadU, "premium");
+		server.anadirPropiedadEntidad(entidadU, "premium", String.valueOf(usuario.isPremium()));
+		server.eliminarPropiedadEntidad(entidadU, "login");
+		server.anadirPropiedadEntidad(entidadU, "login", usuario.getLogin());
+		server.eliminarPropiedadEntidad(entidadU, "password");
+		server.anadirPropiedadEntidad(entidadU, "password", usuario.getPassword());
+		server.eliminarPropiedadEntidad(entidadU, "nombre");
+		server.anadirPropiedadEntidad(entidadU, "nombre", usuario.getNombre());
+		server.eliminarPropiedadEntidad(entidadU, "apellidos");
+		server.anadirPropiedadEntidad(entidadU, "apellidos", usuario.getApellidos());
+		server.eliminarPropiedadEntidad(entidadU, "fechaNac");
+		server.anadirPropiedadEntidad(entidadU, "fechaNac", dateFormat.format(usuario.getFechaNac()));
+		server.eliminarPropiedadEntidad(entidadU, "email");
+		server.anadirPropiedadEntidad(entidadU, "email", usuario.getEmail());
+		server.eliminarPropiedadEntidad(entidadU, "recentVideo");
+		server.anadirPropiedadEntidad(entidadU, "recentVideo", String.valueOf(usuario.getRecentVideo().getId()));
+		server.eliminarPropiedadEntidad(entidadU, "misListas");
+		server.anadirPropiedadEntidad(entidadU, "misListas", concatenarIDsListasVideos(usuario.getMisListas()));
 	}
 
 	@Override
 	public Usuario consultarUsuario(int id) {
-
-		if (PoolDAO.getUnicaInstancia().contains(id))
-			return (Usuario) PoolDAO.getUnicaInstancia().getObject(id);
+		PoolDAO pool = PoolDAO.getInstancia();
+		if (pool.contains(id))
+			return (Usuario) pool.getObject(id);
 
 		Entidad entidadUsu = server.recuperarEntidad(id);
-		
 		CatalogoFiltros catalogo = CatalogoFiltros.getInstancia();
 		Filtro filtro = catalogo.getFiltro(server.recuperarPropiedadEntidad(entidadUsu, "filtro"));
 		boolean premium = Boolean.parseBoolean(server.recuperarPropiedadEntidad(entidadUsu, "premium"));
@@ -132,8 +137,7 @@ public class AdaptadorUsuarioTDS implements AdaptadorUsuarioDAO {
 		String password = server.recuperarPropiedadEntidad(entidadUsu, "password");
 		String nombre = server.recuperarPropiedadEntidad(entidadUsu, "nombre");
 		String apellidos = server.recuperarPropiedadEntidad(entidadUsu, "apellidos");
-		// Mejorar uso de fecha
-		Date fechaNac = new Date();
+		Date fechaNac = null;
 		try {
 			fechaNac = dateFormat.parse(server.recuperarPropiedadEntidad(entidadUsu, "fechaNac"));
 		} catch (Exception e) {
@@ -146,13 +150,12 @@ public class AdaptadorUsuarioTDS implements AdaptadorUsuarioDAO {
 		usuario.setFiltro(filtro);
 		usuario.setPremium(premium);
 		
-		PoolDAO.getUnicaInstancia().addObject(id, usuario);
+		pool.addObject(id, usuario);
 		
-		int idLV = Integer.valueOf(server.recuperarPropiedadEntidad(entidadUsu, "recentVideo"));
 		AdaptadorListaVideosTDS adaptadorLV = AdaptadorListaVideosTDS.getInstancia();
+		int idLV = Integer.valueOf(server.recuperarPropiedadEntidad(entidadUsu, "recentVideo"));
 		ListaVideos recentVideo = adaptadorLV.consultarListaVideos(idLV);
-		List<ListaVideos> misListas = obtenerListasVideosDesdeID(
-				server.recuperarPropiedadEntidad(entidadUsu, "misListas"));
+		List<ListaVideos> misListas = obtenerListasVideos(server.recuperarPropiedadEntidad(entidadUsu, "misListas"));
 		
 		usuario.setRecentVideo(recentVideo);
 		for (ListaVideos listaViedos : misListas)
@@ -163,11 +166,11 @@ public class AdaptadorUsuarioTDS implements AdaptadorUsuarioDAO {
 
 	@Override
 	public List<Usuario> listarTodosUsuarios() {
-		List<Usuario> usuarios = new LinkedList<Usuario>();
-		List<Entidad> eUsuarios = server.recuperarEntidades("usuario");
-		for (Entidad entidadUsu : eUsuarios)
-			usuarios.add(consultarUsuario(entidadUsu.getId()));
-		return usuarios;
+		List<Usuario> listaU = new LinkedList<Usuario>();
+		List<Entidad> entidadesU = server.recuperarEntidades("usuario");
+		for (Entidad entidadU : entidadesU)
+			listaU.add(consultarUsuario(entidadU.getId()));
+		return listaU;
 	}
 
 }

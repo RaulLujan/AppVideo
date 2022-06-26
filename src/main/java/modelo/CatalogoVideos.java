@@ -39,20 +39,20 @@ public class CatalogoVideos {
 	}
 
 	public boolean addVideo(Video video) {
-		if (!existsVideo(video.getUrl())) {
-			adaptador.insertarVideo(video);
-			mapaPorURL.put(video.getUrl(), video);
-			return true;
-		}
-		return false;
+		if (existsVideo(video.getUrl()))
+			return false;
+		
+		adaptador.insertarVideo(video);
+		mapaPorURL.put(video.getUrl(), video);
+		return true;
 	}
 	public boolean removeVideo(Video video) {
-		if (existsVideo(video.getUrl())) {
-			mapaPorURL.remove(video.getUrl());
-			adaptador.borrarVideo(video);
-			return true;
-		}
-		return false;
+		if (!existsVideo(video.getUrl()))
+			return false;
+		
+		mapaPorURL.remove(video.getUrl());
+		adaptador.borrarVideo(video);
+		return true;
 	}
 
 	public boolean existsVideo(String url) {
