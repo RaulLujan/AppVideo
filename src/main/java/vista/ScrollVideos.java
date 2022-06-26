@@ -17,6 +17,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
 
 import controlador.Controlador;
 import modelo.Video;
@@ -120,7 +121,8 @@ class CaratulaVideos extends JPanel implements Cloneable {
 		add(new JLabel(icono), BorderLayout.CENTER);
 		
 		String tituloCorto = video.getTituloCorto();
-		add(new JLabel(tituloCorto), BorderLayout.SOUTH);
+		JLabel lTituloCorto = new JLabel(tituloCorto, SwingConstants.CENTER);
+		add(lTituloCorto, BorderLayout.SOUTH);
 		
 	}
 	

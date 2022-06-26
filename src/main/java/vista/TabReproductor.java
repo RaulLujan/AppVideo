@@ -53,7 +53,7 @@ public class TabReproductor extends JPanel {
 			if (!nombre.trim().isEmpty()) {
 				boolean ok = controlador.setEtiquetaVideo(nombre);
 				if (ok) {
-					addLabel(panelEtiquetas, nombre, 10);
+					addLabelEtiqueta(panelEtiquetas, nombre, 10);
 					campoNuevaEtiqueta.setText("");
 				}
 			}
@@ -63,7 +63,6 @@ public class TabReproductor extends JPanel {
 	
 	private JPanel addPanel() {
 		JPanel panel = new JPanel();
-//		panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
 		panel.setBackground(new Color(96, 96, 96));
 		add(panel);
 		return panel;
@@ -71,8 +70,18 @@ public class TabReproductor extends JPanel {
 
 	private JLabel addLabel(JPanel panel, String texto, int size) {
 		JLabel label = new JLabel(texto);
-		label.setFont(new Font("Arial", Font.BOLD, size));		
-		panel.add(label);
+		label.setFont(new Font("Arial", Font.BOLD, size));
+		label.setForeground(Color.WHITE);
+		panel.add(label, SwingConstants.CENTER);
+		return label;
+	}
+	
+	private JLabel addLabelEtiqueta(JPanel panel, String texto, int size) {
+		JLabel label = new JLabel(texto);
+		label.setFont(new Font("Arial", Font.BOLD, size));
+		label.setForeground(Color.BLACK);
+		label.setBackground(Color.GRAY);
+		panel.add(label, SwingConstants.CENTER);
 		return label;
 	}
 

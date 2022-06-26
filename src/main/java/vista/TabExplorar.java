@@ -8,10 +8,12 @@ import java.awt.event.MouseEvent;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
 import controlador.Controlador;
@@ -53,16 +55,12 @@ public class TabExplorar extends JPanel {
 		JList<String> listaEtiqDisp = addList(pEtiquetas,
 				modeloEtiqDisp, modeloEtiqSelec);
 		listaEtiqDisp.setVisibleRowCount(1);
-//		pEtiquetas.add(Box.createHorizontalGlue());
+
 		// addLabelSeleccionadas
 		addLabel(pEtiquetas, "Buscar etiquetas");
 		// addListSeleccionadas
 		JList<String> listaEtiqSelec = addList(pEtiquetas,
 				modeloEtiqSelec, modeloEtiqDisp);
-		
-//		int ancho = listaEtiqDisp.getWidth();
-//		listaEtiqDisp.setFixedCellWidth(2*ancho);
-//		listaEtiqSelec.setFixedCellWidth(2*ancho);
 	}
 	
 	private JLabel addLabel(JPanel parent, String texto) {
@@ -88,6 +86,10 @@ public class TabExplorar extends JPanel {
 				}
 			}
 		});
+		
+		DefaultListCellRenderer renderer = (DefaultListCellRenderer) lista.getCellRenderer();
+		renderer.setHorizontalAlignment(SwingConstants.CENTER);
+		
 		parent.add(lista);
 		return lista;
 	}
