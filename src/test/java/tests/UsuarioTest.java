@@ -39,18 +39,6 @@ public class UsuarioTest {
 		assertEquals("Test de edad", 27, usuario.getEdad());
 	}
 	
-	@Test
-	public void testIsCumple() {
-		usuario.setFechaNac(new Date());
-		assertTrue("Test de cumpleaños", usuario.isCumple());
-	}
-	
-	@Test
-	public void testIsNotCumple() {
-		usuario.setFechaNac(new Date(1995, 1, 1));
-		assertFalse("Test de que no es cumpleaños", usuario.isCumple());
-	}
-	
 	// Tests relacionados con la lista de videos
 	@Test
 	public void testListasVideos() {

@@ -122,11 +122,6 @@ public class Controlador implements VideosListener {
 		return isUsuarioLogin() && usuarioActual.isPremium();
 	}
 
-	// Ventana
-	public boolean isCumpleUsuario() {
-		return isUsuarioPremium() && usuarioActual.isCumple();
-	}
-
 	// TabGenerarPDF
 	public void generarPDF() {
 		if (isUsuarioPremium())

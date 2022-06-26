@@ -112,12 +112,6 @@ public class Usuario {
 		LocalDate fechaNacimiento = fechaNac.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 		return (int) ChronoUnit.YEARS.between(fechaNacimiento, fechaActual);
 	}
-	public boolean isCumple() {
-		LocalDate fechaActual = LocalDate.now();
-		LocalDate fechaNacimiento = fechaNac.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-		return fechaNacimiento.getMonth() == fechaActual.getMonth()
-				&& fechaNacimiento.getDayOfMonth() == fechaActual.getDayOfMonth();
-	}
 
 	public String getEmail() {
 		return email;
