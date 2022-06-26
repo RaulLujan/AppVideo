@@ -15,7 +15,6 @@ public class CatalogoUsuarios {
 		return instancia;
 	}
 
-	private Map<Integer, Usuario> mapaPorID;
 	private Map<String, Usuario> mapaPorLogin;
 
 	private AdaptadorUsuarioDAO adaptador;
@@ -24,7 +23,6 @@ public class CatalogoUsuarios {
 		try {
 			FactoriaDAO factoria = FactoriaDAO.getInstancia(FactoriaDAO.TDS_DAO);
 			adaptador = factoria.getUsuarioDAO();
-			mapaPorID = new HashMap<Integer, Usuario>();
 			mapaPorLogin = new HashMap<String, Usuario>();
 			cargarCatalogo();
 		} catch (Exception e) {
@@ -33,35 +31,36 @@ public class CatalogoUsuarios {
 	}
 	private void cargarCatalogo() {
 		List<Usuario> lista = adaptador.listarTodosUsuarios();
-		for (Usuario usuario : lista) {
-			mapaPorID.put(usuario.getId(), usuario);
+		for (Usuario usuario : lista)
 			mapaPorLogin.put(usuario.getLogin(), usuario);
-		}
 	}
 
-	public void addUsuario(Usuario usuario) {
-		adaptador.insertarUsuario(usuario);
-		mapaPorID.put(usuario.getId(), usuario);
-		mapaPorLogin.put(usuario.getLogin(), usuario);
+	public boolean addUsuario(Usuario usuario) {
+		if (!existsUsuario(usuario.getLogin())) {
+			adaptador.insertarUsuario(usuario);
+			mapaPorLogin.put(usuario.getLogin(), usuario);
+			return true;
+		}
+		return false;
 	}
-	public void removeUsuario(Usuario usuario) {
-		mapaPorID.remove(usuario.getId());
-		mapaPorLogin.remove(usuario.getLogin());
-		adaptador.borrarUsuario(usuario);
+	public boolean removeUsuario(Usuario usuario) {
+		if (existsUsuario(usuario.getLogin())) {
+			mapaPorLogin.remove(usuario.getLogin());
+			adaptador.borrarUsuario(usuario);
+			return true;
+		}
+		return false;
 	}
 
 	public boolean existsUsuario(String login) {
 		return mapaPorLogin.containsKey(login);
-	}
-	public Usuario getUsuario(int id) {
-		return mapaPorID.get(id);
 	}
 	public Usuario getUsuario(String login) {
 		return mapaPorLogin.get(login);
 	}
 	
 	public List<Usuario> getUsuarios() {
-		return new ArrayList<Usuario>(mapaPorID.values());
+		return new ArrayList<Usuario>(mapaPorLogin.values());
 	}
 
 }

@@ -55,7 +55,8 @@ public class AdaptadorVideoTDS implements AdaptadorVideoDAO {
 		entidadVideo = new Entidad();
 		entidadVideo.setNombre("video");
 		entidadVideo.setPropiedades(new ArrayList<Propiedad>(
-				Arrays.asList(new Propiedad("url", video.getUrl()), new Propiedad("titulo", video.getTitulo()),
+				Arrays.asList(new Propiedad("url", video.getUrl()),
+						new Propiedad("titulo", video.getTitulo()),
 						new Propiedad("numReproducciones", String.valueOf(video.getNumRepro())),
 						new Propiedad("etiquetas", concatenarIDListaEtiquetas(video.getEtiquetas())))));
 

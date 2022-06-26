@@ -31,31 +31,33 @@ import controlador.Controlador;
 
 @SuppressWarnings("serial")
 public class Ventana extends JFrame {
-	
-	private JPanel laminaCentral;
 
-	private JPanel laminaInicio;
-	private JLabel labelNombreUsuario;
+	private static final Toolkit pantalla = Toolkit.getDefaultToolkit();
+	private static final Dimension dimPantalla = pantalla.getScreenSize();
+	private static final int anchoPantalla = dimPantalla.width;
+	private static final int altoPantalla  = dimPantalla.height;
+	public static final int ancho = anchoPantalla/2 + anchoPantalla/6;
+	public static final int alto  =  altoPantalla/2 +  altoPantalla/6;
+	
+	private Controlador controlador = Controlador.getInstancia();
+	
+	private JPanel pCentral;
+
+	private JPanel pInicio;
+	private JLabel lSaludo;
 	private JButton bLogin;
 	private JButton bRegistro;
 	private JButton bLogout;
 	private JButton bPremium;
 
-	private JPanel laminaFuncionalidad;
-	private ButtonGroup grupoFuncionalidad;
+	private JPanel pFuncionalidad;
+	private ButtonGroup bgFuncionalidad;
+	private JToggleButton bMasVistos, bGenerarPDF, bFiltros;
 
 	public Ventana() {
 		super("AppVideo");
 		
-		// CONF VENTANA
-
 		// Se estrablecen las dimensiones
-		Toolkit pantalla = Toolkit.getDefaultToolkit();
-		Dimension dimPantalla = pantalla.getScreenSize();
-		int anchoPantalla = dimPantalla.width;
-		int altoPantalla  = dimPantalla.height;
-		int ancho = anchoPantalla/2 + anchoPantalla/6;
-		int alto  =  altoPantalla/2 +  altoPantalla/6;
 		setSize(ancho, alto);
 		setLocation(anchoPantalla/6, altoPantalla/6);
 		//setSize(anchoPantalla/2, alturaPantalla/2);
@@ -74,10 +76,10 @@ public class Ventana extends JFrame {
 		add(laminaPrincipal);
 		
 		// 1.1 addLaminaCentral a LaminaPrincipal
-		laminaCentral = new JPanel();
-		laminaCentral.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-		laminaCentral.setBackground(new Color(96, 96, 96));
-		laminaPrincipal.add(laminaCentral, BorderLayout.CENTER);
+		pCentral = new JPanel();
+		pCentral.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		pCentral.setBackground(new Color(96, 96, 96));
+		laminaPrincipal.add(pCentral, BorderLayout.CENTER);
 		
 		// 1.2 addLaminaSuperior a LaminaPrincipal
 		JPanel laminaSuperior = new JPanel();
@@ -85,18 +87,18 @@ public class Ventana extends JFrame {
 		laminaPrincipal.add(laminaSuperior, BorderLayout.NORTH);
 		
 		// 1.2.1 addLaminaInicio a LaminaSuperior
-		laminaInicio = new JPanel();
-		laminaInicio.setLayout(new BoxLayout(laminaInicio, BoxLayout.X_AXIS));
-		laminaInicio.setBorder(BorderFactory.createLoweredBevelBorder());
-		laminaSuperior.add(laminaInicio);
+		pInicio = new JPanel();
+		pInicio.setLayout(new BoxLayout(pInicio, BoxLayout.X_AXIS));
+		pInicio.setBorder(BorderFactory.createLoweredBevelBorder());
+		laminaSuperior.add(pInicio);
 		
 		// 1.2.2 addLaminaFuncionalidad a LaminaSuperior
-		laminaFuncionalidad = new JPanel();
-		laminaFuncionalidad.setLayout(new BoxLayout(laminaFuncionalidad, BoxLayout.X_AXIS));
-		laminaFuncionalidad.setBorder(new EmptyBorder(10, 0, 10, 0));
-		laminaSuperior.add(laminaFuncionalidad);
+		pFuncionalidad = new JPanel();
+		pFuncionalidad.setLayout(new BoxLayout(pFuncionalidad, BoxLayout.X_AXIS));
+		pFuncionalidad.setBorder(new EmptyBorder(10, 0, 10, 0));
+		laminaSuperior.add(pFuncionalidad);
 		
-		grupoFuncionalidad = new ButtonGroup();
+		bgFuncionalidad = new ButtonGroup();
 		
 		// 1.2.2.1 addButtonExplorar a LaminaFuncionalidad
 		addButtonFuncionalidad("Explorar");
@@ -106,54 +108,55 @@ public class Ventana extends JFrame {
 		addButtonFuncionalidad("Mis Listas");
 		// 1.2.2.4 addButtonRecientes a LaminaFuncionalidad
 		addButtonFuncionalidad("Recientes");
-		if (Controlador.getInstancia().isUsuarioPremium()) {
+//		if (controlador.isUsuarioPremium()) {
 			// 1.2.2.5 addButtonMasVistos a LaminaFuncionalidad
-			addButtonFuncionalidad("Mas Vistos");
+			bMasVistos = addButtonFuncionalidad("Mas Vistos");
 			// 1.2.2.6 addButtonGenerarPDF a LaminaFuncionalidad
-			addButtonFuncionalidad("Generar PDF");
-			// TODO filtros
-		}
-		
-		laminaFuncionalidad.add(Box.createHorizontalGlue());
+			bGenerarPDF = addButtonFuncionalidad("Generar PDF");
+			// 1.2.2.6 addButtonGenerarPDF a LaminaFuncionalidad
+			bFiltros = addButtonFuncionalidad("Filtros");
+//		}
+		pFuncionalidad.add(Box.createHorizontalGlue());
 		
 		// 1.2.1.1 addLabelAppVideo a LaminaInicio
 		JLabel labelAppVideo = new JLabel("AppVideo");
 		labelAppVideo.setFont(new Font("Arial", Font.BOLD, 30));
 		labelAppVideo.setForeground(Color.RED);
-		laminaInicio.add(labelAppVideo);
+		pInicio.add(labelAppVideo);
 		
-		laminaInicio.add(Box.createHorizontalGlue());
+		pInicio.add(Box.createHorizontalGlue());
 		
 		// 1.2.1.1 addLabelNombreUsuario a LaminaInicio
-		labelNombreUsuario = new JLabel();
-		labelNombreUsuario.setFont(new Font("Arial", Font.BOLD, 14));
-		laminaInicio.add(labelNombreUsuario);
+		lSaludo = new JLabel();
+		lSaludo.setFont(new Font("Arial", Font.BOLD, 14));
+		pInicio.add(lSaludo);
 		
-		laminaInicio.add(Box.createHorizontalGlue());
+		pInicio.add(Box.createHorizontalGlue());
 		
 		// 1.2.1.1 addButtonLogin a LaminaInicio
 		bLogin = addButtonInicio("Login");
 		// 1.2.1.1 addButtonRegistro a LaminaInicio
 		bRegistro = addButtonInicio("Registro");
 		
-		laminaInicio.add(Box.createHorizontalGlue());
+		pInicio.add(Box.createHorizontalGlue());
 		
 		// 1.2.1.1 addButtonLogout a LaminaInicio
 		bLogout = addButtonInicio("Logout");
 		
-		laminaInicio.add(Box.createHorizontalGlue());
+		pInicio.add(Box.createHorizontalGlue());
 		
 		// 1.2.1.1 addButtonPremium a LaminaInicio
 		bPremium = addButtonInicio("Premium");
 		bPremium.setForeground(Color.RED);
 		
-		laminaInicio.add(Box.createHorizontalGlue());
+		pInicio.add(Box.createHorizontalGlue());
 		
 		// 1.2.1.1 addButtonCargador a LaminaInicio
 		addButtonInicio("Cargador Videos");
 		
 		// MOSTRAR
 		mostrarLaminaSuperior();
+		setLaminaCentral("Login");
 	}
 
 	private JToggleButton addButtonFuncionalidad(String texto) {
@@ -163,8 +166,8 @@ public class Ventana extends JFrame {
 		boton.addActionListener(e -> {
 			setLaminaCentral(boton.getText());
 		});
-		laminaFuncionalidad.add(boton);
-		grupoFuncionalidad.add(boton);
+		pFuncionalidad.add(boton);
+		bgFuncionalidad.add(boton);
 		return boton;
 	}
 
@@ -182,8 +185,10 @@ public class Ventana extends JFrame {
 				int salida = JOptionPane.showConfirmDialog(null, "�Seguro de que quiere salir?", "Logout", JOptionPane.YES_NO_CANCEL_OPTION);
 				switch (salida) {
 				case JOptionPane.YES_OPTION:
-					// TODO LOGOUT
-					System.exit(0);
+					controlador.logoutUsuario();
+					setLaminaCentral("Login");
+					mostrarLaminaSuperior();
+//					System.exit(0);
 					break;
 				case JOptionPane.NO_OPTION:
 				case JOptionPane.CANCEL_OPTION:
@@ -192,12 +197,23 @@ public class Ventana extends JFrame {
 				break;
 				
 			case "Premium":
-				Controlador.getInstancia().setUsuarioPremium();
+				if (!controlador.isUsuarioPremium()) {
+					int respuesta = JOptionPane.showConfirmDialog(
+							this,
+							"El plan Premium de AppVideo brindara acceso a los videos más vistos, la generacion de un PDF con las listas del usuario y la seleccion de un filtro para realizar busquedas.",
+							"Adquirir plan Premium",
+							JOptionPane.YES_NO_OPTION);
+					if (respuesta == JOptionPane.YES_OPTION) {
+						controlador.setUsuarioPremium();
+						mostrarLaminaSuperior();
+						// TODO repaint
+					}
+				}
 				break;
 				
 			case "Cargador videos":
 				IBuscadorVideos componente = new BuscadorVideos();
-				componente.addVideosListener(Controlador.getInstancia());
+				componente.addVideosListener(controlador);
 				JFileChooser fileChooser = new JFileChooser();
 			    fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 			    int seleccion = fileChooser.showOpenDialog((Component)e.getSource());
@@ -208,31 +224,41 @@ public class Ventana extends JFrame {
 				break;
 			}
 		});
-		laminaInicio.add(boton);
+		pInicio.add(boton);
 		return boton;
 	}
 
 	public void setLaminaCentral(String titulo) {
 		String t = titulo.replace(" ", "");
 		try {
+			controlador.stopVideo();
+			
 			Class<?> c = Class.forName("vista.Tab"+t);
-			System.out.println(c.toString());
 			Class<?> cArgs[] = { Ventana.class };
 			Constructor<?> constructor = c.getConstructor(cArgs);
 			Object oParams[] = { this };
 			JPanel nuevaLamina = (JPanel) constructor.newInstance(oParams);
 			nuevaLamina.setSize(getPreferredSize());
-			laminaCentral.removeAll();
+			pCentral.removeAll();
 			
 			if (titulo.equals("Login") || titulo.equals("Registro"))
-				laminaCentral.setLayout(new FlowLayout());
+				pCentral.setLayout(new FlowLayout());
 			else
-				laminaCentral.setLayout(new GridLayout(1, 1));
+				pCentral.setLayout(new GridLayout(1, 1));
 			
-			laminaCentral.add(nuevaLamina);
+			pCentral.add(nuevaLamina);
 			
-			laminaCentral.revalidate();
-			laminaCentral.repaint();
+			pCentral.revalidate();
+			pCentral.repaint();
+			
+			if (nuevaLamina instanceof TabReproductor) {
+				Thread reproductor = new Thread() {
+					public void run() {
+						controlador.playVideo();
+					}
+				};
+				reproductor.start();
+			}
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		}
@@ -240,15 +266,19 @@ public class Ventana extends JFrame {
 	}
 	
 	public void mostrarLaminaSuperior() {
-		String nombreUsuario = Controlador.getInstancia().getNombreUsuario();
-		labelNombreUsuario.setText("Hola " + nombreUsuario);
+		String nombreUsuario = controlador.getNombreUsuario();
+		lSaludo.setText("Hola " + nombreUsuario);
 		
-		boolean usuarioLogin = Controlador.getInstancia().isUsuarioLogin();
+		boolean usuarioLogin = controlador.isUsuarioLogin();
 		bLogin.setVisible(!usuarioLogin);
 		bRegistro.setVisible(!usuarioLogin);
 		bLogout.setVisible(usuarioLogin);
 		bPremium.setVisible(usuarioLogin);
-		laminaFuncionalidad.setVisible(usuarioLogin);
+		pFuncionalidad.setVisible(usuarioLogin);
+		boolean usuarioPremium = controlador.isUsuarioPremium();
+		bMasVistos.setVisible(usuarioPremium);
+		bGenerarPDF.setVisible(usuarioPremium);
+		bFiltros.setVisible(usuarioPremium);
 	}
 
 }

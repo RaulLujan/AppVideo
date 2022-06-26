@@ -35,13 +35,21 @@ public class CatalogoEtiquetas {
 			mapaPorNombre.put(etiqueta.getNombre(), etiqueta);
 	}
 	
-	public void addEtiqueta(Etiqueta etiqueta) {
-		adaptador.insertarEtiqueta(etiqueta);
-		mapaPorNombre.put(etiqueta.getNombre(), etiqueta);
+	public boolean addEtiqueta(Etiqueta etiqueta) {
+		if (!existsEtiqueta(etiqueta.getNombre())) {
+			adaptador.insertarEtiqueta(etiqueta);
+			mapaPorNombre.put(etiqueta.getNombre(), etiqueta);
+			return true;
+		}
+		return false;
 	}
-	public void removeEtiqueta(Etiqueta etiqueta) {
-		mapaPorNombre.remove(etiqueta.getNombre());
-		adaptador.borrarEtiqueta(etiqueta);
+	public boolean removeEtiqueta(Etiqueta etiqueta) {
+		if (existsEtiqueta(etiqueta.getNombre())) {
+			mapaPorNombre.remove(etiqueta.getNombre());
+			adaptador.borrarEtiqueta(etiqueta);
+			return true;
+		}
+		return false;
 	}
 	
 	public boolean existsEtiqueta(String nombre) {

@@ -2,92 +2,153 @@ package vista;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
-import java.awt.FlowLayout;
-import java.util.List;
+import java.awt.Dimension;
 
 import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.SwingConstants;
 
 import controlador.Controlador;
+import modelo.ListaVideos;
 import modelo.Video;
 
+@SuppressWarnings("serial")
 public class TabMasVistos extends JPanel {
-
+	
 	private boolean isOpaque = false;
+	
+	private Controlador controlador = Controlador.getInstancia();
+	
+	private ListaVideos lv;
+	private int segundos;
+	private ReproductorLista reproductor = null;
+	private TabMasVistos tab;
+	private Ventana window;
 
-	public TabMasVistos(Ventana parent) {
+	public TabMasVistos(Ventana window) {
+		this.window = window;
+		tab = this;
 		
-		// CONF LAMINA
 		setLayout(new BorderLayout());
 		setBackground(new Color(96, 96, 96));
 		setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 		
+		// CONF MAS VISTOS
+		
+		// addSelector
+		JPanel pSelector = new JPanel();
+		pSelector.setLayout(new BorderLayout());
+		pSelector.setBackground(new Color(96, 96, 96));
+		pSelector.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+		add(pSelector, BorderLayout.WEST);
+
 		// addReproductor
-		JPanel repr = new Reproductor(null);
-		add(repr, BorderLayout.CENTER);
+//		JPanel pReproductor = new TabReproductor(window);
+//		int ancho = Ventana.ancho * 3 / 4;
+//		pReproductor.setPreferredSize(new Dimension(ancho, 0));
+//		pReproductor.setMinimumSize(new Dimension(ancho, 0));
+//		add(pReproductor, BorderLayout.CENTER);
 		
-		// addMasVistos
-		JPanel l = new JPanel();
-		add(l, BorderLayout.EAST);
+		// CONF SELECTOR
 		
-		List<Video> listaTopVideos = Controlador.getInstancia().getTopVideos();
+		// addPanelSelecion
+		JPanel pSeleccion = new JPanel();
+//		pSeleccion.setLayout(new BoxLayout(pSeleccion, BoxLayout.Y_AXIS));
+//		pSeleccion.setAlignmentX(Component.LEFT_ALIGNMENT);
+		pSeleccion.setBorder(BorderFactory.createEtchedBorder(Color.DARK_GRAY, Color.GRAY));
+		pSeleccion.setOpaque(isOpaque);
+		pSelector.add(pSeleccion, BorderLayout.NORTH);
+		
+		// addPanelCancelar
+		JPanel pCancelar = new JPanel();
+//		pCancelar.setLayout(new BoxLayout(pCancelar, BoxLayout.Y_AXIS));
+		pCancelar.setBorder(BorderFactory.createEtchedBorder(Color.DARK_GRAY, Color.GRAY));
+		pCancelar.setOpaque(isOpaque);
+		pSelector.add(pCancelar, BorderLayout.SOUTH);
+
+		// addScrollVideos
+		ScrollVideos pVideos = new ScrollVideos(window);
+		pVideos.setVideos(controlador.getTopVideos());
+		pSelector.add(pVideos, BorderLayout.CENTER);
+
+		// CONF SELECCION
+		
+		// addButtonReproducir
+		JButton bReproducir = new JButton("Reproducir");
+		bReproducir.addActionListener(e -> {
+			if (reproductor == null && lv != null) {
+				String cadSegundos = JOptionPane.showInputDialog(null,
+										"Indique los segundos",
+										"Reproducir lista de videos",
+										JOptionPane.QUESTION_MESSAGE);
+				if (cadSegundos != null) {
+					segundos = Integer.parseInt(cadSegundos);
+					reproductor = new ReproductorLista();
+					reproductor.setDetener(false);
+					reproductor.start();
+				}
+			}
+
+		});
+		pSeleccion.add(bReproducir);
+
+		// CONF CANCELAR
+		
+		// addButtonCancelar
+		JButton bCancelar = new JButton("Cancelar");
+		bCancelar.addActionListener(e -> {
+			if (reproductor != null) {
+				reproductor.setDetener(true);
+				reproductor.despertar();
+				reproductor = null;
+			}
+		});
+		pCancelar.add(bCancelar);
+		
+	}
+	
+	private class ReproductorLista extends Thread {
+		
+		private volatile boolean detener;
+		
+		public void setDetener(boolean detener) {
+			this.detener = detener;
+		}
+		
+		public synchronized void run() {
+			for (Video video : lv.getVideos()) {
+				if (detener)
+					break;
+				controlador.setVideoActual(video);
+				
+				// addReproductor
+				JPanel pReproductor = new TabReproductor(window);
+				int ancho = Ventana.ancho * 3 / 4;
+				pReproductor.setPreferredSize(new Dimension(ancho, 0));
+				pReproductor.setMinimumSize(new Dimension(ancho, 0));
+				tab.add(pReproductor, BorderLayout.CENTER);
+				
+				Thread reproductor = new Thread() {
+					public void run() {
+						controlador.playVideo();
+					}
+				};
+				reproductor.start();
+				try {
+					wait(segundos*1000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				controlador.stopVideo();
+			}
+			reproductor = null;
+		}
+		
+		public synchronized void despertar() {
+			notify();
+		}
+		
 	}
 
-//	private void confSeleccionar() {
-//	JPanel pGeneral = new JPanel();
-//	JPanel pSeleccionarLista = new JPanel();
-//	JPanel pListaVideos = new JPanel();
-//	JPanel pCancelar = new JPanel();
-//	
-//	JLabel lSeleccionar = new JLabel("Seleccione la lista:", SwingConstants.LEFT);
-//	JComboBox<String> cListaVideos = new JComboBox<>();
-//	String[] listaVideos = new String[] {"ListaVideo1", "ListaVideo2", "ListaVideo3"};
-//	JButton bReproducir = new JButton("Reproducir");
-//	JButton bCancelar = new JButton("Cancelar");
-//	
-//	pGeneral.setLayout(new BoxLayout(pGeneral, BoxLayout.Y_AXIS));
-//	pGeneral.setOpaque(isOpaque);
-//	
-//	pSeleccionarLista.setLayout(new FlowLayout());//(new BoxLayout(pSeleccionarLista, BoxLayout.Y_AXIS));
-//	pSeleccionarLista.setOpaque(isOpaque);
-//	pSeleccionarLista.setBorder(BorderFactory.createEtchedBorder(Color.DARK_GRAY, Color.GRAY));
-//	
-//	pListaVideos.setOpaque(isOpaque);
-//	pListaVideos.setBorder(BorderFactory.createEtchedBorder(Color.DARK_GRAY, Color.GRAY));
-//	
-//	pCancelar.setLayout(new BoxLayout(pCancelar, BoxLayout.X_AXIS));
-//	pCancelar.setOpaque(isOpaque);
-//	pCancelar.setBorder(BorderFactory.createEtchedBorder(Color.DARK_GRAY, Color.GRAY));
-//	
-//	lSeleccionar.setForeground(Color.WHITE);
-//	
-//	for (String lv : listaVideos) {
-//		cListaVideos.addItem(lv);
-//	}
-//	
-//	pSeleccionarLista.setAlignmentX(Component.LEFT_ALIGNMENT);
-//	pSeleccionarLista.add(lSeleccionar);
-//	pSeleccionarLista.add(cListaVideos);
-//	pSeleccionarLista.add(bReproducir);
-//	
-//	pCancelar.add(Box.createVerticalGlue());
-//	pCancelar.add(Box.createHorizontalGlue());
-//	pCancelar.add(bCancelar);
-//	pCancelar.add(Box.createVerticalGlue());
-//	pCancelar.add(Box.createHorizontalGlue());
-//	
-//	pGeneral.add(pSeleccionarLista);
-//	pGeneral.add(pListaVideos);
-//	pGeneral.add(pCancelar);
-//	
-//	add(pGeneral, BorderLayout.WEST);
-//	
-//}
 }

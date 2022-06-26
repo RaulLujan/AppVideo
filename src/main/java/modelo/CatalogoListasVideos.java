@@ -15,7 +15,7 @@ public class CatalogoListasVideos {
 		return instancia;
 	}
 
-	private Map<Integer, ListaVideos> mapa;
+	private Map<Integer, ListaVideos> mapaPorID;
 
 	private AdaptadorListaVideosDAO adaptador;
 
@@ -23,7 +23,7 @@ public class CatalogoListasVideos {
 		try {
 			FactoriaDAO factoria = FactoriaDAO.getInstancia(FactoriaDAO.TDS_DAO);
 			adaptador = factoria.getListaVideosDAO();
-			mapa = new HashMap<Integer, ListaVideos>();
+			mapaPorID = new HashMap<Integer, ListaVideos>();
 			cargarCatalogo();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -32,25 +32,28 @@ public class CatalogoListasVideos {
 	private void cargarCatalogo() {
 		List<ListaVideos> lista = adaptador.listarTodasListasVideos();
 		for (ListaVideos lv : lista) {
-			mapa.put(lv.getId(), lv);
+			mapaPorID.put(lv.getId(), lv);
 		}
 	}
 
 	public void addListaVideos(ListaVideos lv) {
 		adaptador.insertarListaVideos(lv);
-		mapa.put(lv.getId(), lv);
+		mapaPorID.put(lv.getId(), lv);
 	}
 	public void removeListaVideos(ListaVideos lv) {
-		mapa.remove(lv.getId());
+		mapaPorID.remove(lv.getId());
 		adaptador.borrarListaVideos(lv);
 	}
 
+	public boolean existsVideo(int id) {
+		return mapaPorID.containsKey(id);
+	}
 	public ListaVideos getListaVideos(int id) {
-		return mapa.get(id);
+		return mapaPorID.get(id);
 	}
 	
 	public List<ListaVideos> getListasVideos() {
-		return new ArrayList<ListaVideos>(mapa.values());
+		return new ArrayList<ListaVideos>(mapaPorID.values());
 	}
 
 	

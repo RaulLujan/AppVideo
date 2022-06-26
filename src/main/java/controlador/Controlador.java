@@ -16,30 +16,37 @@ import modelo.CatalogoUsuarios;
 import modelo.CatalogoVideos;
 import modelo.Etiqueta;
 import modelo.Filtro;
+import modelo.ListaVideos;
 import modelo.Usuario;
 import modelo.Video;
+import persistencia.AdaptadorListaVideosDAO;
+import persistencia.AdaptadorUsuarioDAO;
+import persistencia.AdaptadorVideoDAO;
 import persistencia.FactoriaDAO;
 import tds.video.VideoWeb;
 
 public class Controlador implements VideosListener {
 
 	private static Controlador instancia;
-
 	public static Controlador getInstancia() {
 		if (instancia == null)
 			instancia = new Controlador();
 		return instancia;
 	}
 
+	private VideoWeb videoWeb;
+	private Video videoActual;
+	private Usuario usuarioActual;
+
 	private CatalogoUsuarios catalogoUsuarios;
 	private CatalogoListasVideos catalogoListas;
 	private CatalogoVideos catalogoVideos;
 	private CatalogoEtiquetas catalogoEtiquetas;
-	 private CatalogoFiltros catalogoFiltros;
+	private CatalogoFiltros catalogoFiltros;
 
-	private Usuario usuarioActual;
-
-	private VideoWeb videoWeb;
+	private AdaptadorUsuarioDAO adaptadorUsuario;
+	private AdaptadorListaVideosDAO adaptadorListaVideos;
+	private AdaptadorVideoDAO adaptadorVideo;
 
 	private Controlador() {
 		try {
@@ -51,6 +58,11 @@ public class Controlador implements VideosListener {
 			catalogoVideos = CatalogoVideos.getInstancia();
 			catalogoEtiquetas = CatalogoEtiquetas.getInstancia();
 			catalogoFiltros = CatalogoFiltros.getInstancia();
+			
+			FactoriaDAO factoria = FactoriaDAO.getInstancia(FactoriaDAO.TDS_DAO);
+			adaptadorUsuario = factoria.getUsuarioDAO();
+			adaptadorListaVideos = factoria.getListaVideosDAO();
+			adaptadorVideo = factoria.getVideoDAO();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -93,7 +105,6 @@ public class Controlador implements VideosListener {
 		return true;
 	}
 
-	// TODO LOGOUT
 	// Ventana
 	public boolean logoutUsuario() {
 		if (!isUsuarioLogin())
@@ -106,8 +117,7 @@ public class Controlador implements VideosListener {
 	public void setUsuarioPremium() {
 		if (isUsuarioLogin() && !isUsuarioPremium()) {
 			usuarioActual.setPremium(true);
-			FactoriaDAO.getInstancia().getUsuarioDAO()
-				.modificarUsuario(usuarioActual);
+			adaptadorUsuario.modificarUsuario(usuarioActual);
 		}
 	}
 
@@ -126,8 +136,6 @@ public class Controlador implements VideosListener {
 			usuarioActual.generarPDF();
 	}
 
-	// TODO filtros
-	
 	// TabFiltros
 	public List<String> getNombresFiltros() {
 		return catalogoFiltros.getFiltros();
@@ -155,8 +163,7 @@ public class Controlador implements VideosListener {
 			Filtro filtro = catalogoFiltros.getFiltro(nombre);
 			if (usuarioActual.getFiltro() != filtro) {
 				usuarioActual.setFiltro(filtro);
-				FactoriaDAO.getInstancia().getUsuarioDAO()
-					.modificarUsuario(usuarioActual);
+				adaptadorUsuario.modificarUsuario(usuarioActual);
 			}
 		}
 	}
@@ -171,48 +178,95 @@ public class Controlador implements VideosListener {
 		return icono;
 	}
 	
+	public Video getVideoActual() {
+		return videoActual;
+	}
+	
+	public void setVideoActual(Video video) {
+		videoActual = video;
+	}
+	
 	// TabReproductor
 	public VideoWeb getVideoWeb() {
 		return videoWeb;
 	}
 
 	// TabReproductor
-	public boolean setEtiquetaVideo(String nombre, Video video) {
+	public boolean setEtiquetaVideo(String nombre) {
 		if (!catalogoEtiquetas.existsEtiqueta(nombre))
 			catalogoEtiquetas.addEtiqueta(new Etiqueta(nombre));
 		Etiqueta etiqueta = catalogoEtiquetas.getEtiqueta(nombre);
-		if (!video.containsEtiqueta(etiqueta)) {
-			video.addEtiqueta(etiqueta);
-			FactoriaDAO.getInstancia().getVideoDAO()
-				.modificarVideo(video);
+		if (!videoActual.containsEtiqueta(etiqueta)) {
+			videoActual.addEtiqueta(etiqueta);
+			adaptadorVideo.modificarVideo(videoActual);
 			return true;
 		}
 		return false;
 	}
 	
 	// TabReproductor
-	public void playVideo(Video video) {
+	public void playVideo() {
 		if (isUsuarioLogin()) {
-			usuarioActual.addRecentVideo(video);
-			FactoriaDAO.getInstancia().getListaVideosDAO()
-				.modificarListaVideos(usuarioActual.getRecentVideo());
+			usuarioActual.addRecentVideo(videoActual);
+			adaptadorListaVideos.modificarListaVideos(usuarioActual.getRecentVideo());
 
-			video.incrNumRepro();
-			FactoriaDAO.getInstancia().getVideoDAO()
-				.modificarVideo(video);
+			System.out.println(videoActual.getNumRepro());
+			videoActual.incrNumRepro();
+			adaptadorVideo.modificarVideo(videoActual);
+			System.out.println(videoActual.getNumRepro());
 
-			videoWeb.playVideo(video.getUrl());
+			videoWeb.playVideo(videoActual.getUrl());
 		}
 	}
 	
 	// TabReproductor
-	public void cancelVideo() {
+	public void stopVideo() {
 		videoWeb.cancel();
 	}
 	
 	// TabExplorar, TabNuevaLista
 	public List<String> getEtiquetas() {
 		return catalogoEtiquetas.getNombresEtiquetas();
+	}
+	
+	// TabNuevaLista
+	public ListaVideos addListaVideos(String nombre) {
+		if (isUsuarioLogin()) {
+			ListaVideos lista = new ListaVideos(nombre);
+			catalogoListas.addListaVideos(lista);
+			
+			usuarioActual.addMiLista(lista);
+			adaptadorUsuario.modificarUsuario(usuarioActual);
+			
+			return lista;
+		}
+		return null;
+	}
+	
+	// TabNuevaLista
+	public void removeListaVideos(ListaVideos lista) {
+		if (isUsuarioLogin()) {
+			usuarioActual.removeMiLista(lista);
+			adaptadorUsuario.modificarUsuario(usuarioActual);
+			
+			catalogoListas.removeListaVideos(lista);
+		}
+	}
+		
+	// TabNuevaLista
+	public void addVideoToListaVideos(Video video, ListaVideos lista) {
+		if (!lista.containsVideo(video)) {
+			lista.addFirstVideo(video);
+			adaptadorListaVideos.modificarListaVideos(lista);
+		}
+	}
+	
+	// TabNuevaLista
+	public void removeVideoFromListaVideos(Video video, ListaVideos lista) {
+		if (lista.containsVideo(video)) {
+			lista.removeVideo(video);
+			adaptadorListaVideos.modificarListaVideos(lista);
+		}
 	}
 
 	// TabExplorar, TabNuevaLista
@@ -227,21 +281,33 @@ public class Controlador implements VideosListener {
 			etiquetas.add(catalogoEtiquetas.getEtiqueta(nombre));
 		return catalogoVideos.getVideosOK(usuarioActual, subtitulo, etiquetas);
 	}
-	
-	// TODO: crear/eliminar/modificar ListaVideos
-	// TODO: getMisListas/MiLista
 
-	public List<Video> getRecientes() {
+	// TabMisListas
+	public List<String> getMisListas() {
 		if (isUsuarioLogin())
-			return usuarioActual.getRecentVideo().getVideos();
+			return usuarioActual.getNombresMisListas();
+		return new LinkedList<String>();
+	}
+
+	// TabMisListas
+	public ListaVideos getMiLista(String nombre) {
+		if (isUsuarioLogin())
+			return usuarioActual.getMiLista(nombre);
 		return null;
 	}
 
+	// TabRecientes
+	public List<Video> getRecientes() {
+		if (isUsuarioLogin())
+			return usuarioActual.getRecentVideo().getVideos();
+		return new LinkedList<Video>();
+	}
+
+	// TabMasVistos
 	public List<Video> getTopVideos() {
 		if (isUsuarioPremium())
 			return catalogoVideos.getTopVideos();
-		else
-			return null;
+		return new LinkedList<Video>();
 	}
 	
 	@Override

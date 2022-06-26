@@ -23,7 +23,6 @@ public class TabLogin extends JPanel  {//implements KeyListener{
 	
 	public TabLogin(Ventana parent) {
 		
-		// CONF LAMINA
 		setLayout(new GridBagLayout());
 		setBackground(new Color(96, 96, 96));
 		
@@ -174,7 +173,6 @@ public class TabLogin extends JPanel  {//implements KeyListener{
 //			
 //			@Override
 //			public void keyPressed(KeyEvent e) {
-//				System.out.println("HOLAA");
 //				switch (e.getKeyCode()) {
 //				case KeyEvent.VK_ENTER:
 //					aceptar();
@@ -197,7 +195,6 @@ public class TabLogin extends JPanel  {//implements KeyListener{
 //
 //	@Override
 //	public void keyPressed(KeyEvent e) {
-//		System.out.println("HOLAA");
 //		switch (e.getKeyCode()) {
 //		case KeyEvent.VK_ENTER:
 //			aceptar();

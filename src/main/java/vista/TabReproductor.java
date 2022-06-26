@@ -1,14 +1,7 @@
 package vista;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.GridLayout;
-import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 import javax.swing.*;
 
@@ -17,24 +10,26 @@ import modelo.Etiqueta;
 import modelo.Video;
 import tds.video.VideoWeb;
 
-public class Reproductor extends JPanel {
+@SuppressWarnings("serial")
+public class TabReproductor extends JPanel {
 	
-	private Video video;
+	private Controlador controlador = Controlador.getInstancia();
 
-	public Reproductor(Video video) {
-		this.video = video;
-		Controlador controlador = Controlador.getInstancia();
+	public TabReproductor(Ventana window) {
 		VideoWeb videoWeb = controlador.getVideoWeb();
+		Video video = controlador.getVideoActual();
 		
-		// CONF LAMINA
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		setBackground(new Color(96, 96, 96));
 		setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+
+		// CONF REPRODUCTOR
 		
 		// addTitulo
 		addLabel(this, video.getTitulo(), 30);
 		// addNumRepro
 		addLabel(this, "Visto por : "+video.getNumRepro()+" usuarios", 24);
+		
 		// addReproductor
 		add(videoWeb);
 		// addCopyrigth
@@ -44,6 +39,7 @@ public class Reproductor extends JPanel {
 		JPanel panelEtiquetas = addPanel();
 		for (Etiqueta et : video.getEtiquetas())
 			addLabel(panelEtiquetas, et.getNombre(), 10);
+		
 		// addNuevaEtiqueta
 		JPanel panelNuevaEtiqueta = addPanel();
 		addLabel(panelNuevaEtiqueta, "Nueva etiqueta:", 10);
@@ -55,9 +51,11 @@ public class Reproductor extends JPanel {
 		botonNuevaEtiqueta.addActionListener(e -> {
 			String nombre = campoNuevaEtiqueta.getText();
 			if (!nombre.trim().isEmpty()) {
-				boolean ok = controlador.etiquetarVideo(video, nombre);
-				if (ok)
+				boolean ok = controlador.setEtiquetaVideo(nombre);
+				if (ok) {
 					addLabel(panelEtiquetas, nombre, 10);
+					campoNuevaEtiqueta.setText("");
+				}
 			}
 		});
 		
@@ -77,19 +75,5 @@ public class Reproductor extends JPanel {
 		panel.add(label);
 		return label;
 	}
-
-	public void reproducirVideo() {
-		Thread reproductor = new Thread() {
-			public void run() {
-				Controlador.getInstancia().reproducirVideo(video);
-			}
-		}
-		reproductor.start();
-	}
-	
-	public void cancelarVideo() {
-		Controlador.getInstancia().cancelarVideo();
-	}
-	
 
 }

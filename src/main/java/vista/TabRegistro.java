@@ -26,7 +26,6 @@ public class TabRegistro extends JPanel {
 	
 	public TabRegistro(Ventana parent) {
 		
-		// CONF LAMINA
 		setLayout(new GridBagLayout());
 		setBackground(new Color(96, 96, 96));
 		
