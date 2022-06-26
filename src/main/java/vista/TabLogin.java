@@ -19,7 +19,7 @@ import javax.swing.border.TitledBorder;
 import controlador.Controlador;
 
 @SuppressWarnings("serial")
-public class TabLogin extends JPanel  {//implements KeyListener{
+public class TabLogin extends JPanel  {
 	
 	public TabLogin(Ventana parent) {
 		
@@ -67,8 +67,7 @@ public class TabLogin extends JPanel  {//implements KeyListener{
 						tfNombre.getText(), pass);
 			
 				if (isLogin) {
-					parent.setLaminaCentral("Recientes");
-					parent.mostrarLaminaSuperior();
+					parent.inicioSesion();
 				
 				} else {
 					JOptionPane.showMessageDialog(this,
@@ -82,12 +81,7 @@ public class TabLogin extends JPanel  {//implements KeyListener{
 			revalidate();
 			repaint();
 		});
-//		bAceptar.addKeyListener(new KeyAdapter() {
-//			@Override
-//			public void keyPressed(KeyEvent e) {
-//				aceptar();
-//			}
-//	    });
+
 		// addBotonCancelar
 		JButton bCancelar = addButton("Cancelar", 1, 2);
 		bCancelar.addActionListener(e -> {
@@ -95,17 +89,7 @@ public class TabLogin extends JPanel  {//implements KeyListener{
 			tfNombre.setText("");
 			pfPass.setText("");
 		});
-//		bCancelar.addKeyListener(new KeyAdapter() {
-//			@Override
-//			public void keyPressed(KeyEvent e) {
-//				cancelar();
-//			}
-//	    });
-		
-//		addListenerTeclado();
-//		addKeyListener(this);
-//		requestFocus();
-//		setFocusable(true);
+
 	}
 
 	private JLabel addLabel(String texto, int y) {
@@ -168,50 +152,5 @@ public class TabLogin extends JPanel  {//implements KeyListener{
 		return label;
 	}
 
-//	private void addListenerTeclado() {
-//		addKeyListener(new KeyAdapter() {
-//			
-//			@Override
-//			public void keyPressed(KeyEvent e) {
-//				switch (e.getKeyCode()) {
-//				case KeyEvent.VK_ENTER:
-//					aceptar();
-//					break;
-//				case KeyEvent.VK_ESCAPE:
-//					cancelar();
-//					break;
-//				default:
-//					break;
-//				}
-//			}
-//		});
-//	}
-	
-//	@Override
-//	public void keyTyped(KeyEvent e) {
-//		// TODO Auto-generated method stub
-//		
-//	}
-//
-//	@Override
-//	public void keyPressed(KeyEvent e) {
-//		switch (e.getKeyCode()) {
-//		case KeyEvent.VK_ENTER:
-//			aceptar();
-//			break;
-//		case KeyEvent.VK_ESCAPE:
-//			cancelar();
-//			break;
-//		default:
-//			break;
-//		}
-//		
-//	}
-//
-//	@Override
-//	public void keyReleased(KeyEvent e) {
-//		// TODO Auto-generated method stub
-//		
-//	}
 }
 

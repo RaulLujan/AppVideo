@@ -57,7 +57,7 @@ public class Ventana extends JFrame {
 
 	private JPanel pFuncionalidad;
 	private ButtonGroup bgFuncionalidad;
-	private JToggleButton bMasVistos, bGenerarPDF, bFiltros;
+	private JToggleButton bRecientes, bMasVistos, bGenerarPDF, bFiltros;
 
 	public Ventana() {
 		super("AppVideo");
@@ -112,7 +112,7 @@ public class Ventana extends JFrame {
 		// 1.2.2.3 addButtonMisListas a LaminaFuncionalidad
 		addButtonFuncionalidad("Mis Listas");
 		// 1.2.2.4 addButtonRecientes a LaminaFuncionalidad
-		addButtonFuncionalidad("Recientes");
+		bRecientes = addButtonFuncionalidad("Recientes");
 //		if (controlador.isUsuarioPremium()) {
 			// 1.2.2.5 addButtonMasVistos a LaminaFuncionalidad
 			bMasVistos = addButtonFuncionalidad("Mas Vistos");
@@ -203,7 +203,17 @@ public class Ventana extends JFrame {
 				break;
 				
 			case PREMIUM:
-				if (!controlador.isUsuarioPremium()) {
+				if (controlador.isUsuarioPremium()) {
+					int respuesta = JOptionPane.showConfirmDialog(
+							this,
+							"Usted va a dejar der usuario Premium, por tanto se dejará de ofrecer acceso a los videos más vistos, la generacion de un PDF con las listas del usuario y la seleccion de un filtro para realizar busquedas.",
+							"Anular plan Premium",
+							JOptionPane.YES_NO_OPTION);
+					if (respuesta == JOptionPane.YES_OPTION) {
+						controlador.setUsuarioNoPremium();
+						mostrarLaminaSuperior();
+					}
+				} else {
 					int respuesta = JOptionPane.showConfirmDialog(
 							this,
 							"El plan Premium de AppVideo brindara acceso a los videos más vistos, la generacion de un PDF con las listas del usuario y la seleccion de un filtro para realizar busquedas.",
@@ -275,7 +285,7 @@ public class Ventana extends JFrame {
 
 	}
 	
-	public void mostrarLaminaSuperior() {
+	private void mostrarLaminaSuperior() {
 		String nombreUsuario = controlador.getNombreUsuario();
 		lSaludo.setText("Hola " + nombreUsuario);
 		
@@ -289,6 +299,12 @@ public class Ventana extends JFrame {
 		bMasVistos.setVisible(usuarioPremium);
 		bGenerarPDF.setVisible(usuarioPremium);
 		bFiltros.setVisible(usuarioPremium);
+	}
+	
+	public void inicioSesion() {
+		bRecientes.setSelected(true);
+		setLaminaCentral("Recientes");
+		mostrarLaminaSuperior();
 	}
 
 }

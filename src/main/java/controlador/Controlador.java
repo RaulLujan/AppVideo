@@ -117,6 +117,13 @@ public class Controlador implements VideosListener {
 			adaptadorUsuario.modificarUsuario(usuarioActual);
 		}
 	}
+	
+	public void setUsuarioNoPremium() {
+		if (isUsuarioLogin() && isUsuarioPremium()) {
+			usuarioActual.setPremium(false);
+			adaptadorUsuario.modificarUsuario(usuarioActual);
+		}
+	}
 
 	public boolean isUsuarioPremium() {
 		return isUsuarioLogin() && usuarioActual.isPremium();
