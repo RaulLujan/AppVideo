@@ -87,9 +87,10 @@ public class TabExplorar extends JPanel {
 			}
 		});
 		
-		//lista.setAlignmentX(SwingConstants.CENTER);
-		
-		parent.add(lista, SwingConstants.CENTER);
+		lista.setAlignmentX(SwingConstants.CENTER);
+		parent.add(Box.createHorizontalGlue());
+		parent.add(lista);
+		parent.add(Box.createHorizontalGlue());
 		return lista;
 	}
 }

@@ -32,6 +32,7 @@ public class TabReproductor extends JPanel {
 
 		// addReproductor
 		videoWeb.setAlignmentX(CENTER_ALIGNMENT);
+		videoWeb.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 		add(videoWeb);
 		// addCopyrigth
 		JLabel copyrigth = addLabel(this, videoWeb.getVersion(), 10);
@@ -54,7 +55,7 @@ public class TabReproductor extends JPanel {
 			if (!nombre.trim().isEmpty()) {
 				boolean ok = controlador.setEtiquetaVideo(nombre);
 				if (ok) {
-					addLabel(panelEtiquetas, nombre, 10);
+					addLabelEtiqueta(panelEtiquetas, nombre, 10);
 					campoNuevaEtiqueta.setText("");
 				}
 			}
@@ -65,6 +66,7 @@ public class TabReproductor extends JPanel {
 	private JPanel addPanel() {
 		JPanel panel = new JPanel();
 		panel.setBackground(new Color(96, 96, 96));
+		add(Box.createHorizontalGlue());
 		add(panel);
 		return panel;
 	}
@@ -79,8 +81,11 @@ public class TabReproductor extends JPanel {
 	}
 
 	private JLabel addLabelEtiqueta(JPanel panel, String texto, int size) {
-		JLabel label = addLabel(panel, texto, size);
-		label.setBackground(Color.GRAY);
+		JLabel label = new JLabel(texto);
+		label.setFont(new Font("Arial", Font.BOLD, size));
+		label.setForeground(Color.BLACK);
+		label.setBackground(Color.LIGHT_GRAY);
+		panel.add(label);
 		
 		return label;
 	}
